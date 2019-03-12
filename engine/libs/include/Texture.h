@@ -6,7 +6,7 @@
 #include "stb_image.h"
 #endif
 
-struct Texture {
+struct __declspec( dllexport ) Texture {
 public:
 	Texture( const char* path ) {
 		glGenTextures( 1, &hTexture_ );

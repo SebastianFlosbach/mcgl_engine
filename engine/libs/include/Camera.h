@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class Camera {
+class __declspec( dllexport ) Camera {
 public:
 	Camera( glm::vec3 position, glm::vec3 direction ) : pos_( position ), direction_( glm::normalize( direction ) ) {
 		yaw_ = asin( direction_.z );
