@@ -8,6 +8,7 @@ std::unique_ptr<Engine> engine;
 
 void CreateEngine() {
 	engine = std::make_unique<Engine>();
+	engine->init();
 }
 
 void CreateWindow( unsigned int width, unsigned int height, const std::string& title ) {

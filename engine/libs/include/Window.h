@@ -10,6 +10,9 @@ public:
 
 	Window( unsigned int width, unsigned int height, const std::string& title ) : width_( width ), height_( height ) {
 		pWindow_ = glfwCreateWindow( width_, height_, title.c_str(), NULL, NULL );
+		if ( !pWindow_ ) {
+			std::cout << "Failed to create window" << std::endl;
+		}
 		glfwMakeContextCurrent( pWindow_ );
 
 		//auto func = []( GLFWwindow* window, int width, int height ) {
