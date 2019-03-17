@@ -5,6 +5,11 @@
 #include <iostream>
 
 #include "Window.h"
+#include "Shader.h"
+#include "Camera.h"
+#include "Texture.h"
+#include "CubeMap.h"
+#include "Renderer/VertexBuffer.h"
 
 #define ASSERT(x) if(x) __debugbreak();
 #define GLCall(x) GLClearError();\
@@ -28,6 +33,53 @@ static bool GLCheckError() {
 
 static void errorCallback( int id, const char* message ) {
 	std::cout << "GLFW Error: [" << id << "] " << message << std::endl;
+}
+
+static Camera camera;
+static float deltaTime = 0.0f;
+static float lastFrame = 0.0f;
+
+static void processInput( GLFWwindow *window ) {
+	if ( glfwGetKey( window, GLFW_KEY_ESCAPE ) == GLFW_PRESS ) {
+		glfwSetWindowShouldClose( window, true );
+	}
+
+	float cameraSpeed = 2.5f * deltaTime;
+	if ( glfwGetKey( window, GLFW_KEY_W ) == GLFW_PRESS ) {
+		camera.move( 0.0f, 0.0f, cameraSpeed );
+	}
+	if ( glfwGetKey( window, GLFW_KEY_S ) == GLFW_PRESS ) {
+		camera.move( 0.0f, 0.0f, -cameraSpeed );
+	}
+	if ( glfwGetKey( window, GLFW_KEY_A ) == GLFW_PRESS ) {
+		camera.move( -cameraSpeed, 0.0f, 0.0f );
+	}
+	if ( glfwGetKey( window, GLFW_KEY_D ) == GLFW_PRESS ) {
+		camera.move( cameraSpeed, 0.0f, 0.0f );
+	}
+}
+
+bool firstMouse = true;
+float lastX = 400;
+float lastY = 300;
+
+static void mouse_callback( GLFWwindow* window, double xpos, double ypos ) {
+	if ( firstMouse ) {
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top
+	lastX = xpos;
+	lastY = ypos;
+
+	float sensitivity = 0.05f;
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	camera.rotateD( yoffset, xoffset );
 }
 
 class Engine {
@@ -74,7 +126,80 @@ public:
 
 		glViewport( 0, 0, window_.width(), window_.height() );
 
+		float vertices[]{
+			-0.5f, -0.5f, 0.0f,
+			 0.5f, -0.5f, 0.0f,
+			 0.5f,  0.5f, 0.0f,
+			-0.5f,  0.5f, 0.0f,
+			-0.5f, -0.5f, 1.0f,
+			 0.5f, -0.5f, 1.0f,
+			 0.5f,  0.5f, 1.0f,
+			-0.5f,  0.5f, 1.0f,
+		};
+
+		unsigned int indices[]{
+			0, 2, 3,
+			0, 1, 2,
+			1, 6, 2,
+			1, 5, 6,
+			5, 7, 6,
+			5, 4, 7,
+			4, 3, 7,
+			4, 0, 3,
+			2, 7, 3,
+			2, 6, 7,
+			0, 5, 1,
+			0, 4, 5,
+		};
+
+		Shader blockShader = Shader();
+		blockShader.addVertexShader( "../resources/shaders/vertexShader" );
+		blockShader.addFragmentShader( "../resources/shaders/fragmentShader" );
+		blockShader.compile();
+		blockShader.use();
+
+		//Shader skyboxShader = Shader();
+		//skyboxShader.addVertexShader( "../resources/shaders/vertexShader" );
+		//skyboxShader.addFragmentShader( "../resources/shaders/fragmentShader" );
+		//skyboxShader.compile();
+		//skyboxShader.use();
+
+		VertexBuffer vb( vertices, sizeof( vertices ) );
+		vb.createElementBuffer( indices, sizeof( indices ) );
+		vb.bind();
+
+		glfwSetInputMode( window_.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
+		glfwSetCursorPosCallback( window_.get(), mouse_callback );
+
+		glEnable( GL_DEPTH_TEST );
+
+		camera = Camera( 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, -1.0f );
+
+		glm::mat4 model( 1.0f );
+		glm::mat4 projection = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 100.0f );
+
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
 		while ( !glfwWindowShouldClose( window_.get() ) ) {
+
+			float currentFrame = glfwGetTime();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
+			// Input
+			processInput( window_.get() );
+
+			// Rendering
+			glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
+			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+			blockShader.use();
+			blockShader.setUniformMat4f( "model", model );
+			blockShader.setUniformMat4f( "view", camera.getView() );
+			blockShader.setUniformMat4f( "projection", projection );
+			vb.bind();
+			glDrawElements( GL_TRIANGLES, sizeof( indices ), GL_UNSIGNED_INT, 0 );
+			vb.unbind();
 
 			glfwSwapBuffers( window_.get() );
 			glfwPollEvents();
