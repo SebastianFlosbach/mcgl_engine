@@ -31,10 +31,7 @@ void Mesh::setupMesh() {
 }
 
 void Mesh::Draw( Shader& shader ) {
-	unsigned int diffuseNr = 1;
-	unsigned int specularNr = 1;
 	texture_.bind();
-
 	glActiveTexture( GL_TEXTURE0 );
 
 	// draw mesh
