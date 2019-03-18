@@ -126,31 +126,51 @@ public:
 
 		glViewport( 0, 0, window_.width(), window_.height() );
 
-		float vertices[]{
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.5f,  0.5f, 0.0f,
-			-0.5f,  0.5f, 0.0f,
-			-0.5f, -0.5f, 1.0f,
-			 0.5f, -0.5f, 1.0f,
-			 0.5f,  0.5f, 1.0f,
-			-0.5f,  0.5f, 1.0f,
+		float vertices[] = {
+			   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+				0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+				0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+				0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+			   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+			   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+				0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+				0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+				0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+			   -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+			   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+			   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			   -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+				0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+				0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+				0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+				0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+				0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+				0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+			   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+				0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+				0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+				0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+			   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+			   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+				0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+				0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+				0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			   -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+			   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 		};
 
-		unsigned int indices[]{
-			0, 2, 3,
-			0, 1, 2,
-			1, 6, 2,
-			1, 5, 6,
-			5, 7, 6,
-			5, 4, 7,
-			4, 3, 7,
-			4, 0, 3,
-			2, 7, 3,
-			2, 6, 7,
-			0, 5, 1,
-			0, 4, 5,
-		};
+		Texture blockTexture( "../resources/textures/container.jpg" );
 
 		Shader blockShader = Shader();
 		blockShader.addVertexShader( "../resources/shaders/vertexShader" );
@@ -165,9 +185,8 @@ public:
 		//skyboxShader.use();
 
 		VertexBuffer vb( vertices, sizeof( vertices ) );
-		vb.createElementBuffer( indices, sizeof( indices ) );
+		
 		vb.bind();
-
 		glfwSetInputMode( window_.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
 		glfwSetCursorPosCallback( window_.get(), mouse_callback );
 
@@ -178,7 +197,7 @@ public:
 		glm::mat4 model( 1.0f );
 		glm::mat4 projection = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 100.0f );
 
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+		//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
 		while ( !glfwWindowShouldClose( window_.get() ) ) {
 
@@ -197,8 +216,9 @@ public:
 			blockShader.setUniformMat4f( "model", model );
 			blockShader.setUniformMat4f( "view", camera.getView() );
 			blockShader.setUniformMat4f( "projection", projection );
+			blockTexture.bind();
 			vb.bind();
-			glDrawElements( GL_TRIANGLES, sizeof( indices ), GL_UNSIGNED_INT, 0 );
+			glDrawArrays( GL_TRIANGLES, 0, sizeof( vertices ) );
 			vb.unbind();
 
 			glfwSwapBuffers( window_.get() );

@@ -4,8 +4,6 @@
 
 #include <glad/glad.h>
 
-#include "Vertex.h"
-
 
 struct VertexBuffer {
 public:
@@ -18,8 +16,8 @@ public:
 		glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
 		glBufferData( GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW );
 
-		glVertexAttribPointer( 0, VERTEX_POSITION_SIZE, GL_FLOAT, GL_FALSE, VERTEX_POSITION_SIZE * sizeof( float ), (void*)0 );
-		glVertexAttribPointer( 1, VERTEX_TEXCOORD_SIZE, GL_FLOAT, GL_FALSE, VERTEX_TEXCOORD_SIZE * sizeof( float ), (void*)(VERTEX_POSITION_SIZE * sizeof( float ) ) );
+		glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof( float ), (void*)0 );
+		glVertexAttribPointer( 1, 4, GL_FLOAT, GL_FALSE, 5 * sizeof( float ), (void*)(3 * sizeof( float ) ) );
 
 		glEnableVertexAttribArray( 0 );
 		glEnableVertexAttribArray( 1 );
@@ -62,9 +60,6 @@ public:
 	}
 
 private:
-	std::vector<Vertex> vertices_;
-	std::vector<unsigned int> indices_;
-
 	unsigned int hVertexBuffer_;
 	unsigned int hVertexArray_;
 
