@@ -9,7 +9,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "CubeMap.h"
-#include "Renderer/VertexBuffer.h"
+#include "Mesh/Mesh.h"
 
 #define ASSERT(x) if(x) __debugbreak();
 #define GLCall(x) GLClearError();\
@@ -170,7 +170,7 @@ public:
 			   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 		};
 
-		Texture blockTexture( "../resources/textures/container.jpg" );
+		Texture blockTexture( "../resources/textures/bricks.jpg" );
 
 		Shader blockShader = Shader();
 		blockShader.addVertexShader( "../resources/shaders/vertexShader" );
@@ -184,7 +184,7 @@ public:
 		//skyboxShader.compile();
 		//skyboxShader.use();
 
-		VertexBuffer vb( vertices, sizeof( vertices ) );
+		Mesh vb( vertices, sizeof( vertices ) );
 		
 		vb.bind();
 		glfwSetInputMode( window_.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
@@ -198,6 +198,16 @@ public:
 		glm::mat4 projection = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 100.0f );
 
 		//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+		glm::vec3 positions[] {
+			{ 0.0f, 0.0f, 0.0f },
+			{ 2.0f, 0.0f, 0.0f }
+		};
+
+		glm::vec3 scaling[] {
+			{ 1.0f, 1.0f, 1.0f },
+			{ 0.1f, 0.1f, 0.1f }
+		};
 
 		while ( !glfwWindowShouldClose( window_.get() ) ) {
 
@@ -213,13 +223,20 @@ public:
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 			blockShader.use();
-			blockShader.setUniformMat4f( "model", model );
-			blockShader.setUniformMat4f( "view", camera.getView() );
-			blockShader.setUniformMat4f( "projection", projection );
-			blockTexture.bind();
-			vb.bind();
-			glDrawArrays( GL_TRIANGLES, 0, sizeof( vertices ) );
-			vb.unbind();
+
+			for ( int i = 0; i < 2; i++ ) {
+				model = glm::mat4( 1.0f );
+				model = glm::translate( model, positions[i] );
+				model = glm::scale( model, scaling[i] );
+
+				blockShader.setUniformMat4f( "model", model );
+				blockShader.setUniformMat4f( "view", camera.getView() );
+				blockShader.setUniformMat4f( "projection", projection );
+				blockTexture.bind();
+				vb.bind();
+				glDrawArrays( GL_TRIANGLES, 0, sizeof( vertices ) );
+				vb.unbind();
+			}
 
 			glfwSwapBuffers( window_.get() );
 			glfwPollEvents();
