@@ -1,3 +1,4 @@
+#ifdef NOT
 #pragma once
 #include "glad/glad.h"
 
@@ -47,3 +48,4 @@ private:
 		return textureID;
 	}
 };
+#endif

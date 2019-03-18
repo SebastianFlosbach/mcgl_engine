@@ -4,6 +4,10 @@
 
 #include "../Block/Block.h"
 
+constexpr unsigned int CHUNK_WIDTH = 16;
+constexpr unsigned int CHUNK_LENGTH = 16;
+constexpr unsigned int CHUNK_HEIGHT = 128;
+
 struct Chunk {
 public:
 	Chunk() = default;
@@ -24,6 +28,6 @@ public:
 private:
 	glm::vec<3, int> position_;
 
-	Block blocks_[16][128][16];
+	Block blocks_[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_LENGTH];
 
 };

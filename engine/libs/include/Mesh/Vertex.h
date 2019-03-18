@@ -1,9 +1,6 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <vector>
-
-struct Face;
 
 struct Vertex {
 	glm::vec3 position_;

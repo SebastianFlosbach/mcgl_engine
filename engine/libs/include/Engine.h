@@ -127,54 +127,54 @@ public:
 		glViewport( 0, 0, window_.width(), window_.height() );
 
 		std::vector<Vertex> vertices = {
-			{	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  },
-			{	0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  },
-			{	0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  },
-			{	0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  },
-			{	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  },
-			{	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  },
-
-			{	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  },
-			{	0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  },
-			{	0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  },
-			{	0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  },
-			{	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  },
-			{	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  },
-			   								   
-			{	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  },
-			{	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  },
-			{	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  },
-			{	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  },
-			{	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  },
-			{	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  },
-			   								   
-			{	0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  },
-			{	0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  },
-			{	0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  },
-			{	0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  },
-			{	0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  },
-			{	0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  },
-			   								   
-			{	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  },
-			{	0.5f, -0.5f, -0.5f,  1.0f, 1.0f,  },
-			{	0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  },
-			{	0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  },
-			{	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  },
-			{	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  },
-			   								   
-			{	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  },
-			{	0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  },
-			{	0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  },
-			{	0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  },
-			{	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,  },
-			{	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f   },
+			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 0.0f,}  },
+			{{	0.5f, -0.5f, -0.5f, },{ 1.0f, 0.0f, } },
+			{{	0.5f,  0.5f, -0.5f, },{ 1.0f, 1.0f, } },
+			{{	0.5f,  0.5f, -0.5f, },{ 1.0f, 1.0f, } },
+			{{	-0.5f,  0.5f, -0.5f,},{  0.0f, 1.0f,}  },
+			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 0.0f,}  },
+			 									   
+			{{	-0.5f, -0.5f,  0.5f,},{  0.0f, 0.0f,}  },
+			{{	0.5f, -0.5f,  0.5f, },{ 1.0f, 0.0f, } },
+			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 1.0f, } },
+			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 1.0f, } },
+			{{	-0.5f,  0.5f,  0.5f,},{  0.0f, 1.0f,}  },
+			{{	-0.5f, -0.5f,  0.5f,},{  0.0f, 0.0f,}  },
+			 							   	   
+			{{	-0.5f,  0.5f,  0.5f,},{  1.0f, 0.0f,}  },
+			{{	-0.5f,  0.5f, -0.5f,},{  1.0f, 1.0f,}  },
+			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 1.0f,}  },
+			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 1.0f,}  },
+			{{	-0.5f, -0.5f,  0.5f,},{  0.0f, 0.0f,}  },
+			{{	-0.5f,  0.5f,  0.5f,},{  1.0f, 0.0f,}  },
+			  							   	   
+			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 0.0f, } },
+			{{	0.5f,  0.5f, -0.5f, },{ 1.0f, 1.0f, } },
+			{{	0.5f, -0.5f, -0.5f, },{ 0.0f, 1.0f, } },
+			{{	0.5f, -0.5f, -0.5f, },{ 0.0f, 1.0f, } },
+			{{	0.5f, -0.5f,  0.5f, },{ 0.0f, 0.0f, } },
+			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 0.0f, } },
+			  								   	   
+			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 1.0f,}  },
+			{{	0.5f, -0.5f, -0.5f, },{ 1.0f, 1.0f, } },
+			{{	0.5f, -0.5f,  0.5f, },{ 1.0f, 0.0f, } },
+			{{	0.5f, -0.5f,  0.5f, },{ 1.0f, 0.0f, } },
+			{{	-0.5f, -0.5f,  0.5f,},{  0.0f, 0.0f,}  },
+			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 1.0f,}  },
+			  							   	   
+			{{	-0.5f,  0.5f, -0.5f,},{  0.0f, 1.0f,}  },
+			{{	0.5f,  0.5f, -0.5f, },{ 1.0f, 1.0f, } },
+			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 0.0f, } },
+			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 0.0f, } },
+			{{	-0.5f,  0.5f,  0.5f,},{  0.0f, 0.0f,}  },
+			{{	-0.5f,  0.5f, -0.5f,},{  0.0f, 1.0f }  },
 		};
 
 		std::vector<unsigned int> indices {
 			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
 		};
 
-		Texture blockTexture( "../resources/textures/bricks.jpg" );
+		Texture blockTexture( "../resources/textures/container.jpg" );
 
 		Shader blockShader = Shader();
 		blockShader.addVertexShader( "../resources/shaders/vertexShader" );
@@ -188,9 +188,8 @@ public:
 		//skyboxShader.compile();
 		//skyboxShader.use();
 
-		Mesh blockMesh( vertices, indices );
-		
-		vb.bind();
+		Mesh blockMesh( vertices, indices, std::move( blockTexture ) );
+
 		glfwSetInputMode( window_.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
 		glfwSetCursorPosCallback( window_.get(), mouse_callback );
 
@@ -236,10 +235,8 @@ public:
 				blockShader.setUniformMat4f( "model", model );
 				blockShader.setUniformMat4f( "view", camera.getView() );
 				blockShader.setUniformMat4f( "projection", projection );
-				blockTexture.bind();
-				vb.bind();
-				glDrawArrays( GL_TRIANGLES, 0, sizeof( vertices ) );
-				vb.unbind();
+				
+				blockMesh.Draw( blockShader );
 			}
 
 			glfwSwapBuffers( window_.get() );
