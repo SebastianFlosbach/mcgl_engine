@@ -1,6 +1,6 @@
 #include "Mesh/Mesh.h"
 
-Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, Texture&& textures ) : vertices_( vertices ), indices_( indices ), texture_( std::move( textures ) ) {
+Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, Texture& textures ) : vertices_( vertices ), indices_( indices ), texture_( textures ) {
 	setupMesh();
 }
 

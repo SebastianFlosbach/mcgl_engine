@@ -8,16 +8,15 @@
 
 class Mesh {
 public:
-	/*  Mesh Data  */
-	std::vector<Vertex> vertices_;
-	std::vector<unsigned int> indices_;
-	Texture texture_;
-	/*  Functions  */
-	Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, Texture&& texture );
+	Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, Texture& texture );
 
 	Mesh( const Mesh& other ) = delete;
 	Mesh& operator=( const Mesh& other ) = delete;
 
+	std::vector<Vertex> vertices_;
+	std::vector<unsigned int> indices_;
+	Texture& texture_;
+	
 	void Draw( Shader& shader );
 private:
 	/*  Render data  */

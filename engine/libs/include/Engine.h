@@ -200,7 +200,7 @@ public:
 		glm::mat4 model( 1.0f );
 		glm::mat4 projection = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 100.0f );
 
-		//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
 		glm::vec3 positions[] {
 			{ 0.0f, 0.0f, 0.0f },
