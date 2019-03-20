@@ -31,9 +31,9 @@ public:
 	}
 
 	const block::Block* getBlock( int x, int y, int z ) const {
-		if (	x < 0 || x > CHUNK_WIDTH 
-			||	y < 0 || y > CHUNK_HEIGHT 
-			||	z < 0 || z > CHUNK_LENGTH ) {
+		if (	x < 0 || x >= CHUNK_WIDTH 
+			||	y < 0 || y >= CHUNK_HEIGHT 
+			||	z < 0 || z >= CHUNK_LENGTH ) {
 			return nullptr;
 		}
 

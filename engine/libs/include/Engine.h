@@ -129,14 +129,14 @@ public:
 
 		world::chunk::Chunk chunk{};
 		world::block::Block block{ false };
-		chunk.setBlock( block, 0, 0, 0 );
-		chunk.setBlock( block, 0, 0, 1 );
-		chunk.setBlock( block, 1, 0, 0 );
-		chunk.setBlock( block, 1, 0, 1 );
-		chunk.setBlock( block, 0, 1, 0 );
-		chunk.setBlock( block, 0, 1, 1 );
-		chunk.setBlock( block, 1, 1, 0 );
-		chunk.setBlock( block, 1, 1, 1 );
+		
+		for ( int x = 0; x < world::chunk::CHUNK_WIDTH; x++ ) {
+			for ( int y = 0; y < world::chunk::CHUNK_HEIGHT / 2; y++ ) {
+				for ( int z = 0; z < world::chunk::CHUNK_LENGTH; z++ ) {
+					chunk.setBlock( block, x, y, z );
+				}
+			}
+		}
 
 		world::chunk::ChunkMeshBuilder cmb = world::chunk::ChunkMeshBuilder();
 
@@ -159,6 +159,8 @@ public:
 		camera = Camera( 0.0f, 0.0f, 3.0f, 0.0f, 0.0f, -1.0f );
 
 		glm::mat4 model( 1.0f );
+		model = glm::scale( model, { 0.2f, 0.2f, 0.2f } );
+
 		glm::mat4 projection = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 100.0f );
 
 		//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
