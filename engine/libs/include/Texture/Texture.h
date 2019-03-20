@@ -1,10 +1,15 @@
 #pragma once
 #include <glad/glad.h>
 #include <iostream>
+#include <string>
+
+namespace texture {
+
 
 struct Texture {
 public:
 	Texture( const char* path );
+	Texture( const std::string& path );
 
 	Texture( const Texture& other ) = delete;
 	Texture& operator=( const Texture& other ) = delete;
@@ -26,15 +31,28 @@ public:
 		glDeleteTextures( 1, &hTexture_ );
 	}
 
-	void bind() {
+	void bind() const {
 		glBindTexture( GL_TEXTURE_2D, hTexture_ );
 	}
 
-	unsigned int get() {
+	unsigned int get() const {
 		return hTexture_;
+	}
+
+	int width() const {
+		return width_;
+	}
+
+	int height() const {
+		return height_;
 	}
 
 private:
 	unsigned int hTexture_;
-
+	
+	int width_;
+	int height_;
 };
+
+
+}

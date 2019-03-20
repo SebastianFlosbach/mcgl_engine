@@ -8,6 +8,7 @@
 namespace world {
 namespace chunk {
 
+
 constexpr unsigned int CHUNK_WIDTH = 16;
 constexpr unsigned int CHUNK_LENGTH = 16;
 constexpr unsigned int CHUNK_HEIGHT = 128;
@@ -45,6 +46,7 @@ private:
 	block::Block blocks_[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_LENGTH];
 
 };
+
 
 }
 }

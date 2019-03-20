@@ -2,19 +2,19 @@
 
 #include <vector>
 
-#include "../Texture.h"
+#include "../Texture/TextureAtlas.h"
 #include "Vertex.h"
 #include "../Shader.h"
 
 class Mesh {
 public:
-	Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, Texture& texture );
-	Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, Texture& texture );
+	Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const texture::TextureAtlas& textureAtlas );
+	Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, const texture::TextureAtlas& textureAtlas );
 
 	Mesh( const Mesh& other ) = delete;
 	Mesh& operator=( const Mesh& other ) = delete;
 
-	Mesh( Mesh&& other ) : texture_( other.texture_ ) {
+	Mesh( Mesh&& other ) : textureAtlas_( other.textureAtlas_ ) {
 		*this = std::move( other );
 	}
 
@@ -31,7 +31,7 @@ public:
 
 	std::vector<Vertex> vertices_;
 	std::vector<unsigned int> indices_;
-	Texture& texture_;
+	const texture::TextureAtlas& textureAtlas_;
 	
 	void Draw( Shader& shader );
 private:

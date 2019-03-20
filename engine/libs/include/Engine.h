@@ -7,8 +7,7 @@
 #include "Window.h"
 #include "Shader.h"
 #include "Camera.h"
-#include "Texture.h"
-#include "CubeMap.h"
+#include "Texture/TextureAtlas.h"
 #include "Mesh/Mesh.h"
 #include "World/Chunk/Chunk.h"
 #include "World/Chunk/ChunkMeshBuilder.h"
@@ -141,9 +140,10 @@ public:
 
 		world::chunk::ChunkMeshBuilder cmb = world::chunk::ChunkMeshBuilder();
 
-		Texture blockTexture( "../resources/textures/container.jpg" );
+		texture::TextureAtlas textureAtlas( "../resources/textures/mcgl-texture-atlas.png", 16, 3 );
 
-		Mesh blockMesh = std::move( cmb.createChunkMesh( chunk, blockTexture ) );
+
+		Mesh blockMesh = std::move( cmb.createChunkMesh( chunk, textureAtlas ) );
 
 		Shader blockShader = Shader();
 		blockShader.addVertexShader( "../resources/shaders/vertexShader" );

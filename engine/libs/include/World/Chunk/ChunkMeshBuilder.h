@@ -8,11 +8,12 @@
 namespace world {
 namespace chunk {
 
+
 class ChunkMeshBuilder {
 public:
 	ChunkMeshBuilder() = default;
 
-	Mesh createChunkMesh( const Chunk& chunk, Texture& texture ) {
+	Mesh createChunkMesh( const Chunk& chunk, const texture::TextureAtlas& textureAtlas ) {
 		indexBase_ = 0;
 		vertices_.clear();
 		indices_.clear();
@@ -31,11 +32,13 @@ public:
 					// Left
 					neighbour = chunk.getBlock( x - 1, y, z );
 					if ( neighbour == nullptr || neighbour->isTransparent_ ) {
+						auto texCoords = textureAtlas.getTextureCoords( block->leftTexture_ );
+
 						vertices_.reserve( 4 );
-						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { 0.0f, 0.0f } } );
-						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 0.0f }, { 1.0f, 0.0f } } );
-						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 0.0f }, { 1.0f, 1.0f } } );
-						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 1.0f }, { 0.0f, 1.0f } } );
+						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { texCoords[0], texCoords[1] } } );
+						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 0.0f }, { texCoords[2], texCoords[3] } } );
+						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 0.0f }, { texCoords[4], texCoords[5] } } );
+						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 1.0f }, { texCoords[6], texCoords[7] } } );
 
 						addIndices();
 					}
@@ -43,11 +46,13 @@ public:
 					// Right
 					neighbour = chunk.getBlock( x + 1, y, z );
 					if ( neighbour == nullptr || neighbour->isTransparent_ ) {
+						auto texCoords = textureAtlas.getTextureCoords( block->rightTexture_ );
+
 						vertices_.reserve( 4 );
-						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 0.0f }, { 0.0f, 0.0f } } );
-						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 1.0f }, { 1.0f, 0.0f } } );
-						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 1.0f }, { 1.0f, 1.0f } } );
-						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 0.0f }, { 0.0f, 1.0f } } );
+						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 0.0f }, { texCoords[0], texCoords[1] } } );
+						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 1.0f }, { texCoords[2], texCoords[3] } } );
+						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 1.0f }, { texCoords[4], texCoords[5] } } );
+						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 0.0f }, { texCoords[6], texCoords[7] } } );
 
 						addIndices();
 					}
@@ -55,11 +60,13 @@ public:
 					// Bottom
 					neighbour = chunk.getBlock( x, y - 1, z );
 					if ( neighbour == nullptr || neighbour->isTransparent_ ) {
+						auto texCoords = textureAtlas.getTextureCoords( block->bottomTexture_ );
+
 						vertices_.reserve( 4 );
-						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { 0.0f, 0.0f } } );
-						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 1.0f }, { 1.0f, 0.0f } } );
-						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 0.0f }, { 1.0f, 1.0f } } );
-						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 0.0f }, { 0.0f, 1.0f } } );
+						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { texCoords[0], texCoords[1] } } );
+						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 1.0f }, { texCoords[2], texCoords[3] } } );
+						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 0.0f }, { texCoords[4], texCoords[5] } } );
+						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 0.0f }, { texCoords[6], texCoords[7] } } );
 
 						addIndices();
 					}
@@ -67,11 +74,13 @@ public:
 					// Top
 					neighbour = chunk.getBlock( x, y + 1, z );
 					if ( neighbour == nullptr || neighbour->isTransparent_ ) {
+						auto texCoords = textureAtlas.getTextureCoords( block->topTexture_ );
+
 						vertices_.reserve( 4 );
-						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 0.0f }, { 0.0f, 0.0f } } );
-						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 0.0f }, { 1.0f, 0.0f } } );
-						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 1.0f }, { 1.0f, 1.0f } } );
-						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 1.0f }, { 0.0f, 1.0f } } );
+						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 0.0f }, { texCoords[0], texCoords[1] } } );
+						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 0.0f }, { texCoords[2], texCoords[3] } } );
+						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 1.0f }, { texCoords[4], texCoords[5] } } );
+						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 1.0f }, { texCoords[6], texCoords[7] } } );
 
 						addIndices();
 					}
@@ -79,11 +88,13 @@ public:
 					// Front
 					neighbour = chunk.getBlock( x, y, z - 1 );
 					if ( neighbour == nullptr || neighbour->isTransparent_ ) {
+						auto texCoords = textureAtlas.getTextureCoords( block->frontTexture_ );
+
 						vertices_.reserve( 4 );
-						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 0.0f }, { 0.0f, 0.0f } } );
-						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 0.0f }, { 1.0f, 0.0f } } );
-						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 0.0f }, { 1.0f, 1.0f } } );
-						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 0.0f }, { 0.0f, 1.0f } } );
+						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 0.0f }, { texCoords[0], texCoords[1] } } );
+						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 0.0f }, { texCoords[2], texCoords[3] } } );
+						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 0.0f }, { texCoords[4], texCoords[5] } } );
+						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 0.0f }, { texCoords[6], texCoords[7] } } );
 
 						addIndices();
 					}
@@ -91,11 +102,13 @@ public:
 					// Back
 					neighbour = chunk.getBlock( x, y, z + 1 );
 					if ( neighbour == nullptr || neighbour->isTransparent_ ) {
+						auto texCoords = textureAtlas.getTextureCoords( block->backTexture_ );
+
 						vertices_.reserve( 4 );
-						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 1.0f }, { 0.0f, 0.0f } } );
-						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { 1.0f, 0.0f } } );
-						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 1.0f }, { 1.0f, 1.0f } } );
-						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 1.0f }, { 0.0f, 1.0f } } );
+						vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 1.0f }, { texCoords[0], texCoords[1] } } );
+						vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { texCoords[2], texCoords[3] } } );
+						vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 1.0f }, { texCoords[4], texCoords[5] } } );
+						vertices_.push_back( { { x + 1.0f, y + 1.0f, z + 1.0f }, { texCoords[6], texCoords[7] } } );
 
 						addIndices();
 					}
@@ -103,7 +116,7 @@ public:
 			}
 		}
 
-		return { std::move( vertices_ ), std::move( indices_ ), texture };
+		return { std::move( vertices_ ), std::move( indices_ ), textureAtlas };
 	}
 
 private:
@@ -125,6 +138,7 @@ private:
 	}
 
 };
+
 
 }
 }
