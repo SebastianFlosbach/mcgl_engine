@@ -10,6 +10,8 @@
 #include "Texture.h"
 #include "CubeMap.h"
 #include "Mesh/Mesh.h"
+#include "World/Chunk/Chunk.h"
+#include "World/Chunk/ChunkMeshBuilder.h"
 
 #define ASSERT(x) if(x) __debugbreak();
 #define GLCall(x) GLClearError();\
@@ -126,69 +128,28 @@ public:
 
 		glViewport( 0, 0, window_.width(), window_.height() );
 
-		std::vector<Vertex> vertices = {
-			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 0.0f,}  },
-			{{	0.5f, -0.5f, -0.5f, },{ 1.0f, 0.0f, } },
-			{{	0.5f,  0.5f, -0.5f, },{ 1.0f, 1.0f, } },
-			{{	0.5f,  0.5f, -0.5f, },{ 1.0f, 1.0f, } },
-			{{	-0.5f,  0.5f, -0.5f,},{  0.0f, 1.0f,}  },
-			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 0.0f,}  },
-			 									   
-			{{	-0.5f, -0.5f,  0.5f,},{  0.0f, 0.0f,}  },
-			{{	0.5f, -0.5f,  0.5f, },{ 1.0f, 0.0f, } },
-			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 1.0f, } },
-			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 1.0f, } },
-			{{	-0.5f,  0.5f,  0.5f,},{  0.0f, 1.0f,}  },
-			{{	-0.5f, -0.5f,  0.5f,},{  0.0f, 0.0f,}  },
-			 							   	   
-			{{	-0.5f,  0.5f,  0.5f,},{  1.0f, 0.0f,}  },
-			{{	-0.5f,  0.5f, -0.5f,},{  1.0f, 1.0f,}  },
-			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 1.0f,}  },
-			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 1.0f,}  },
-			{{	-0.5f, -0.5f,  0.5f,},{  0.0f, 0.0f,}  },
-			{{	-0.5f,  0.5f,  0.5f,},{  1.0f, 0.0f,}  },
-			  							   	   
-			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 0.0f, } },
-			{{	0.5f,  0.5f, -0.5f, },{ 1.0f, 1.0f, } },
-			{{	0.5f, -0.5f, -0.5f, },{ 0.0f, 1.0f, } },
-			{{	0.5f, -0.5f, -0.5f, },{ 0.0f, 1.0f, } },
-			{{	0.5f, -0.5f,  0.5f, },{ 0.0f, 0.0f, } },
-			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 0.0f, } },
-			  								   	   
-			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 1.0f,}  },
-			{{	0.5f, -0.5f, -0.5f, },{ 1.0f, 1.0f, } },
-			{{	0.5f, -0.5f,  0.5f, },{ 1.0f, 0.0f, } },
-			{{	0.5f, -0.5f,  0.5f, },{ 1.0f, 0.0f, } },
-			{{	-0.5f, -0.5f,  0.5f,},{  0.0f, 0.0f,}  },
-			{{	-0.5f, -0.5f, -0.5f,},{  0.0f, 1.0f,}  },
-			  							   	   
-			{{	-0.5f,  0.5f, -0.5f,},{  0.0f, 1.0f,}  },
-			{{	0.5f,  0.5f, -0.5f, },{ 1.0f, 1.0f, } },
-			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 0.0f, } },
-			{{	0.5f,  0.5f,  0.5f, },{ 1.0f, 0.0f, } },
-			{{	-0.5f,  0.5f,  0.5f,},{  0.0f, 0.0f,}  },
-			{{	-0.5f,  0.5f, -0.5f,},{  0.0f, 1.0f }  },
-		};
+		world::chunk::Chunk chunk{};
+		world::block::Block block{ false };
+		chunk.setBlock( block, 0, 0, 0 );
+		chunk.setBlock( block, 0, 0, 1 );
+		chunk.setBlock( block, 1, 0, 0 );
+		chunk.setBlock( block, 1, 0, 1 );
+		chunk.setBlock( block, 0, 1, 0 );
+		chunk.setBlock( block, 0, 1, 1 );
+		chunk.setBlock( block, 1, 1, 0 );
+		chunk.setBlock( block, 1, 1, 1 );
 
-		std::vector<unsigned int> indices {
-			0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36
-		};
+		world::chunk::ChunkMeshBuilder cmb = world::chunk::ChunkMeshBuilder();
 
 		Texture blockTexture( "../resources/textures/container.jpg" );
+
+		Mesh blockMesh = std::move( cmb.createChunkMesh( chunk, blockTexture ) );
 
 		Shader blockShader = Shader();
 		blockShader.addVertexShader( "../resources/shaders/vertexShader" );
 		blockShader.addFragmentShader( "../resources/shaders/fragmentShader" );
 		blockShader.compile();
 		blockShader.use();
-
-		//Shader skyboxShader = Shader();
-		//skyboxShader.addVertexShader( "../resources/shaders/vertexShader" );
-		//skyboxShader.addFragmentShader( "../resources/shaders/fragmentShader" );
-		//skyboxShader.compile();
-		//skyboxShader.use();
-
-		Mesh blockMesh( vertices, indices, std::move( blockTexture ) );
 
 		glfwSetInputMode( window_.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
 		glfwSetCursorPosCallback( window_.get(), mouse_callback );
@@ -200,17 +161,7 @@ public:
 		glm::mat4 model( 1.0f );
 		glm::mat4 projection = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 100.0f );
 
-		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-
-		glm::vec3 positions[] {
-			{ 0.0f, 0.0f, 0.0f },
-			{ 2.0f, 0.0f, 0.0f }
-		};
-
-		glm::vec3 scaling[] {
-			{ 1.0f, 1.0f, 1.0f },
-			{ 0.1f, 0.1f, 0.1f }
-		};
+		//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
 		while ( !glfwWindowShouldClose( window_.get() ) ) {
 
@@ -227,17 +178,11 @@ public:
 
 			blockShader.use();
 
-			for ( int i = 0; i < 2; i++ ) {
-				model = glm::mat4( 1.0f );
-				model = glm::translate( model, positions[i] );
-				model = glm::scale( model, scaling[i] );
-
-				blockShader.setUniformMat4f( "model", model );
-				blockShader.setUniformMat4f( "view", camera.getView() );
-				blockShader.setUniformMat4f( "projection", projection );
-				
-				blockMesh.Draw( blockShader );
-			}
+			blockShader.setUniformMat4f( "model", model );
+			blockShader.setUniformMat4f( "view", camera.getView() );
+			blockShader.setUniformMat4f( "projection", projection );
+			
+			blockMesh.Draw( blockShader );
 
 			glfwSwapBuffers( window_.get() );
 			glfwPollEvents();

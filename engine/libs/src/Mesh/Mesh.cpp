@@ -1,6 +1,10 @@
 #include "Mesh/Mesh.h"
 
-Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, Texture& textures ) : vertices_( vertices ), indices_( indices ), texture_( textures ) {
+Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, Texture& texture ) : vertices_( vertices ), indices_( indices ), texture_( texture ) {
+	setupMesh();
+}
+
+Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, Texture& texture ) : vertices_( std::move( vertices ) ), indices_( std::move( indices ) ), texture_( texture ) {
 	setupMesh();
 }
 
@@ -34,7 +38,6 @@ void Mesh::Draw( Shader& shader ) {
 	texture_.bind();
 	glActiveTexture( GL_TEXTURE0 );
 
-	// draw mesh
 	glBindVertexArray( hVertexArray_ );
 	glDrawElements( GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0 );
 	glBindVertexArray( 0 );
