@@ -128,15 +128,14 @@ public:
 		glViewport( 0, 0, window_.width(), window_.height() );
 
 		world::chunk::Chunk chunk{};
-		world::block::Block block{ false };
 		
-		for ( int x = 0; x < world::chunk::CHUNK_WIDTH; x++ ) {
-			for ( int y = 0; y < world::chunk::CHUNK_HEIGHT / 2; y++ ) {
-				for ( int z = 0; z < world::chunk::CHUNK_LENGTH; z++ ) {
-					chunk.setBlock( block, x, y, z );
-				}
-			}
-		}
+		//for ( int x = 0; x < world::chunk::CHUNK_WIDTH; x++ ) {
+		//	for ( int y = 0; y < world::chunk::CHUNK_HEIGHT / 2; y++ ) {
+		//		for ( int z = 0; z < world::chunk::CHUNK_LENGTH; z++ ) {
+		//			chunk.setBlock( block, x, y, z );
+		//		}
+		//	}
+		//}
 
 		world::chunk::ChunkMeshBuilder cmb = world::chunk::ChunkMeshBuilder();
 

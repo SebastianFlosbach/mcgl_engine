@@ -1,9 +1,11 @@
 #include "mcgl-engine.h"
 
-#include "Engine.h"
+#include <Engine.h>
+#include <World/Block/BlockLibrary.h>
 
 #undef CreateWindow
 
+//world::block::BlockLibrary blockLibrary;
 std::unique_ptr<Engine> engine;
 
 void CreateEngine() {
@@ -22,3 +24,7 @@ void Run() {
 void DestroyEngine() {
 	engine.reset();
 }
+
+//void RegisterBlockType( world::block::Block block, unsigned int id ) {
+//	blockLibrary.addBlock( block, id );
+//}

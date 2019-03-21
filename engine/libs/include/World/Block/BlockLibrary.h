@@ -21,7 +21,7 @@ public:
 	}
 
 	Block& getBlock( unsigned int id ) {
-
+		return blockMap_.find( id )->second;
 	}
 
 private:
