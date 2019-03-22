@@ -5,12 +5,16 @@
 
 #undef CreateWindow
 
-//world::block::BlockLibrary blockLibrary;
+world::block::BlockLibrary blockLibrary;
 std::unique_ptr<Engine> engine;
 
 void CreateEngine() {
 	engine = std::make_unique<Engine>();
 	engine->init();
+}
+
+void DestroyEngine() {
+	engine.reset();
 }
 
 void CreateWindow( unsigned int width, unsigned int height, const std::string& title ) {
@@ -21,10 +25,6 @@ void Run() {
 	engine->run();
 }
 
-void DestroyEngine() {
-	engine.reset();
+void RegisterBlockType( const world::block::Block& block, unsigned int id ) {
+	blockLibrary.addBlock( block, id );
 }
-
-//void RegisterBlockType( world::block::Block block, unsigned int id ) {
-//	blockLibrary.addBlock( block, id );
-//}
