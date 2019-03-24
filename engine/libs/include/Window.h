@@ -3,7 +3,7 @@
 
 #include <string>
 
-class __declspec( dllexport ) Window {
+class Window {
 public:
 	Window() {
 	}
@@ -15,10 +15,10 @@ public:
 		}
 		glfwMakeContextCurrent( pWindow_ );
 
-		//auto func = []( GLFWwindow* window, int width, int height ) {
-		//	static_cast<Window*>( glfwGetWindowUserPointer( window ) )->framebufferSizeCallback( window, width, height );
-		//};
-		//glfwSetFramebufferSizeCallback( pWindow_, func );
+		auto func = []( GLFWwindow* window, int width, int height ) {
+			static_cast<Window*>( glfwGetWindowUserPointer( window ) )->framebufferSizeCallback( window, width, height );
+		};
+		glfwSetFramebufferSizeCallback( pWindow_, func );
 	}
 
 	Window( const Window& other ) = delete;

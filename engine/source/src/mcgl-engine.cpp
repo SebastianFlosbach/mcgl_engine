@@ -1,16 +1,16 @@
 #include "mcgl-engine.h"
 
 #include <Engine.h>
-#include <World/Block/BlockLibrary.h>
+#include <Logging/ConsoleLogger.h>
 
 #undef CreateWindow
 
-world::block::BlockLibrary blockLibrary;
+std::unique_ptr<ConsoleLogger> logger;
 std::unique_ptr<Engine> engine;
 
 void CreateEngine() {
-	engine = std::make_unique<Engine>();
-	engine->init();
+	logger = std::make_unique<ConsoleLogger>();
+	engine = std::make_unique<Engine>( *logger.get() );
 }
 
 void DestroyEngine() {
@@ -26,5 +26,9 @@ void Run() {
 }
 
 void RegisterBlockType( const world::block::Block& block, unsigned int id ) {
-	blockLibrary.addBlock( block, id );
+	engine->addBlockType( block, id );
+}
+
+void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
+	engine->registerKeyEventCallback( callback );
 }

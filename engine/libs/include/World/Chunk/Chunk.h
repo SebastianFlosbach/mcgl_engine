@@ -17,7 +17,7 @@ struct Chunk {
 public:
 	Chunk() = default;
 
-	Chunk( const glm::vec<3, int>& position ) : position_( position ) {
+	Chunk( const glm::vec<2, int>& position ) : position_( position ) {
 	}
 
 	Chunk( int x, int y, int z ) : Chunk( glm::vec<3, int>{ x, y, z } ) {
@@ -26,24 +26,24 @@ public:
 	Chunk( const Chunk& other ) = delete;
 	Chunk& operator=( const Chunk& other ) = delete;
 
-	void setBlock( block::Block& block, unsigned int x, unsigned int y, unsigned int z ) {
-		blocks_[x][y][z] = block;
+	void setBlock( unsigned int id, unsigned int x, unsigned int y, unsigned int z ) {
+		blocks_[x][y][z] = id;
 	}
 
-	const block::Block* getBlock( int x, int y, int z ) const {
+	int getBlockId( int x, int y, int z ) const {
 		if (	x < 0 || x >= CHUNK_WIDTH 
 			||	y < 0 || y >= CHUNK_HEIGHT 
 			||	z < 0 || z >= CHUNK_LENGTH ) {
-			return nullptr;
+			return -1;
 		}
 
-		return &blocks_[x][y][z];
+		return blocks_[x][y][z];
 	}
 
 private:
-	glm::vec<3, int> position_;
+	glm::vec<2, int> position_;
 
-	block::Block blocks_[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_LENGTH];
+	unsigned int blocks_[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_LENGTH]{ 0 };
 
 };
 

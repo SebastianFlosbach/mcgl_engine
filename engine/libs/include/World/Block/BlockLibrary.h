@@ -20,7 +20,7 @@ public:
 		blockMap_.insert( { id, block } );
 	}
 
-	Block& getBlock( unsigned int id ) {
+	const Block& getBlock( unsigned int id ) const {
 		return blockMap_.find( id )->second;
 	}
 

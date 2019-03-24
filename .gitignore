@@ -2,3 +2,4 @@
 externals/glad
 externals/glfw
 externals/glm
+externals/spdlog

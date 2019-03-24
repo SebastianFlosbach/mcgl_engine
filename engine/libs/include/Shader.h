@@ -7,7 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-class __declspec( dllexport ) Shader {
+class Shader {
 public:
 	// Default constructor
 	Shader();
