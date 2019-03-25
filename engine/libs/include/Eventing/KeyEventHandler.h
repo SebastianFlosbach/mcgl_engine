@@ -11,10 +11,16 @@
 class KeyEventHandler {
 public:
 	KeyEventHandler( GLFWwindow* window ) : pWindow_( window ) {
+		glfwSetWindowUserPointer( window, this );
 		auto func = []( GLFWwindow* window, int key, int scancode, int action, int mods ) {
-			static_cast<KeyEventHandler*>(glfwGetWindowUserPointer( window ))->keyCallback( window, key, scancode, action, mods );
+			auto keyEventHandler = static_cast<KeyEventHandler*>( glfwGetWindowUserPointer( window )  );
+			keyEventHandler->keyCallback( keyEventHandler, window, key, scancode, action, mods );
 		};
 		glfwSetKeyCallback( window, func );
+	}
+
+	~KeyEventHandler() {
+		glfwSetKeyCallback( pWindow_, NULL );
 	}
 
 	KeyEventHandler( const KeyEventHandler& other ) = delete;
@@ -30,11 +36,15 @@ public:
 private:
 	GLFWwindow* pWindow_;
 
-	MCGL_KEY_EVENT_CALLBACK callback_;
+	MCGL_KEY_EVENT_CALLBACK callback_ { nullptr };
 
-	std::map<int, double> pressedKeys_;
+	std::map<int, double> pressedKeys_ { };
 
-	void keyCallback( GLFWwindow* window, int key, int scancode, int action, int mods ) {
+	static void keyCallback( KeyEventHandler* keyEventHandler, GLFWwindow* window, int key, int scancode, int action, int mods ) {
+		if ( !keyEventHandler ) {
+			return;
+		}
+
 		double currentTime = glfwGetTime();
 
 		KeyEvent keyEvent;
@@ -42,24 +52,24 @@ private:
 		switch ( action ) {
 			case GLFW_PRESS:
 			{
-				if ( pressedKeys_.find( key ) == pressedKeys_.end() ) {
-					pressedKeys_.insert( { key, currentTime } );
+				if ( keyEventHandler->pressedKeys_.find( key ) == keyEventHandler->pressedKeys_.end() ) {
+					keyEventHandler->pressedKeys_.insert( { key, currentTime } );
 					keyEvent = { KeyEventType::Pressed, key, 0.0 };
 				} else {
-					double pressedSince = pressedKeys_.at( key );
+					double pressedSince = keyEventHandler->pressedKeys_.at( key );
 					keyEvent = { KeyEventType::Down, key, currentTime - pressedSince };
 				}
 			}
 			break;
 			case GLFW_RELEASE:
 			{
-				if ( pressedKeys_.find( key ) != pressedKeys_.end() ) {
+				if ( keyEventHandler->pressedKeys_.find( key ) == keyEventHandler->pressedKeys_.end() ) {
 					std::cout << "Released key without pressing it" << std::endl;
 					keyEvent = { KeyEventType::Released, key, 0.0 };
 				} else {
-					double pressedSince = pressedKeys_.at( key );
+					double pressedSince = keyEventHandler->pressedKeys_.at( key );
 					keyEvent = { KeyEventType::Released, key, currentTime - pressedSince };
-					pressedKeys_.erase( key );
+					keyEventHandler->pressedKeys_.erase( key );
 				}
 			}
 			break;
@@ -67,8 +77,8 @@ private:
 				return;
 		}
 
-		if ( callback_ ) {
-			callback_( keyEvent );
+		if ( keyEventHandler->callback_ ) {
+			keyEventHandler->callback_( keyEvent );
 		}
 	}
 };

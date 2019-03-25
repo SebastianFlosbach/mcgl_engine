@@ -3,18 +3,20 @@
 #include "ILogger.h"
 
 #include <spdlog/sinks/rotating_file_sink.h>
+#include <fstream>
 
-class SpdFileLogger : ILogger {
+class SpdFileLogger : public ILogger {
+public:
 	SpdFileLogger( const std::string& name, const std::string& path ) {
-		auto rotating_logger = spdlog::rotating_logger_mt( name, path, 1048576 * 5, 3 );
+		logger_ = spdlog::rotating_logger_mt( name, path, 1048576, 3 );
 	}
 
-	void log( LogLevel level, std::string message ) const override {
-		if ( level >= logLevel_ ) {
-			std::cout << "[" << to_string( level ) << "]" << message << std::endl;
-		}
+	void log( spdlog::level::level_enum level, const std::string& message ) const override {
+		logger_->log( logLevel_, message );
 	}
 
 private:
-	LogLevel logLevel_{ LogLevel::Debug };
+	spdlog::level::level_enum logLevel_{ spdlog::level::level_enum::debug };
+
+	std::shared_ptr<spdlog::logger> logger_;
 };

@@ -10,7 +10,7 @@
 #include "World/Block/BlockLibrary.h"
 #include "Definition/mcgl_engine_def.h"
 #include "Eventing/KeyEventHandler.h"
-#include "Logging/ConsoleLogger.h"
+#include "Logging/ILogger.h"
 
 
 #define ASSERT(x) if(x) __debugbreak();
@@ -41,7 +41,7 @@ static void errorCallback( int id, const char* message ) {
 class Engine {
 public:
 	Engine( const ILogger& logger ) : logger_( logger ) {
-		logger_.log( LogLevel::Info, "Initialize engine" );
+		info( logger_, "Initialize engine" );
 		if ( !glfwInit() ) {
 			throw std::runtime_error( "Could not initialize GLFW!" );
 		}
@@ -58,25 +58,25 @@ public:
 	Engine& operator=( Engine&& other ) = delete;
 
 	~Engine() {
-		logger_.log( LogLevel::Info, "Destroy engine" );
+		info( logger_, "Destroyed engine" );
 		glfwTerminate();
 	}
 
 	void createWindow( unsigned int width, unsigned int height, const std::string& title ) {
-		logger_.log( LogLevel::Info, "createWindow()" );
+		info( logger_, "createWindow()" );
 
 		window_ = Window( width, height, title );
 		pKeyEventHandler_ = std::make_unique<KeyEventHandler>( window_.get() );
 	}
 
 	void addBlockType( const world::block::Block& block, unsigned int id ) {
-		logger_.log( LogLevel::Info, "addBlockType()" );
+		info( logger_, "addBlockType()" );
 
 		blockLibrary_.addBlock( block, id );
 	}
 
 	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
-		logger_.log( LogLevel::Info, "registerKeyEventCallback" );
+		info( logger_, "registerKeyEventCallback" );
 
 		pKeyEventHandler_->registerCallback( callback );
 	}
@@ -86,7 +86,7 @@ public:
 	}
 
 	void run() {
-		logger_.log( LogLevel::Info, "run()" );
+		info( logger_, "run()" );
 
 		if ( !gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress ) ) {
 			std::cout << "Failed to initialize GLAD" << std::endl;

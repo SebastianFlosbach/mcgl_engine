@@ -1,15 +1,18 @@
 #include "mcgl-engine.h"
 
 #include <Engine.h>
-#include <Logging/ConsoleLogger.h>
+#include <Logging/SpdFileLogger.h>
 
 #undef CreateWindow
 
-std::unique_ptr<ConsoleLogger> logger;
+const std::string loggerName { "mcgl_file_logger" };
+const std::string loggerPath { "logs/mcgllog.log" };
+
+std::unique_ptr<SpdFileLogger> logger;
 std::unique_ptr<Engine> engine;
 
 void CreateEngine() {
-	logger = std::make_unique<ConsoleLogger>();
+	logger = std::make_unique<SpdFileLogger>( loggerName, loggerPath );
 	engine = std::make_unique<Engine>( *logger.get() );
 }
 
