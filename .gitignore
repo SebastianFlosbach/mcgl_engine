@@ -3,3 +3,6 @@ externals/glad
 externals/glfw
 externals/glm
 externals/spdlog
+engine_java_interface/test/.idea
+engine_java_interface/test/bin
+engine_java_interface/test/logs
