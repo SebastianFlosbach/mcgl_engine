@@ -4,6 +4,8 @@
 #include <iostream>
 #include <Eventing/KeyEvent.h>
 
+#include "Conversion/cpp_to_java.h"
+
 JNIEXPORT void JNICALL Java_MCGLEngineInterface_createEngine( JNIEnv *, jobject ) {
 	std::cout << "createEngine()" << std::endl;
 	CreateEngine();
@@ -33,10 +35,12 @@ JavaVM* jvm;
 jobject jEventCallbackObject;
 jmethodID jEventCallbackMethod;
 
+
+
+
 void keyEventCallback( KeyEvent event ) {
 	JNIEnv* env;
 	int envStat = jvm->GetEnv( (void**)&env, JNI_VERSION_1_8 );
-	std::cout << "envStat: " << envStat << std::endl;
 	if ( envStat == JNI_EDETACHED ) {
 		std::cout << "GetEnv: not attached" << std::endl;
 		if ( jvm->AttachCurrentThread( (void**)&env, NULL ) ) {
@@ -49,12 +53,11 @@ void keyEventCallback( KeyEvent event ) {
 	}
 
 	std::cout << "Calling KeyEvent" << std::endl;
-	std::cout << &jEventCallbackObject << std::endl;
-	std::cout << &jEventCallbackMethod << std::endl;
-	env->CallVoidMethod( jEventCallbackObject, jEventCallbackMethod, event );
+	env->CallVoidMethod( jEventCallbackObject, jEventCallbackMethod, keyEvent( env, event ) );
 
 	if ( env->ExceptionCheck() ) {
 		env->ExceptionDescribe();
+		env->ExceptionClear();
 	}
 
 	jvm->DetachCurrentThread();

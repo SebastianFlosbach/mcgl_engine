@@ -4,9 +4,7 @@
 
 void keyEventCallback( KeyEvent keyEvent ) {
 	std::cout << "Type: " << to_string( keyEvent.type_ ) << ", Key: " << keyEvent.key_ << ", Time: " << keyEvent.timePressed_ << std::endl;
-}
-
-int main() {
+}int main() {
 
 	CreateEngine();
 	CreateWindow( 800, 600, "MCGL" );
