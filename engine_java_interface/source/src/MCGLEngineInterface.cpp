@@ -34,9 +34,9 @@ jobject jEventCallbackObject;
 jmethodID jEventCallbackMethod;
 
 void keyEventCallback( KeyEvent event ) {
-	std::cout << "Calling KeyEvent" << std::endl;
 	JNIEnv* env;
 	int envStat = jvm->GetEnv( (void**)&env, JNI_VERSION_1_8 );
+	std::cout << "envStat: " << envStat << std::endl;
 	if ( envStat == JNI_EDETACHED ) {
 		std::cout << "GetEnv: not attached" << std::endl;
 		if ( jvm->AttachCurrentThread( (void**)&env, NULL ) ) {
@@ -48,6 +48,9 @@ void keyEventCallback( KeyEvent event ) {
 		std::cout << "GetEnv: version not supported" << std::endl;
 	}
 
+	std::cout << "Calling KeyEvent" << std::endl;
+	std::cout << &jEventCallbackObject << std::endl;
+	std::cout << &jEventCallbackMethod << std::endl;
 	env->CallVoidMethod( jEventCallbackObject, jEventCallbackMethod, event );
 
 	if ( env->ExceptionCheck() ) {
@@ -57,18 +60,33 @@ void keyEventCallback( KeyEvent event ) {
 	jvm->DetachCurrentThread();
 }
 
-JNIEXPORT void JNICALL Java_MCGLEngineInterface_registerKeyEventCallback( JNIEnv* env, jobject, jstring callbackName ) {
+JNIEXPORT void JNICALL Java_MCGLEngineInterface_registerKeyEventCallback( JNIEnv* env, jobject obj, jstring callbackName ) {
 	std::cout << "Register KeyEventCallback" << std::endl;
-	jclass currentObjectClass = env->GetObjectClass( jEventCallbackObject );
+	jclass currentObjectClass = env->GetObjectClass( obj );
 	if ( currentObjectClass == NULL ) {
 		std::cout << "Failed to find class" << std::endl;
 		return;
 	}
+	jEventCallbackObject = obj;
 
+
+	std::cout << "Finding callback method" << std::endl;
 	const char* cCallbackName = env->GetStringUTFChars( callbackName, NULL );
-	jEventCallbackMethod = env->GetMethodID( currentObjectClass, cCallbackName, "(L)V" );
+	jEventCallbackMethod = env->GetMethodID( currentObjectClass, cCallbackName, "(LKeyEvent;)V" );
 	env->ReleaseStringUTFChars( callbackName, cCallbackName );
 
+	if ( env->ExceptionCheck() ) {
+		env->ExceptionDescribe();
+		env->ExceptionClear();
+	}
+
+	if ( !jEventCallbackMethod ) {
+		std::cout << "Could not find java callback method" << std::endl;
+		return;
+	}
+
+
+	env->GetJavaVM(&jvm);
 	RegisterKeyEventCallback( keyEventCallback );
 }
 

@@ -28,6 +28,7 @@ public:
 
 	void log( spdlog::level::level_enum level, const std::string& message ) const override {
 		logger_->log( level, message );
+		logger_->flush();
 	}
 
 private:

@@ -1,7 +1,7 @@
 public class MCGLEngineInterface {
     static{
         System.loadLibrary("mcgl-engine");
-        System.loadLibrary("mcgl_engine_java");
+        System.loadLibrary("mcgl-engine-java");
     }
 
     public native void createEngine();
@@ -13,8 +13,14 @@ public class MCGLEngineInterface {
     public native void stop();
 
     private IKeyEventCallback keyEventCallback;
+    private void keyEventCallback( KeyEvent event ){
+        if( keyEventCallback != null ){
+            keyEventCallback( event );
+        }
+    }
     public void registerKeyEventCallback( IKeyEventCallback callback ){
         keyEventCallback = callback;
+        registerKeyEventCallback( "keyEventCallback" );
     }
     private native void registerKeyEventCallback( String callbackName );
 

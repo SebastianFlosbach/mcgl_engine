@@ -1,10 +1,4 @@
-public class KeyEvent {
-    public enum KeyEventType{
-        Pressed,
-        Down,
-        Released
-    }
-
+public final class KeyEvent {
     public KeyEventType type;
     public int key;
     public double timePressed;

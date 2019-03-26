@@ -13,25 +13,31 @@ std::unique_ptr<Engine> engine;
 
 void CreateEngine() {
 	logger = std::make_unique<SpdFileLogger>( loggerName, loggerPath );
+	info( *logger, "[MCGL-ENGINE] CreateEngine" );
 	engine = std::make_unique<Engine>( *logger.get() );
 }
 
 void DestroyEngine() {
+	info( *logger, "[MCGL-ENGINE] DestroyEngine" );
 	engine.reset();
 }
 
 void CreateWindow( unsigned int width, unsigned int height, const std::string& title ) {
+	info( *logger, "[MCGL-ENGINE] CreateWindow" );
 	engine->createWindow( width, height, title );
 }
 
 void Run() {
+	info( *logger, "[MCGL-ENGINE] Run" );
 	engine->run();
 }
 
 void RegisterBlockType( const world::block::Block& block, unsigned int id ) {
+	info( *logger, "[MCGL-ENGINE] RegisterBockType" );
 	engine->addBlockType( block, id );
 }
 
 void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
+	info( *logger, "[MCGL-ENGINE] RegisterKeyEventCallback" );
 	engine->registerKeyEventCallback( callback );
 }
