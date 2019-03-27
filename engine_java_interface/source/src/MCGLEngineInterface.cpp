@@ -35,9 +35,6 @@ JavaVM* jvm;
 jobject jEventCallbackObject;
 jmethodID jEventCallbackMethod;
 
-
-
-
 void keyEventCallback( KeyEvent event ) {
 	JNIEnv* env;
 	int envStat = jvm->GetEnv( (void**)&env, JNI_VERSION_1_8 );
@@ -46,14 +43,18 @@ void keyEventCallback( KeyEvent event ) {
 		if ( jvm->AttachCurrentThread( (void**)&env, NULL ) ) {
 			std::cout << "Failed to attach jvm" << std::endl;
 		}
-	} else if ( envStat == JNI_OK ) {
-
 	} else if ( envStat == JNI_EVERSION ) {
 		std::cout << "GetEnv: version not supported" << std::endl;
 	}
 
+	auto jKeyEvent = keyEvent( env, event );
+	if ( jKeyEvent == nullptr ) {
+		std::cout << "Java key event is nullptr" << std::endl;
+		return;
+	}
+
 	std::cout << "Calling KeyEvent" << std::endl;
-	env->CallVoidMethod( jEventCallbackObject, jEventCallbackMethod, keyEvent( env, event ) );
+	env->CallVoidMethod( jEventCallbackObject, jEventCallbackMethod, jKeyEvent );
 
 	if ( env->ExceptionCheck() ) {
 		env->ExceptionDescribe();
@@ -64,16 +65,15 @@ void keyEventCallback( KeyEvent event ) {
 }
 
 JNIEXPORT void JNICALL Java_MCGLEngineInterface_registerKeyEventCallback( JNIEnv* env, jobject obj, jstring callbackName ) {
-	std::cout << "Register KeyEventCallback" << std::endl;
+	env->GetJavaVM(&jvm);
+	jEventCallbackObject = env->NewGlobalRef( obj );
+
 	jclass currentObjectClass = env->GetObjectClass( obj );
 	if ( currentObjectClass == NULL ) {
 		std::cout << "Failed to find class" << std::endl;
 		return;
 	}
-	jEventCallbackObject = obj;
 
-
-	std::cout << "Finding callback method" << std::endl;
 	const char* cCallbackName = env->GetStringUTFChars( callbackName, NULL );
 	jEventCallbackMethod = env->GetMethodID( currentObjectClass, cCallbackName, "(LKeyEvent;)V" );
 	env->ReleaseStringUTFChars( callbackName, cCallbackName );
@@ -88,8 +88,6 @@ JNIEXPORT void JNICALL Java_MCGLEngineInterface_registerKeyEventCallback( JNIEnv
 		return;
 	}
 
-
-	env->GetJavaVM(&jvm);
 	RegisterKeyEventCallback( keyEventCallback );
 }
 

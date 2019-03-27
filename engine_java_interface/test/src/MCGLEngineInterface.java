@@ -15,7 +15,7 @@ public class MCGLEngineInterface {
     private IKeyEventCallback keyEventCallback;
     private void keyEventCallback( KeyEvent event ){
         if( keyEventCallback != null ){
-            keyEventCallback( event );
+            keyEventCallback.keyEventCallback( event );
         }
     }
     public void registerKeyEventCallback( IKeyEventCallback callback ){

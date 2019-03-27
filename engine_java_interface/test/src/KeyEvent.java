@@ -5,7 +5,7 @@ public final class KeyEvent {
         this.timePressed = timePressed;
     }
 
-    public KeyEventType type;
-    public int key;
-    public double timePressed;
+    public final KeyEventType type;
+    public final int key;
+    public final double timePressed;
 }
