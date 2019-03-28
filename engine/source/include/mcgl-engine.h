@@ -13,3 +13,4 @@ MCGL_ENGINE_EXTERN void Run();
 MCGL_ENGINE_EXTERN void RegisterBlockType( const world::block::Block& block, unsigned int id );
 
 MCGL_ENGINE_EXTERN void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
+MCGL_ENGINE_EXTERN void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );

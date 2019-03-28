@@ -41,3 +41,7 @@ void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
 	info( *logger, "[MCGL-ENGINE] RegisterKeyEventCallback" );
 	engine->registerKeyEventCallback( callback );
 }
+
+void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
+
+}

@@ -31,6 +31,8 @@ JNIEXPORT void JNICALL Java_MCGLEngineInterface_destroyEngine( JNIEnv *, jobject
 	DestroyEngine();
 }
 
+
+
 JavaVM* jvm;
 jobject jEventCallbackObject;
 jmethodID jEventCallbackMethod;
@@ -53,7 +55,6 @@ void keyEventCallback( KeyEvent event ) {
 		return;
 	}
 
-	std::cout << "Calling KeyEvent" << std::endl;
 	env->CallVoidMethod( jEventCallbackObject, jEventCallbackMethod, jKeyEvent );
 
 	if ( env->ExceptionCheck() ) {
