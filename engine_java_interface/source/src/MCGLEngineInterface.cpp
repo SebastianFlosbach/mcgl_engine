@@ -37,7 +37,7 @@ JavaVM* jvm;
 jobject jEventCallbackObject;
 jmethodID jEventCallbackMethod;
 
-void keyEventCallback( KeyEvent event ) {
+void keyEventCallback( const KeyEvent& event ) {
 	JNIEnv* env;
 	int envStat = jvm->GetEnv( (void**)&env, JNI_VERSION_1_8 );
 	if ( envStat == JNI_EDETACHED ) {

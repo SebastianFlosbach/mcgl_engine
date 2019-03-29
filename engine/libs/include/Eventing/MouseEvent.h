@@ -9,26 +9,22 @@ enum class MouseEventType {
 };
 
 struct MouseEvent {
+	MouseEvent( MouseEventType type, double xOffset, double yOffset ) : type_( type ), data_( xOffset, yOffset ) {}
+	MouseEvent( MouseEventType type, int button, double timePressed ) : type_( type ), data_( button, timePressed ) {}
+	MouseEvent( MouseEventType type, int xPos, int yPos ) : type_( type ), data_( xPos, yPos ) {}
+
+
 	MouseEventType type_;
 
 	union MouseEventData {
+		MouseEventData( double xOffset, double yOffset ) : scroll_( xOffset, yOffset ) {}
+		MouseEventData( int button, double timePressed ) : button_( button, timePressed ) {}
+		MouseEventData( int xPos, int yPos ) : mouse_( xPos, yPos ) {}
+
 		std::tuple<double, double> scroll_;
 		std::tuple<int, double> button_;
 		std::tuple<int, int> mouse_;
 	} data_;
 };
 
-const std::string to_string( MouseEventType type ) {
-	switch ( type ) {
-		case MouseEventType::ButtonPess:
-			return "ButtonPress";
-		case MouseEventType::ButtonRelease:
-			return "ButtonRelease";
-		case MouseEventType::Scroll:
-			return "Scroll";
-		case MouseEventType::MouseMove:
-			return "MouseMove";
-		default:
-			return "<undefined>";
-	}
-}
+const char* to_string( MouseEventType type );

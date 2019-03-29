@@ -10,6 +10,7 @@
 #include "World/Block/BlockLibrary.h"
 #include "Definition/mcgl_engine_def.h"
 #include "Eventing/KeyEventHandler.h"
+#include "Eventing/MouseEventHandler.h"
 #include "Logging/ILogger.h"
 
 
@@ -66,7 +67,6 @@ public:
 		info( logger_, "createWindow()" );
 
 		window_ = Window( width, height, title );
-		pKeyEventHandler_ = std::make_unique<KeyEventHandler>( window_.get() );
 	}
 
 	void addBlockType( const world::block::Block& block, unsigned int id ) {
@@ -78,11 +78,13 @@ public:
 	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
 		info( logger_, "registerKeyEventCallback" );
 
-		pKeyEventHandler_->registerCallback( callback );
+		KeyEventHandler::registerCallback( window_.get(), callback );
 	}
 
-	void registerMouseEventCallback() {
+	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
+		info( logger_, "registerMouseEventCallback" );
 
+		MouseEventHandler::registerCallback( window_.get(), callback );
 	}
 
 	void run() {
@@ -123,6 +125,4 @@ private:
 	Window window_;
 
 	world::block::BlockLibrary blockLibrary_{};
-
-	std::unique_ptr<KeyEventHandler> pKeyEventHandler_;
 };

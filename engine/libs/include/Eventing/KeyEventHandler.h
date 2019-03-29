@@ -11,13 +11,6 @@
 
 class KeyEventHandler {
 public:
-
-	//KeyEventHandler( const KeyEventHandler& other ) = delete;
-	//KeyEventHandler& operator=( const KeyEventHandler& other ) = delete;
-
-	//KeyEventHandler( KeyEventHandler&& other ) = delete;
-	//KeyEventHandler& operator=( KeyEventHandler&& other ) = delete;
-
 	static void registerCallback( GLFWwindow* window, MCGL_KEY_EVENT_CALLBACK callback ) {
 		pWindow_ = window;
 		callback_ = callback;
