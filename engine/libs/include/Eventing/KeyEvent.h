@@ -21,6 +21,6 @@ const char* to_string( KeyEventType type ) {
 		case KeyEventType::Released:
 			return "Released";
 		default:
-			return "<unknown>";
+			return "<undefined>";
 	}
 }
