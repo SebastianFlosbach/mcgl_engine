@@ -11,60 +11,14 @@
 
 class KeyEventHandler {
 public:
-	static void registerCallback( GLFWwindow* window, MCGL_KEY_EVENT_CALLBACK callback ) {
-		pWindow_ = window;
-		callback_ = callback;
-		if ( callback != nullptr ) {
-			glfwSetKeyCallback( window, keyCallback );
-		} else {
-			glfwSetKeyCallback( window, NULL );
-		}
-	}
+	static void registerCallback( GLFWwindow* window, MCGL_KEY_EVENT_CALLBACK callback );
 	
 private:
 	KeyEventHandler();
 
 	static GLFWwindow* pWindow_;
-
 	static MCGL_KEY_EVENT_CALLBACK callback_;
-
 	static std::map<int, double> pressedKeys_;
 
-	static void keyCallback( GLFWwindow* window, int key, int scancode, int action, int mods ) {
-		double currentTime = glfwGetTime();
-
-		KeyEvent keyEvent;
-
-		switch ( action ) {
-			case GLFW_PRESS:
-			{
-				if ( pressedKeys_.find( key ) == pressedKeys_.end() ) {
-					pressedKeys_.insert( { key, currentTime } );
-					keyEvent = { KeyEventType::Pressed, key, 0.0 };
-				} else {
-					double pressedSince = pressedKeys_.at( key );
-					keyEvent = { KeyEventType::Down, key, currentTime - pressedSince };
-				}
-			}
-			break;
-			case GLFW_RELEASE:
-			{
-				if ( pressedKeys_.find( key ) == pressedKeys_.end() ) {
-					std::cout << "Released key without pressing it" << std::endl;
-					keyEvent = { KeyEventType::Released, key, 0.0 };
-				} else {
-					double pressedSince = pressedKeys_.at( key );
-					keyEvent = { KeyEventType::Released, key, currentTime - pressedSince };
-					pressedKeys_.erase( key );
-				}
-			}
-			break;
-			default:
-				return;
-		}
-
-		if ( callback_ ) {
-			callback_( keyEvent );
-		}
-	}
+	static void keyCallback( GLFWwindow* window, int key, int scancode, int action, int mods );
 };
