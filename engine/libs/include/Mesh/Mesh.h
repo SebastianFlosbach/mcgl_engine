@@ -33,7 +33,7 @@ public:
 	std::vector<unsigned int> indices_;
 	const texture::TextureAtlas& textureAtlas_;
 	
-	void Draw( Shader& shader );
+	void draw( const Shader& shader );
 private:
 	/*  Render data  */
 	unsigned int hVertexBuffer_;

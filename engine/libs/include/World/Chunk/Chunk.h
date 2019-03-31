@@ -23,8 +23,8 @@ public:
 	Chunk( int x, int y, int z ) : Chunk( glm::vec<3, int>{ x, y, z } ) {
 	}
 
-	Chunk( const Chunk& other ) = delete;
-	Chunk& operator=( const Chunk& other ) = delete;
+	//Chunk( const Chunk& other ) = delete;
+	//Chunk& operator=( const Chunk& other ) = delete;
 
 	void setBlock( unsigned int id, unsigned int x, unsigned int y, unsigned int z ) {
 		blocks_[x][y][z] = id;

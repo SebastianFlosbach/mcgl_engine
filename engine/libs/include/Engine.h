@@ -6,6 +6,7 @@
 #include "Logging/ILogger.h"
 #include "Window.h"
 #include "World/Block/BlockLibrary.h"
+#include "World/Chunk/Chunk.h"
 
 class Engine {
 public:
@@ -26,6 +27,8 @@ public:
 	void addBlockType( const world::block::Block& block, unsigned int id );
 	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
 	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
+	void addChunk( unsigned int x, unsigned int z, const world::chunk::Chunk& chunk );
+	void removeChunk( unsigned int x, unsigned int z );
 
 	void run();
 
