@@ -20,9 +20,6 @@ Engine::Engine( const ILogger& logger ) : logger_( logger ) {
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
 	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 
-	glEnable( GL_DEBUG_OUTPUT );
-	glDebugMessageCallback( messageCallback, 0 );
-
 	renderer_ = std::make_unique<Renderer>();
 }
 
@@ -30,6 +27,11 @@ void Engine::createWindow( unsigned int width, unsigned int height, const std::s
 	info( logger_, "createWindow()" );
 
 	window_ = Window( width, height, title );
+
+	if ( !gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress ) ) {
+		std::cout << "Failed to initialize GLAD" << std::endl;
+		return;
+	}
 }
 
 void Engine::addBlockType( const world::block::Block& block, unsigned int id ) {
@@ -64,11 +66,6 @@ void Engine::setShader( Shader&& shader ) {
 
 void Engine::run() {
 	info( logger_, "run()" );
-
-	if ( !gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress ) ) {
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return;
-	}
 
 	glViewport( 0, 0, window_.width(), window_.height() );
 

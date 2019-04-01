@@ -14,13 +14,12 @@ int main() {
 
 	CreateEngine();
 	CreateWindow( 800, 600, "MCGL" );
+
 	RegisterKeyEventCallback( keyEventCallback );
 	RegisterMouseEventCallback( mouseEventCallback );
 
-	SetTextures( "../resources/textures/mcgl_texture_atlas.png", 16, 4 );
+	SetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
 	SetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
-
-
 
 	Run();
 
