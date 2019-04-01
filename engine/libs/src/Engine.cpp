@@ -1,5 +1,8 @@
 #include "Engine.h"
 
+#include <glad/glad.h>
+#include <glfw/glfw3.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -16,6 +19,11 @@ Engine::Engine( const ILogger& logger ) : logger_( logger ) {
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
 	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
+
+	glEnable( GL_DEBUG_OUTPUT );
+	glDebugMessageCallback( messageCallback, 0 );
+
+	renderer_ = std::make_unique<Renderer>();
 }
 
 void Engine::createWindow( unsigned int width, unsigned int height, const std::string& title ) {
@@ -40,6 +48,18 @@ void Engine::registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
 	info( logger_, "registerMouseEventCallback" );
 
 	MouseEventHandler::registerCallback( window_.get(), callback );
+}
+
+void Engine::addChunk( unsigned int x, unsigned int z, const world::chunk::Chunk& chunk ) {
+	world_.addChunk( x, z, chunk );
+}
+
+void Engine::setTextures( texture::TextureAtlas&& textureAtlas ) {
+	renderer_->setTextures( std::move( textureAtlas ) );
+}
+
+void Engine::setShader( Shader&& shader ) {
+	renderer_->setShader( std::move( shader ) );
 }
 
 void Engine::run() {

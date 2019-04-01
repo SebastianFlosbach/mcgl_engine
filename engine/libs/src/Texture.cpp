@@ -1,5 +1,7 @@
 #include "Texture/Texture.h"
 
+#include "Helper/OpenGLDebug.h"
+
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>

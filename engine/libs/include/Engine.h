@@ -1,12 +1,11 @@
 #pragma once
-#include <glad/glad.h>
-#include <glfw/glfw3.h>
-
 #include "Definition/mcgl_engine_def.h"
 #include "Logging/ILogger.h"
 #include "Window.h"
 #include "World/Block/BlockLibrary.h"
 #include "World/Chunk/Chunk.h"
+#include "World/World.h"
+#include "Renderer/Renderer.h"
 
 class Engine {
 public:
@@ -28,7 +27,10 @@ public:
 	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
 	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
 	void addChunk( unsigned int x, unsigned int z, const world::chunk::Chunk& chunk );
-	void removeChunk( unsigned int x, unsigned int z );
+	//void removeChunk( unsigned int x, unsigned int z );
+
+	void setTextures( texture::TextureAtlas&& textureAtlas );
+	void setShader( Shader&& shader );
 
 	void run();
 
@@ -38,4 +40,6 @@ private:
 	Window window_;
 
 	world::block::BlockLibrary blockLibrary_{};
+	world::World world_ {};
+	std::unique_ptr<Renderer> renderer_;
 };
