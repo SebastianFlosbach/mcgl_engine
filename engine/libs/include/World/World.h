@@ -11,44 +11,6 @@
 #include "Mesh/Mesh.h"
 #include "Shader.h"
 
-namespace world {
-struct ChunkPosition {
-	const int x;
-	const int z;
-};
-}
-
-namespace std {
-
-template<>
-struct hash<world::ChunkPosition> {
-	size_t operator()( const world::ChunkPosition& chunkPosition ) const noexcept {
-		int x, z;
-
-		if ( chunkPosition.x >= 0 ) {
-			x = chunkPosition.x * 2;
-		} else {
-			x = -chunkPosition.x * 2 - 1;
-		}
-
-		if ( chunkPosition.z >= 0 ) {
-			z = chunkPosition.z * 2;
-		} else {
-			z = -chunkPosition.z * 2 - 1;
-		}
-
-		return ((x + z) * (x + z + 1) / 2) * z;
-	}
-};
-
-template<>
-struct equal_to<world::ChunkPosition> {
-	constexpr bool operator()( const world::ChunkPosition& left, const world::ChunkPosition& right ) const {	// apply operator== to operands
-		return left.x == right.x && left.z == right.z;
-	}
-};
-
-}
 
 namespace world {
 
@@ -83,7 +45,7 @@ public:
 	}
 
 private:
-	std::unordered_map<ChunkPosition, chunk::Chunk> chunks_;
+	std::unordered_map<chunk::ChunkPosition, chunk::Chunk> chunks_;
 
 };
 

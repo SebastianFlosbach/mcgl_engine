@@ -4,7 +4,7 @@
 
 #include "../Texture/TextureAtlas.h"
 #include "Vertex.h"
-#include "../Shader.h"
+#include "../Renderer/Renderer.h"
 
 class Mesh {
 public:
@@ -33,7 +33,7 @@ public:
 	std::vector<unsigned int> indices_;
 	const texture::TextureAtlas& textureAtlas_;
 	
-	void draw( const Shader& shader );
+	void draw( Renderer& renderer );
 private:
 	/*  Render data  */
 	unsigned int hVertexBuffer_;

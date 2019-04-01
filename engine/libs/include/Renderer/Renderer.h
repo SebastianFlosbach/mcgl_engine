@@ -1,13 +1,23 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "../Texture/TextureAtlas.h"
 #include "../Shader.h"
+#include "../Window.h"
 
 
 class Renderer {
 public:
 	Renderer() = default;
-	Renderer( Shader&& shader, texture::TextureAtlas&& textureAtlas ) : pShader_( std::make_unique<Shader>( std::move( shader ) ) ), pTextureAtlas_( std::make_unique<texture::TextureAtlas>( std::move( textureAtlas ) ) ) {}
+	Renderer( Shader&& shader, texture::TextureAtlas&& textureAtlas, Window&& window ) : 
+		pShader_( std::make_unique<Shader>( std::move( shader ) ) ), 
+		pTextureAtlas_( std::make_unique<texture::TextureAtlas>( std::move( textureAtlas ) ) ), 
+		window_( std::move( window ) ) {}
+
+	void setWindow( Window&& window ) {
+		window_ = std::move( window );
+	}
 
 	void setShader( Shader&& shader ) {
 		pShader_ = std::make_unique<Shader>( std::move( shader ) );
@@ -33,4 +43,6 @@ private:
 	std::unique_ptr<texture::TextureAtlas> pTextureAtlas_;
 	std::unique_ptr<Shader> pShader_;
 
+	Window window_;
+	glm::mat4 projection_ = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 100.0f );
 };

@@ -8,6 +8,10 @@
 namespace world {
 namespace chunk {
 
+struct ChunkPosition {
+	const int x;
+	const int z;
+};
 
 constexpr unsigned int CHUNK_WIDTH = 16;
 constexpr unsigned int CHUNK_LENGTH = 16;
@@ -16,12 +20,6 @@ constexpr unsigned int CHUNK_HEIGHT = 128;
 struct Chunk {
 public:
 	Chunk() = default;
-
-	Chunk( const glm::vec<2, int>& position ) : position_( position ) {
-	}
-
-	Chunk( int x, int y, int z ) : Chunk( glm::vec<3, int>{ x, y, z } ) {
-	}
 
 	//Chunk( const Chunk& other ) = delete;
 	//Chunk& operator=( const Chunk& other ) = delete;
@@ -40,13 +38,45 @@ public:
 		return blocks_[x][y][z];
 	}
 
-private:
-	glm::vec<2, int> position_;
 
+
+private:
 	unsigned int blocks_[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_LENGTH]{ 0 };
 
 };
 
 
 }
+}
+
+namespace std {
+
+template<>
+struct hash<world::chunk::ChunkPosition> {
+	size_t operator()( const world::chunk::ChunkPosition& chunkPosition ) const noexcept {
+		int x, z;
+
+		if ( chunkPosition.x >= 0 ) {
+			x = chunkPosition.x * 2;
+		} else {
+			x = -chunkPosition.x * 2 - 1;
+		}
+
+		if ( chunkPosition.z >= 0 ) {
+			z = chunkPosition.z * 2;
+		} else {
+			z = -chunkPosition.z * 2 - 1;
+		}
+
+		return ((x + z) * (x + z + 1) / 2) * z;
+	}
+};
+
+template<>
+struct equal_to<world::chunk::ChunkPosition> {
+	constexpr bool operator()( const world::chunk::ChunkPosition& left, const world::chunk::ChunkPosition& right ) const {	// apply operator== to operands
+		return left.x == right.x && left.z == right.z;
+	}
+};
+
 }

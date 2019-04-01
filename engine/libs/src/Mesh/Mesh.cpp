@@ -34,8 +34,8 @@ void Mesh::setupMesh() {
 	glBindVertexArray( 0 );
 }
 
-void Mesh::draw( const Shader& shader ) {
-	textureAtlas_.bind();
+void Mesh::draw( Renderer& renderer ) {
+	renderer.bindTexture();
 	glActiveTexture( GL_TEXTURE0 );
 
 	glBindVertexArray( hVertexArray_ );

@@ -6,6 +6,7 @@
 #include "World/Chunk/Chunk.h"
 #include "World/World.h"
 #include "Renderer/Renderer.h"
+#include "Camera.h"
 
 class Engine {
 public:
@@ -32,6 +33,8 @@ public:
 	void setTextures( texture::TextureAtlas&& textureAtlas );
 	void setShader( Shader&& shader );
 
+	unsigned int createCamera( unsigned int x, unsigned int y, unsigned int z, double pitch, double yaw, double roll = 0.0 );
+
 	void run();
 
 private:
@@ -42,4 +45,5 @@ private:
 	world::block::BlockLibrary blockLibrary_{};
 	world::World world_ {};
 	std::unique_ptr<Renderer> renderer_;
+	Camera camera_;
 };

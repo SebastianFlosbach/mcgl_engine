@@ -64,12 +64,16 @@ void Engine::setShader( Shader&& shader ) {
 	renderer_->setShader( std::move( shader ) );
 }
 
+unsigned int createCamera( unsigned int x, unsigned int y, unsigned int z, double pitch, double yaw, double roll = 0.0 ) {
+	
+}
+
 void Engine::run() {
 	info( logger_, "run()" );
 
 	glViewport( 0, 0, window_.width(), window_.height() );
 
-	//glfwSetInputMode( window_.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
+	glfwSetInputMode( window_.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
 
 	glEnable( GL_DEPTH_TEST );
 
@@ -77,14 +81,18 @@ void Engine::run() {
 	glm::mat4 model( 1.0f );
 	model = glm::scale( model, { 0.2f, 0.2f, 0.2f } );
 
-	glm::mat4 projection = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 100.0f );
-
 	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+	auto mesh = world_.generateMesh( blockLibrary_, renderer_->getTextureAtlas() );
 
 	while ( !glfwWindowShouldClose( window_.get() ) ) {
 		// Rendering
 		glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+		for ( auto& chunkMesh : mesh ) {
+			chunkMesh->draw( *renderer_ );
+		}
 
 		glfwSwapBuffers( window_.get() );
 		glfwPollEvents();

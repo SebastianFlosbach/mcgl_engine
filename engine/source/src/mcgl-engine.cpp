@@ -72,6 +72,10 @@ void AddChunk( const unsigned int x, const unsigned int z, const world::chunk::C
 	engine->addChunk( x, z, chunk );
 }
 
+UNUM32 CreateCamera( UNUM32 x, UNUM32 y, UNUM32 z, double pitch, double yaw, double roll = 0.0 ) {
+
+}
+
 
 void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
 	if ( !checkEngine() ) return;

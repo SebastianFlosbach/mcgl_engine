@@ -1,5 +1,18 @@
 #pragma once
-#include <tuple>
+
+struct PositionData {
+	PositionData( const double x, const double y ) : x_( x ), y_( y ) {};
+
+	const double x_;
+	const double y_;
+};
+
+struct ButtonData {
+	ButtonData( int button, double timePressed ) : button_( button ), timePressed_( timePressed ) {};
+
+	const int button_;
+	const double timePressed_;
+};
 
 enum class MouseEventType {
 	ButtonPess,
@@ -9,21 +22,18 @@ enum class MouseEventType {
 };
 
 struct MouseEvent {
-	MouseEvent( MouseEventType type, double xOffset, double yOffset ) : type_( type ), data_( xOffset, yOffset ) {}
+	MouseEvent( MouseEventType type, double x, double y ) : type_( type ), data_( x, y ) {}
 	MouseEvent( MouseEventType type, int button, double timePressed ) : type_( type ), data_( button, timePressed ) {}
-	MouseEvent( MouseEventType type, int xPos, int yPos ) : type_( type ), data_( xPos, yPos ) {}
 
 
 	MouseEventType type_;
 
 	union MouseEventData {
-		MouseEventData( double xOffset, double yOffset ) : scroll_( xOffset, yOffset ) {}
-		MouseEventData( int button, double timePressed ) : button_( button, timePressed ) {}
-		MouseEventData( int xPos, int yPos ) : mouse_( xPos, yPos ) {}
+		MouseEventData( double x, double y ) : position_( x, y ) {};
+		MouseEventData( int button, double timePressed ) : button_( button, timePressed ) {};
 
-		std::tuple<double, double> scroll_;
-		std::tuple<int, double> button_;
-		std::tuple<int, int> mouse_;
+		PositionData position_;
+		ButtonData button_;
 	} data_;
 };
 

@@ -54,7 +54,7 @@ public:
 		direction_ = glm::normalize( direction_ );
 	}
 
-	void rotateD( float dPitch, float dYawn, float dRoll = 0.0f ) {
+	void rotateDegrees( float dPitch, float dYawn, float dRoll = 0.0f ) {
 		rotate( glm::radians( dPitch ), glm::radians( dYawn ), glm::radians( dRoll ) );
 	}
 
