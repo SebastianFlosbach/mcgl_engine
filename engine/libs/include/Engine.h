@@ -33,7 +33,9 @@ public:
 	void setTextures( texture::TextureAtlas&& textureAtlas );
 	void setShader( Shader&& shader );
 
-	unsigned int createCamera( unsigned int x, unsigned int y, unsigned int z, double pitch, double yaw, double roll = 0.0 );
+	unsigned int createCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll = 0.0 );
+	void moveCamera( const unsigned int cameraId, const double dx, const double dy, const double dz );
+	void rotateCamera( const unsigned int cameraId, const double pitch, const double yaw, const double roll = 0.0 );
 
 	void run();
 

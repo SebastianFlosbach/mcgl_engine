@@ -64,8 +64,17 @@ void Engine::setShader( Shader&& shader ) {
 	renderer_->setShader( std::move( shader ) );
 }
 
-unsigned int createCamera( unsigned int x, unsigned int y, unsigned int z, double pitch, double yaw, double roll = 0.0 ) {
-	
+unsigned int Engine::createCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll ) {
+	camera_ = Camera( x, y, z, pitch, yaw, roll );
+	return 1;
+}
+
+void Engine::moveCamera( const unsigned int cameraId, const double dx, const double dy, const double dz ) {
+	camera_.move( dx, dy, dz );
+}
+
+void Engine::rotateCamera( const unsigned int cameraId, const double pitch, const double yaw, const double roll ) {
+	camera_.rotate( pitch, yaw, roll );
 }
 
 void Engine::run() {
@@ -89,6 +98,10 @@ void Engine::run() {
 		// Rendering
 		glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+		renderer_->use();
+		renderer_->setViewMatrix( camera_.getView() );
+		renderer_->update();
 
 		for ( auto& chunkMesh : mesh ) {
 			chunkMesh->draw( *renderer_ );

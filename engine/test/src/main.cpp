@@ -1,10 +1,6 @@
 #include <iostream>
 
-#include <mcgl-engine.h>
-
-#include "Camera.h"
-
-static Camera camera;
+#include <mcgl-engine.h>W
 
 void keyEventCallback( const KeyEvent& keyEvent ) {
 	std::cout << "Type: " << to_string( keyEvent.type_ ) << ", Key: " << keyEvent.key_ << ", Time: " << keyEvent.timePressed_ << std::endl;
@@ -38,7 +34,7 @@ void mouseEventCallback( const MouseEvent& mouseEvent ) {
 			dx *= sensitivity;
 			dy *= sensitivity;
 
-			camera.rotate( dx, dy );
+			RotateCamera( 1, dy, dx );
 		}
 			break;
 		default:
@@ -47,11 +43,10 @@ void mouseEventCallback( const MouseEvent& mouseEvent ) {
 }
 
 int main() {
-	camera = Camera();
-
-
 	CreateEngine();
 	CreateWindow( 800, 600, "MCGL" );
+
+	CreateCamera();
 
 	RegisterKeyEventCallback( keyEventCallback );
 	RegisterMouseEventCallback( mouseEventCallback );

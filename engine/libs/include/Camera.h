@@ -11,7 +11,7 @@ public:
 		pitch_ = asin( direction_.y );
 	}
 
-	Camera( float cx = 0.0f, float cy = 0.0f, float cz = 0.0f, float dx = 0.0f, float dy = 0.0f, float dz = 0.0f ) : Camera( glm::vec3( cx, cy, cz ), glm::vec3( dx, dy, dz ) ) {
+	Camera( float cx = 0.0f, float cy = 0.0f, float cz = 0.0f, float dx = 1.0f, float dy = 0.0f, float dz = 0.0f ) : Camera( glm::vec3( cx, cy, cz ), glm::vec3( dx, dy, dz ) ) {
 	}
 
 	void setPosition( glm::vec3 position ) {

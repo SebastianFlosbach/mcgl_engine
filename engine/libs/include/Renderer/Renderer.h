@@ -39,10 +39,31 @@ public:
 		pTextureAtlas_->bind();
 	}
 
+	void setModelMatrix( const glm::mat4& model ) {
+		model_ = model;
+	}
+
+	void setViewMatrix( const glm::mat4& view ) {
+		view_ = view;
+	}
+
+	void update() {
+		pShader_->setUniformMat4f( "model", model_ );
+		pShader_->setUniformMat4f( "view", view_ );
+		pShader_->setUniformMat4f( "projection", projection_ );
+	}
+
+	void use() {
+		pShader_->use();
+	}
+
 private:
 	std::unique_ptr<texture::TextureAtlas> pTextureAtlas_;
 	std::unique_ptr<Shader> pShader_;
 
 	Window window_;
+
+	glm::mat4 model_ = glm::mat4( 1.0f );
+	glm::mat4 view_ = glm::mat4( 1.0f );
 	glm::mat4 projection_ = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 100.0f );
 };

@@ -24,13 +24,16 @@ Shader::Shader( Shader&& other ) noexcept {
 
 Shader& Shader::operator=( Shader&& other ) noexcept {
 	hShaderProgramm_ = other.hShaderProgramm_;
+	other.hShaderProgramm_ = 0;
 
 	return *this;
 }
 
 // Destructor
 Shader::~Shader() {
-	glDeleteProgram( hShaderProgramm_ );
+	if ( hShaderProgramm_ != 0 ) {
+		glDeleteProgram( hShaderProgramm_ );
+	}
 }
 
 void Shader::addVertexShader( const std::string& path ) {
