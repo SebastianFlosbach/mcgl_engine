@@ -1,9 +1,33 @@
 #include <iostream>
 
-#include <mcgl-engine.h>W
+#include <GLFW/glfw3.h>
+#include <mutex>
+
+#include <mcgl-engine.h>
+
+static double movementSpeed = 3.0;
 
 void keyEventCallback( const KeyEvent& keyEvent ) {
-	std::cout << "Type: " << to_string( keyEvent.type_ ) << ", Key: " << keyEvent.key_ << ", Time: " << keyEvent.timePressed_ << std::endl;
+	if ( keyEvent.type_ == KeyEventType::Pressed || keyEvent.type_ == KeyEventType::Down ) {
+		switch ( keyEvent.key_ ) {
+			case GLFW_KEY_W:
+				MoveCamera( 1, 0.0, 0.0, movementSpeed * GetDeltaTime() );
+				break;
+			case GLFW_KEY_S:
+				MoveCamera( 1, 0.0, 0.0, -movementSpeed * GetDeltaTime() );
+				break;
+			case GLFW_KEY_A:
+				MoveCamera( 1, -movementSpeed * GetDeltaTime(), 0.0, 0.0 );
+				break;
+			case GLFW_KEY_D:
+				MoveCamera( 1, movementSpeed * GetDeltaTime(), 0.0, 0.0 );
+				break;
+			case GLFW_KEY_ESCAPE:
+				Stop();
+			default:
+				break;
+		}
+	}
 }
 
 static int oldX;
@@ -29,7 +53,7 @@ void mouseEventCallback( const MouseEvent& mouseEvent ) {
 			oldX = newX;
 			oldY = newY;
 
-			float sensitivity = 0.05f;
+			float sensitivity = 0.003f;
 
 			dx *= sensitivity;
 			dy *= sensitivity;
@@ -42,6 +66,15 @@ void mouseEventCallback( const MouseEvent& mouseEvent ) {
 	}
 }
 
+std::mutex mStop;
+std::condition_variable cvStop;
+
+void statusEventCallback( const StatusEvent& statusEvent ) {
+	if ( statusEvent.type_ == StatusEventType::Stopped ) {
+		cvStop.notify_one();
+	}
+}
+
 int main() {
 	CreateEngine();
 	CreateWindow( 800, 600, "MCGL" );
@@ -50,6 +83,7 @@ int main() {
 
 	RegisterKeyEventCallback( keyEventCallback );
 	RegisterMouseEventCallback( mouseEventCallback );
+	RegisterStatusEventCallback( statusEventCallback );
 
 	SetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
 	SetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
@@ -68,6 +102,8 @@ int main() {
 	AddChunk( 0, 0, chunk );
 
 	Run();
+
+	DestroyEngine();
 
 	return 0;
 }

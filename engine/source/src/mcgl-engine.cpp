@@ -2,14 +2,22 @@
 
 #include <Engine.h>
 #include <Logging/SpdFileLogger.h>
+#include <queue>
 
 #undef CreateWindow
 
 const std::string loggerName { "mcgl_file_logger" };
 const std::string loggerPath { "logs/mcgllog.log" };
 
+
+std::mutex mEngine;
+
+std::atomic_bool isRunning = false;
+std::thread workerThread;
+
 std::unique_ptr<SpdFileLogger> logger;
 std::unique_ptr<Engine> engine;
+
 
 inline bool checkEngine() {
 	if ( !engine ) {
@@ -21,27 +29,60 @@ inline bool checkEngine() {
 }
 
 void CreateEngine() {
+	if ( isRunning.exchange( true ) ) {
+		return;
+	}
+
 	logger = std::make_unique<SpdFileLogger>( loggerName, loggerPath );
 	info( *logger, "[MCGL-ENGINE] CreateEngine" );
-	engine = std::make_unique<Engine>( *logger.get() );
+
+	workerThread = std::thread( []() {
+		engine = std::make_unique<Engine>( *logger.get() );
+
+		while ( isRunning ) {
+
+		}
+	} );
+
 }
 
 void DestroyEngine() {
+	if ( !checkEngine() ) return;
+
 	info( *logger, "[MCGL-ENGINE] DestroyEngine" );
 	engine.reset();
 }
 
 void CreateWindow( const NUM32 width, const NUM32 height, const std::string& title ) {
+	if ( !checkEngine() ) return;
+
 	info( *logger, "[MCGL-ENGINE] CreateWindow" );
 	engine->createWindow( width, height, title );
 }
 
+void CloseWindow() {
+	if ( !checkEngine() ) return;
+
+	engine->closeWindow();
+}
+
 void Run() {
+	if ( !checkEngine() ) return;
+
 	info( *logger, "[MCGL-ENGINE] Run" );
 	engine->run();
 }
 
+void Stop() {
+	if ( !checkEngine() ) return;
+
+	info( *logger, "[MCGL-ENGINE] Stop" );
+	engine->stop();
+}
+
 void RegisterBlockType( const world::block::Block& block, const NUM32 id ) {
+	if ( !checkEngine() ) return;
+
 	info( *logger, "[MCGL-ENGINE] RegisterBockType" );
 	engine->addBlockType( block, id );
 }
@@ -107,4 +148,14 @@ void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
 
 	info( *logger, "[MCGL-ENGINE] RegisterMouseEventCallback" );
 	engine->registerMouseEventCallback( callback );
+}
+
+void RegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) {
+	engine->registerStatusEventCallback( callback );
+}
+
+float GetDeltaTime() {
+	if ( !checkEngine() ) return -1.0f;
+
+	return engine->getDeltaTime();
 }

@@ -15,6 +15,8 @@ public:
 		pTextureAtlas_( std::make_unique<texture::TextureAtlas>( std::move( textureAtlas ) ) ), 
 		window_( std::move( window ) ) {}
 
+	~Renderer() = default;
+
 	void setWindow( Window&& window ) {
 		window_ = std::move( window );
 	}

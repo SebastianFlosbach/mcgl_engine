@@ -34,6 +34,10 @@ void Engine::createWindow( unsigned int width, unsigned int height, const std::s
 	}
 }
 
+void Engine::closeWindow() {
+	window_.close();
+}
+
 void Engine::addBlockType( const world::block::Block& block, unsigned int id ) {
 	info( logger_, "addBlockType()" );
 
@@ -52,7 +56,13 @@ void Engine::registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
 	MouseEventHandler::registerCallback( window_.get(), callback );
 }
 
-void Engine::addChunk( unsigned int x, unsigned int z, const world::chunk::Chunk& chunk ) {
+void Engine::registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) {
+	info( logger_, "registerStatusEventCallback" );
+
+	statusCallback_ = callback;
+}
+
+void Engine::addChunk( int x, int z, const world::chunk::Chunk& chunk ) {
 	world_.addChunk( x, z, chunk );
 }
 
@@ -80,6 +90,12 @@ void Engine::rotateCamera( const unsigned int cameraId, const double pitch, cons
 void Engine::run() {
 	info( logger_, "run()" );
 
+	isRunning_ = true;
+
+	glfwMakeContextCurrent( NULL );
+
+	glfwMakeContextCurrent( window_.get() );
+
 	glViewport( 0, 0, window_.width(), window_.height() );
 
 	glfwSetInputMode( window_.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
@@ -94,7 +110,12 @@ void Engine::run() {
 
 	auto mesh = world_.generateMesh( blockLibrary_, renderer_->getTextureAtlas() );
 
-	while ( !glfwWindowShouldClose( window_.get() ) ) {
+	while ( !glfwWindowShouldClose( window_.get() ) && isRunning_ ) {
+
+		float currentFrame = glfwGetTime();
+		deltaTime_ = currentFrame - lastFrame_;
+		lastFrame_ = currentFrame;
+
 		// Rendering
 		glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
 		glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -109,5 +130,10 @@ void Engine::run() {
 
 		glfwSwapBuffers( window_.get() );
 		glfwPollEvents();
+		KeyEventHandler::pollEvents();
 	}
+}
+
+void Engine::stop() {
+	isRunning_ = false;
 }

@@ -29,6 +29,13 @@ public:
 		return pWindow_;
 	}
 
+	void close() {
+		if ( pWindow_ ) {
+			glfwDestroyWindow( pWindow_ );
+			pWindow_ = nullptr;
+		}
+	}
+
 	unsigned int width() {
 		return width_;
 	}

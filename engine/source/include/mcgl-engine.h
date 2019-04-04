@@ -1,20 +1,19 @@
 #pragma once
 
 #include <string>
-#include <stdint.h>
 #include <World/Block/Block.h>
 #include <World/Chunk/Chunk.h>
 
 #include "mcgl-engine-export.h"
 #include "Definition/mcgl_engine_def.h"
 
-typedef uint32_t UNUM32;
-typedef int32_t NUM32;
 
 MCGL_ENGINE_EXTERN void CreateEngine();
 MCGL_ENGINE_EXTERN void DestroyEngine();
 MCGL_ENGINE_EXTERN void CreateWindow( const NUM32 width, const NUM32 height, const std::string& title );
+MCGL_ENGINE_EXTERN void CloseWindow();
 MCGL_ENGINE_EXTERN void Run();
+MCGL_ENGINE_EXTERN void Stop();
 MCGL_ENGINE_EXTERN void RegisterBlockType( const world::block::Block& block, NUM32 id );
 MCGL_ENGINE_EXTERN void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textureCount );
 MCGL_ENGINE_EXTERN void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath );
@@ -26,3 +25,6 @@ MCGL_ENGINE_EXTERN void RotateCamera( const UNUM32 cameraId, const double pitch,
 
 MCGL_ENGINE_EXTERN void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
 MCGL_ENGINE_EXTERN void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
+MCGL_ENGINE_EXTERN void RegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
+
+MCGL_ENGINE_EXTERN float GetDeltaTime();
