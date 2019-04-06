@@ -2,18 +2,18 @@
 
 #include <Engine.h>
 #include <Logging/SpdFileLogger.h>
-#include <queue>
+#include <ThreadedWorkerQueue.h>
 
 #undef CreateWindow
 
 const std::string loggerName { "mcgl_file_logger" };
 const std::string loggerPath { "logs/mcgllog.log" };
 
-
 std::mutex mEngine;
 
 std::atomic_bool isRunning = false;
-std::thread workerThread;
+
+ThreadedWorkerQueue<Action> engineThread_;
 
 std::unique_ptr<SpdFileLogger> logger;
 std::unique_ptr<Engine> engine;
