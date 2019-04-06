@@ -36,14 +36,7 @@ void CreateEngine() {
 	logger = std::make_unique<SpdFileLogger>( loggerName, loggerPath );
 	info( *logger, "[MCGL-ENGINE] CreateEngine" );
 
-	workerThread = std::thread( []() {
-		engine = std::make_unique<Engine>( *logger.get() );
-
-		while ( isRunning ) {
-
-		}
-	} );
-
+	engine = std::make_unique<Engine>( *logger );
 }
 
 void DestroyEngine() {

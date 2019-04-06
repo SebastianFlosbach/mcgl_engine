@@ -9,10 +9,7 @@ Window::Window( unsigned int width, unsigned int height, const std::string& titl
 	}
 	glfwMakeContextCurrent( pWindow_ );
 
-	auto func = []( GLFWwindow* window, int width, int height ) {
-		static_cast<Window*>(glfwGetWindowUserPointer( window ))->framebufferSizeCallback( window, width, height );
-	};
-	glfwSetFramebufferSizeCallback( pWindow_, func );
+	glfwSetFramebufferSizeCallback( pWindow_, framebufferSizeCallback );
 }
 
 Window::Window( Window&& other ) {

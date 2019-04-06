@@ -32,6 +32,7 @@ void keyEventCallback( const KeyEvent& keyEvent ) {
 
 static int oldX;
 static int oldY;
+static bool firstMouse = true;
 
 void mouseEventCallback( const MouseEvent& mouseEvent ) {
 	switch ( mouseEvent.type_ ) {
@@ -46,6 +47,12 @@ void mouseEventCallback( const MouseEvent& mouseEvent ) {
 			auto newPosition = mouseEvent.data_.position_;
 			auto newX = newPosition.x_;
 			auto newY = newPosition.y_;
+
+			if ( firstMouse ) {
+				oldX = newX;
+				oldY = newY;
+				firstMouse = false;
+			}
 
 			auto dx = newX - oldX;
 			auto dy = oldY - newY;

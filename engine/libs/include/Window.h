@@ -36,6 +36,7 @@ public:
 		}
 	}
 
+	// TODO: Get width and height from pWindow_
 	unsigned int width() {
 		return width_;
 	}
@@ -50,9 +51,7 @@ private:
 	unsigned int width_ = 800;
 	unsigned int height_ = 600;
 
-	void framebufferSizeCallback( GLFWwindow* window, int width, int height ) {
-		width_ = width;
-		height_ = height;
+	static void framebufferSizeCallback( GLFWwindow* window, int width, int height ) {
 		glViewport( 0, 0, width, height );
 	}
 };

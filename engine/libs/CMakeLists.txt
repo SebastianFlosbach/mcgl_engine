@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 3.8)
 
+add_subdirectory( "test") 
+
 project( "mcgl-engine-core" )
 
 file( GLOB_RECURSE "SOURCES" "*.h" "*.cpp" )
