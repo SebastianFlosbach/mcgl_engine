@@ -2,7 +2,8 @@
 
 #include <Engine.h>
 #include <Logging/SpdFileLogger.h>
-#include <ThreadedWorkerQueue.h>
+#include <ActionHandling/ThreadedWorkerQueue.h>
+#include <ActionHandling/Action.h>
 
 #undef CreateWindow
 
@@ -13,7 +14,7 @@ std::mutex mEngine;
 
 std::atomic_bool isRunning = false;
 
-ThreadedWorkerQueue<Action> engineThread_;
+ThreadedWorkerQueue<Action*> engineThread_;
 
 std::unique_ptr<SpdFileLogger> logger;
 std::unique_ptr<Engine> engine;
