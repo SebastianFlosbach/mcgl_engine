@@ -36,7 +36,7 @@ public:
 		return isRunning_;
 	}
 
-	void start( void(*actionCallback)( const T& action) ) {
+	void start( void(*actionCallback)( T action ) ) {
 		if ( isRunning_.exchange( true ) ) {
 			return;
 		}

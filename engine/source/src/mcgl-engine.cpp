@@ -3,7 +3,7 @@
 #include <Engine.h>
 #include <Logging/SpdFileLogger.h>
 #include <ActionHandling/ThreadedWorkerQueue.h>
-#include <ActionHandling/Action.h>
+#include <ActionHandling/Action/Action.h>
 
 #undef CreateWindow
 
@@ -14,7 +14,7 @@ std::mutex mEngine;
 
 std::atomic_bool isRunning = false;
 
-ThreadedWorkerQueue<Action*> engineThread_;
+std::unique_ptr<ThreadedWorkerQueue<action::Action*>> engineThread_;
 
 std::unique_ptr<SpdFileLogger> logger;
 std::unique_ptr<Engine> engine;
@@ -29,6 +29,10 @@ inline bool checkEngine() {
 	return true;
 }
 
+void doAction( action::Action* action ) {
+
+}
+
 void CreateEngine() {
 	if ( isRunning.exchange( true ) ) {
 		return;
@@ -37,7 +41,9 @@ void CreateEngine() {
 	logger = std::make_unique<SpdFileLogger>( loggerName, loggerPath );
 	info( *logger, "[MCGL-ENGINE] CreateEngine" );
 
-	engine = std::make_unique<Engine>( *logger );
+	engineThread_ = std::make_unique<ThreadedWorkerQueue<action::Action*>>();
+	engineThread_->start( doAction );
+	
 }
 
 void DestroyEngine() {

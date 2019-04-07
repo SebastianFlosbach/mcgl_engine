@@ -13,6 +13,9 @@ public:
 
 	ActionType getType() const override { return ActionType::CreateWindow; }
 
+
+
+private:
 	unsigned int width_;
 	unsigned int height_;
 	std::string title_;
