@@ -86,31 +86,35 @@ int main() {
 	CreateEngine();
 	CreateWindow( 800, 600, "MCGL" );
 
-	CreateCamera();
+	//CreateCamera();
 
-	RegisterKeyEventCallback( keyEventCallback );
-	RegisterMouseEventCallback( mouseEventCallback );
-	RegisterStatusEventCallback( statusEventCallback );
+	//RegisterKeyEventCallback( keyEventCallback );
+	//RegisterMouseEventCallback( mouseEventCallback );
+	//RegisterStatusEventCallback( statusEventCallback );
 
-	SetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
+	//SetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
 	SetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
 
-	RegisterBlockType( { true }, 0 );
-	RegisterBlockType( { false, 2, 2, 2, 2, 0, 1 }, 1 );
+	//RegisterBlockType( { true }, 0 );
+	//RegisterBlockType( { false, 2, 2, 2, 2, 0, 1 }, 1 );
 
-	world::chunk::Chunk chunk = world::chunk::Chunk();
-	for ( int x = 0; x < world::chunk::CHUNK_WIDTH; x++ ) {
-		for ( int z = 0; z < world::chunk::CHUNK_LENGTH; z++ ) {
-			for ( int y = 0; y < 5; y++ ) {
-				chunk.setBlock( 1, x, y, z );
-			}
-		}
-	}
-	AddChunk( 0, 0, chunk );
+	//world::chunk::Chunk chunk = world::chunk::Chunk();
+	//for ( int x = 0; x < world::chunk::CHUNK_WIDTH; x++ ) {
+	//	for ( int z = 0; z < world::chunk::CHUNK_LENGTH; z++ ) {
+	//		for ( int y = 0; y < 5; y++ ) {
+	//			chunk.setBlock( 1, x, y, z );
+	//		}
+	//	}
+	//}
+	//AddChunk( 0, 0, chunk );
 
 	Run();
 
-	DestroyEngine();
+	//DestroyEngine();
+
+	std::this_thread::sleep_for( std::chrono::seconds( 2 ) );
+
+	Stop();
 
 	return 0;
 }

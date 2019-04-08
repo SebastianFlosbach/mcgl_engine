@@ -30,7 +30,7 @@ public:
 	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
 	void registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
 	void addChunk( int x, int z, const world::chunk::Chunk& chunk );
-	//void removeChunk( unsigned int x, unsigned int z );
+	void removeChunk( unsigned int x, unsigned int z );
 
 	void setTextures( texture::TextureAtlas&& textureAtlas );
 	void setShader( Shader&& shader );

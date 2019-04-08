@@ -4,6 +4,8 @@
 #include <Logging/SpdFileLogger.h>
 #include <ActionHandling/ThreadedWorkerQueue.h>
 #include <ActionHandling/Action/Action.h>
+#include <ActionHandling/Action/CreateWindowData.h>
+#include <ActionHandling/Action/SetShaderData.h>
 
 #undef CreateWindow
 
@@ -14,7 +16,7 @@ std::mutex mEngine;
 
 std::atomic_bool isRunning = false;
 
-std::unique_ptr<ThreadedWorkerQueue<action::Action*>> engineThread_;
+std::unique_ptr<ThreadedWorkerQueue<action::Action>> engineThread;
 
 std::unique_ptr<SpdFileLogger> logger;
 std::unique_ptr<Engine> engine;
@@ -29,8 +31,39 @@ inline bool checkEngine() {
 	return true;
 }
 
-void doAction( action::Action* action ) {
+void doAction( const action::Action& action ) {
+	switch ( action.type() ) {
+	case action::ActionType::CreateWindowAction:
+	{
+		action::CreateWindowData* data = static_cast<action::CreateWindowData*>(action.data());
+		engine->createWindow( data->width_, data->height_, data->title_ );
+	}
+		break;
+	case action::ActionType::RunAction:
+	{
+		engine->run();
+	}
+		break;
+	case action::ActionType::StopAction:
+	{
+		engine->stop();
+	}
+		break;
+	case action::ActionType::SetShaderAction:
+	{
+		auto* data = static_cast<action::SetShaderData*>(action.data());
 
+		Shader shader = Shader();
+		shader.addVertexShader( data->vertexPath_ );
+		shader.addFragmentShader( data->fragmentPath_ );
+		shader.compile();
+
+		engine->setShader( std::move( shader ) );
+	}
+		break;
+	default:
+		break;
+	}
 }
 
 void CreateEngine() {
@@ -41,9 +74,10 @@ void CreateEngine() {
 	logger = std::make_unique<SpdFileLogger>( loggerName, loggerPath );
 	info( *logger, "[MCGL-ENGINE] CreateEngine" );
 
-	engineThread_ = std::make_unique<ThreadedWorkerQueue<action::Action*>>();
-	engineThread_->start( doAction );
-	
+	engine = std::make_unique<Engine>( *logger );
+
+	engineThread = std::make_unique<ThreadedWorkerQueue<action::Action>>();
+	engineThread->start( doAction );
 }
 
 void DestroyEngine() {
@@ -57,7 +91,8 @@ void CreateWindow( const NUM32 width, const NUM32 height, const std::string& tit
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] CreateWindow" );
-	engine->createWindow( width, height, title );
+	action::ActionData_ptr data = std::make_unique<action::CreateWindowData>( width, height, title );
+	engineThread->enqueue( { action::ActionType::CreateWindowAction, std::move( data ) } );
 }
 
 void CloseWindow() {
@@ -70,14 +105,14 @@ void Run() {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] Run" );
-	engine->run();
+	engineThread->enqueue( { action::ActionType::RunAction } );
 }
 
 void Stop() {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] Stop" );
-	engine->stop();
+	engineThread->enqueue( { action::ActionType::StopAction } );
 }
 
 void RegisterBlockType( const world::block::Block& block, const NUM32 id ) {
@@ -98,14 +133,10 @@ void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textu
 void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath ) {
 	if ( !checkEngine() ) return;
 
-	Shader shader = Shader();
-	shader.addVertexShader( vertexShaderPath );
-	shader.addFragmentShader( fragmentShaderPath );
-	shader.compile();
+	auto data = std::make_unique<action::SetShaderData>( vertexShaderPath, fragmentShaderPath );
 
-	engine->setShader( std::move( shader ) );
+	engineThread->enqueue( { action::ActionType::SetShaderAction, std::move( data ) } );
 }
-
 
 void AddChunk( const UNUM32 x, const UNUM32 z, const world::chunk::Chunk& chunk ) {
 	if ( !checkEngine() ) return;
@@ -134,7 +165,6 @@ void RotateCamera( const UNUM32 cameraId, const double pitch, const double yaw, 
 	info( *logger, "[MCGL-ENGINE] RotateCamera" );
 	engine->rotateCamera( cameraId, pitch, yaw, roll );
 }
-
 
 void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
 	if ( !checkEngine() ) return;
