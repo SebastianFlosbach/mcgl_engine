@@ -3,22 +3,20 @@
 #include <Engine.h>
 #include <Logging/SpdFileLogger.h>
 #include <ActionHandling/ThreadedWorkerQueue.h>
-#include <ActionHandling/Action/Action.h>
-#include <ActionHandling/Action/CreateWindowData.h>
-#include <ActionHandling/Action/SetShaderData.h>
+#include <ActionHandling/Action/actions.h>
 
 #undef CreateWindow
 
 const std::string loggerName { "mcgl_file_logger" };
 const std::string loggerPath { "logs/mcgllog.log" };
 
-std::mutex mEngine;
 
 std::atomic_bool isRunning = false;
 
-std::unique_ptr<ThreadedWorkerQueue<action::Action>> engineThread;
-
 std::unique_ptr<SpdFileLogger> logger;
+
+ThreadedWorkerQueue<action::Action_ptr> engineThread;
+
 std::unique_ptr<Engine> engine;
 
 
@@ -31,11 +29,11 @@ inline bool checkEngine() {
 	return true;
 }
 
-void doAction( const action::Action& action ) {
-	switch ( action.type() ) {
+void doAction( const action::Action_ptr& action ) {
+	switch ( action->type() ) {
 	case action::ActionType::CreateWindowAction:
 	{
-		action::CreateWindowData* data = static_cast<action::CreateWindowData*>(action.data());
+		
 		engine->createWindow( data->width_, data->height_, data->title_ );
 	}
 		break;
@@ -76,8 +74,8 @@ void CreateEngine() {
 
 	engine = std::make_unique<Engine>( *logger );
 
-	engineThread = std::make_unique<ThreadedWorkerQueue<action::Action>>();
-	engineThread->start( doAction );
+	engineThread = ThreadedWorkerQueue<action::Action_ptr>();
+	engineThread.start( doAction );
 }
 
 void DestroyEngine() {
@@ -91,8 +89,8 @@ void CreateWindow( const NUM32 width, const NUM32 height, const std::string& tit
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] CreateWindow" );
-	action::ActionData_ptr data = std::make_unique<action::CreateWindowData>( width, height, title );
-	engineThread->enqueue( { action::ActionType::CreateWindowAction, std::move( data ) } );
+	
+	engineThread.enqueue( std::make_unique<action::Action>( action::CreateWindowAction( width, height, title ) ) );
 }
 
 void CloseWindow() {
@@ -105,7 +103,7 @@ void Run() {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] Run" );
-	engineThread->enqueue( { action::ActionType::RunAction } );
+	engineThread.enqueue( std::make_unique<action::Action>( action::CloseWindowAction() ) );
 }
 
 void Stop() {

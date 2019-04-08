@@ -1,12 +1,14 @@
 #pragma once
 
-#include "ActionData.h"
+#include <memory>
+
 
 namespace action {
 
 
 enum class ActionType {
 	CreateWindowAction,
+	CloseWindowAction,
 	RunAction,
 	StopAction,
 	SetShaderAction,
@@ -14,18 +16,10 @@ enum class ActionType {
 
 struct Action {
 public:
-	Action( ActionType type, ActionData_ptr&& data ) : type_( type ), data_( std::move( data ) ) {}
-
-	Action( ActionType type ) : type_( type ) {}
-
-	virtual ActionType type() const { return type_; }
-	ActionData* data() const { return data_.get(); }
-
-private:
-	ActionType type_;
-	ActionData_ptr data_;
+	virtual ActionType type() const = 0;
 
 };
 
+typedef std::unique_ptr<Action> Action_ptr;
 
 }

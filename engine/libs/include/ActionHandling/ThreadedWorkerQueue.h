@@ -10,6 +10,25 @@ class ThreadedWorkerQueue {
 public:
 	ThreadedWorkerQueue() = default;
 
+	ThreadedWorkerQueue(const ThreadedWorkerQueue& other) = delete;
+	ThreadedWorkerQueue& operator=(const ThreadedWorkerQueue& other) = delete;
+
+	ThreadedWorkerQueue(ThreadedWorkerQueue&& other) {
+		*this = std::move(other);
+	}
+
+	ThreadedWorkerQueue& operator=(ThreadedWorkerQueue&& other) {
+		this->workerThread_ = std::move(other.workerThread_);
+		this->actionQueue_ = std::move(other.actionQueue_);
+		this->actionCallback_ = std::move(other.actionCallback_)
+		this->mQueue_ = std::move(other.mQueue_);
+		this->cvActionAvailable_ = std::move(other.cvActionAvailable_);
+		this->actionAvailable_ = other.actionAvailable_;
+		this->isRunning_ = other.isRunning_;
+
+		return *this;
+	}
+
 	~ThreadedWorkerQueue() {
 		if ( workerThread_.joinable() ) {
 			workerThread_.join();

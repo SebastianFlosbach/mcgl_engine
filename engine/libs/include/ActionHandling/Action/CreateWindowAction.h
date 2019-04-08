@@ -1,16 +1,15 @@
 #pragma once
 
 #include "Action.h"
-#include "ActionData.h"
 
 #include <string>
 
 namespace action {
 
 
-struct CreateWindowData final : public ActionData {
+struct CreateWindowAction final : public Action {
 public:
-	CreateWindowData( unsigned int width, unsigned int height, const std::string& title ) : width_( width ), height_( height ), title_( title ) {}
+	CreateWindowAction( unsigned int width, unsigned int height, const std::string& title ) : width_( width ), height_( height ), title_( title ) {}
 
 	ActionType type() const override { return ActionType::CreateWindowAction; }
 
