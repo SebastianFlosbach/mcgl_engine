@@ -3,7 +3,7 @@
 #include <Engine.h>
 #include <Logging/SpdFileLogger.h>
 #include <ActionHandling/ThreadedWorkerQueue.h>
-#include <ActionHandling/Action/actions.h>
+#include <ActionHandling/actions.h>
 
 #undef CreateWindow
 
@@ -110,14 +110,14 @@ void Stop() {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] Stop" );
-	engineThread->enqueue( { action::ActionType::StopAction } );
+	engineThread.enqueue(std::make_unique<action::Action>(action::StopAction()));
 }
 
 void RegisterBlockType( const world::block::Block& block, const NUM32 id ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] RegisterBockType" );
-	engine->addBlockType( block, id );
+	engineThread.enqueue(std::make_unique<action::Action>(action::RegisterBlockTypeAction(block, id)));
 }
 
 void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textureCount ) {
@@ -131,9 +131,8 @@ void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textu
 void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath ) {
 	if ( !checkEngine() ) return;
 
-	auto data = std::make_unique<action::SetShaderData>( vertexShaderPath, fragmentShaderPath );
-
-	engineThread->enqueue( { action::ActionType::SetShaderAction, std::move( data ) } );
+	info(*logger, "[MCGL-ENGINE] SetShader");
+	engineThread.enqueue(std::make_unique<action::Action>(action::SetShaderData(vertexShaderPath, fragmentShaderPath)));
 }
 
 void AddChunk( const UNUM32 x, const UNUM32 z, const world::chunk::Chunk& chunk ) {

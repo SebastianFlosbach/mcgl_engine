@@ -1,14 +1,14 @@
 #pragma once
 
 #include "Action.h"
-#include "ActionData.h"
 
 #include <string>
+
 
 namespace action {
 
 
-struct SetShaderData : public ActionData {
+struct SetShaderData : public Action {
 public:
 	SetShaderData( const std::string& vertexPath, const std::string& fragmentPath ) : vertexPath_( vertexPath ), fragmentPath_( fragmentPath ) {}
 
