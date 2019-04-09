@@ -139,7 +139,7 @@ void AddChunk( const UNUM32 x, const UNUM32 z, const world::chunk::Chunk& chunk 
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] AddChunk" );
-	
+	engineThread.enqueue(std::make_unique<action::Action>(action::AddChunkAction(x, z, chunk)));
 }
 
 UNUM32 CreateCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll ) {
