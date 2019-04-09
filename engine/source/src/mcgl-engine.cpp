@@ -33,7 +33,7 @@ void doAction( const action::Action_ptr& action ) {
 	switch ( action->type() ) {
 	case action::ActionType::CreateWindowAction:
 	{
-		
+		auto* data = static_cast<action::CreateWindowAction*>(action.get());
 		engine->createWindow( data->width_, data->height_, data->title_ );
 	}
 		break;
@@ -49,7 +49,7 @@ void doAction( const action::Action_ptr& action ) {
 		break;
 	case action::ActionType::SetShaderAction:
 	{
-		auto* data = static_cast<action::SetShaderData*>(action.data());
+		auto* data = static_cast<action::SetShaderData*>(action.get());
 
 		Shader shader = Shader();
 		shader.addVertexShader( data->vertexPath_ );
@@ -96,14 +96,15 @@ void CreateWindow( const NUM32 width, const NUM32 height, const std::string& tit
 void CloseWindow() {
 	if ( !checkEngine() ) return;
 
-	engine->closeWindow();
+	info(*logger, "[MCGL-ENGINE] CloseWindow");
+	engineThread.enqueue(std::make_unique<action::Action>(action::CloseWindowAction()));
 }
 
 void Run() {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] Run" );
-	engineThread.enqueue( std::make_unique<action::Action>( action::CloseWindowAction() ) );
+	engineThread.enqueue( std::make_unique<action::Action>( action::RunAction() ) );
 }
 
 void Stop() {
@@ -123,9 +124,8 @@ void RegisterBlockType( const world::block::Block& block, const NUM32 id ) {
 void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textureCount ) {
 	if ( !checkEngine() ) return;
 
-	texture::TextureAtlas textureAtlas( path, textureSize, textureCount );
-
-	engine->setTextures( std::move( textureAtlas ) );
+	info(*logger, "[MCGL-ENGINE] SetTextures");
+	engineThread.enqueue(std::make_unique<action::Action>(action::SetTexturesAction(path, textureSize, textureCount)));
 }
 
 void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath ) {
@@ -139,7 +139,7 @@ void AddChunk( const UNUM32 x, const UNUM32 z, const world::chunk::Chunk& chunk 
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] AddChunk" );
-	engine->addChunk( x, z, chunk );
+	
 }
 
 UNUM32 CreateCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll ) {

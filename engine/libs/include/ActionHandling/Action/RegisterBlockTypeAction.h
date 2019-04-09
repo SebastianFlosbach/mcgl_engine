@@ -13,7 +13,7 @@ namespace action {
 	public:
 		RegisterBlockTypeAction( const world::block::Block& block, int id ) : block_( block ), id_( id ) {}
 
-		ActionType type() const override { return ActionType::CloseWindowAction; }
+		ActionType type() const override { return ActionType::RegisterBlockTypeAction; }
 
 		world::block::Block block_;
 		int id_;
