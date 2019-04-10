@@ -4,8 +4,11 @@
 #include <mutex>
 
 #include <mcgl-engine.h>
+#include <future>
 
 static double movementSpeed = 3.0;
+static std::promise<void> promiseStop;
+static std::future<void> futureStop;
 
 void keyEventCallback( const KeyEvent& keyEvent ) {
 	if ( keyEvent.type_ == KeyEventType::Pressed || keyEvent.type_ == KeyEventType::Down ) {
@@ -73,26 +76,26 @@ void mouseEventCallback( const MouseEvent& mouseEvent ) {
 	}
 }
 
-std::mutex mStop;
-std::condition_variable cvStop;
-
 void statusEventCallback( const StatusEvent& statusEvent ) {
 	if ( statusEvent.type_ == StatusEventType::Stopped ) {
-		cvStop.notify_one();
+		promiseStop.set_value();
 	}
 }
 
 int main() {
+	promiseStop = std::promise<void>();
+	futureStop = promiseStop.get_future();
+
 	CreateEngine();
 	CreateWindow( 800, 600, "MCGL" );
 
-	//CreateCamera();
+	CreateCamera();
 
-	//RegisterKeyEventCallback( keyEventCallback );
-	//RegisterMouseEventCallback( mouseEventCallback );
-	//RegisterStatusEventCallback( statusEventCallback );
+	RegisterKeyEventCallback( keyEventCallback );
+	RegisterMouseEventCallback( mouseEventCallback );
+	RegisterStatusEventCallback( statusEventCallback );
 
-	//SetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
+	SetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
 	SetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
 
 	//RegisterBlockType( { true }, 0 );
@@ -112,9 +115,9 @@ int main() {
 
 	//DestroyEngine();
 
-	std::this_thread::sleep_for( std::chrono::seconds( 2 ) );
+	futureStop.wait();
 
-	Stop();
+	//Stop();
 
 	return 0;
 }

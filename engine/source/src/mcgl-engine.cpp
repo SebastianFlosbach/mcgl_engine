@@ -4,6 +4,7 @@
 #include <Logging/SpdFileLogger.h>
 #include <ActionHandling/ThreadedWorkerQueue.h>
 #include <ActionHandling/actions.h>
+#include <future>
 
 #undef CreateWindow
 
@@ -15,7 +16,7 @@ std::atomic_bool isRunning = false;
 
 std::unique_ptr<SpdFileLogger> logger;
 
-ThreadedWorkerQueue<action::Action_ptr> engineThread;
+ThreadedWorkerQueue<action::Action_ptr> engineThread{};
 
 std::unique_ptr<Engine> engine;
 
@@ -29,35 +30,69 @@ inline bool checkEngine() {
 	return true;
 }
 
+inline void doCreateWindow(const action::CreateWindowAction* data);
+inline void doCloseWindow();
+inline void doRun();
+inline void doStop();
+inline void doRegisterBlockType(const action::RegisterBlockTypeAction* data);
+inline void doSetTextures(const action::SetTexturesAction* data);
+inline void doSetShader(const action::SetShaderAction* data);
+inline void doAddChunk(const action::AddChunkAction* data);
+inline void doRemoveChunk(const action::RemoveChunkAction* data);
+inline void doCreateCamera(const action::CreateCameraAction* data);
+inline void doMoveCamera(const action::MoveCameraAction* data);
+inline void doRotateCamera(const action::RotateCameraAction* data);
+inline void doRegisterKeyEventCallback(const action::RegisterKeyEventCallbackAction* data);
+inline void doRegisterMouseEventCallback(const action::RegisterMouseEventCallbackAction* data);
+inline void doRegisterStatusEventCallback(const action::RegisterStatusEventCallbackAction* data);
+
 void doAction( const action::Action_ptr& action ) {
-	switch ( action->type() ) {
-	case action::ActionType::CreateWindowAction:
+	switch (action->type())
 	{
-		auto* data = static_cast<action::CreateWindowAction*>(action.get());
-		engine->createWindow( data->width_, data->height_, data->title_ );
-	}
+	case action::ActionType::AddChunkAction:
+		doAddChunk(static_cast<action::AddChunkAction*>(action.get()));
+		break;
+	case action::ActionType::CloseWindowAction:
+		doCloseWindow();
+		break;
+	case action::ActionType::CreateCameraAction:
+		doCreateCamera(static_cast<action::CreateCameraAction*>(action.get()));
+		break;
+	case action::ActionType::CreateWindowAction:
+		doCreateWindow(static_cast<action::CreateWindowAction*>(action.get()));
+		break;
+	case action::ActionType::MoveCameraAction:
+		doMoveCamera(static_cast<action::MoveCameraAction*>(action.get()));
+		break;
+	case action::ActionType::RegisterBlockTypeAction:
+		doRegisterBlockType(static_cast<action::RegisterBlockTypeAction*>(action.get()));
+		break;
+	case action::ActionType::RegisterKeyEventCallbackAction:
+		doRegisterKeyEventCallback(static_cast<action::RegisterKeyEventCallbackAction*>(action.get()));
+		break;
+	case action::ActionType::RegisterMouseEventCallbackAction:
+		doRegisterMouseEventCallback(static_cast<action::RegisterMouseEventCallbackAction*>(action.get()));
+		break;
+	case action::ActionType::RegisterStatusEventCallbackAction:
+		doRegisterStatusEventCallback(static_cast<action::RegisterStatusEventCallbackAction*>(action.get()));
+		break;
+	case action::ActionType::RemoveChunkAction:
+		doRemoveChunk(static_cast<action::RemoveChunkAction*>(action.get()));
+		break;
+	case action::ActionType::RotateCameraAction:
+		doRotateCamera(static_cast<action::RotateCameraAction*>(action.get()));
 		break;
 	case action::ActionType::RunAction:
-	{
-		engine->run();
-	}
-		break;
-	case action::ActionType::StopAction:
-	{
-		engine->stop();
-	}
+		doRun();
 		break;
 	case action::ActionType::SetShaderAction:
-	{
-		auto* data = static_cast<action::SetShaderData*>(action.get());
-
-		Shader shader = Shader();
-		shader.addVertexShader( data->vertexPath_ );
-		shader.addFragmentShader( data->fragmentPath_ );
-		shader.compile();
-
-		engine->setShader( std::move( shader ) );
-	}
+		doSetShader(static_cast<action::SetShaderAction*>(action.get()));
+		break;
+	case action::ActionType::SetTexturesAction:
+		doSetTextures(static_cast<action::SetTexturesAction*>(action.get()));
+		break;
+	case action::ActionType::StopAction:
+		doStop();
 		break;
 	default:
 		break;
@@ -74,7 +109,6 @@ void CreateEngine() {
 
 	engine = std::make_unique<Engine>( *logger );
 
-	engineThread = ThreadedWorkerQueue<action::Action_ptr>();
 	engineThread.start( doAction );
 }
 
@@ -90,95 +124,181 @@ void CreateWindow( const NUM32 width, const NUM32 height, const std::string& tit
 
 	info( *logger, "[MCGL-ENGINE] CreateWindow" );
 	
-	engineThread.enqueue( std::make_unique<action::Action>( action::CreateWindowAction( width, height, title ) ) );
+	engineThread.enqueue( std::unique_ptr<action::Action>( new action::CreateWindowAction( width, height, title ) ) );
+}
+
+inline void doCreateWindow(const action::CreateWindowAction* data) {
+	engine->createWindow(data->width_, data->height_, data->title_);
 }
 
 void CloseWindow() {
 	if ( !checkEngine() ) return;
 
 	info(*logger, "[MCGL-ENGINE] CloseWindow");
-	engineThread.enqueue(std::make_unique<action::Action>(action::CloseWindowAction()));
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::CloseWindowAction()));
+}
+
+inline void doCloseWindow() {
+	engine->closeWindow();
 }
 
 void Run() {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] Run" );
-	engineThread.enqueue( std::make_unique<action::Action>( action::RunAction() ) );
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::RunAction() ) );
+}
+
+inline void doRun() {
+	engine->run();
 }
 
 void Stop() {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] Stop" );
-	engineThread.enqueue(std::make_unique<action::Action>(action::StopAction()));
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::StopAction()));
+}
+
+inline void doStop() {
+	engine->stop();
 }
 
 void RegisterBlockType( const world::block::Block& block, const NUM32 id ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] RegisterBockType" );
-	engineThread.enqueue(std::make_unique<action::Action>(action::RegisterBlockTypeAction(block, id)));
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::RegisterBlockTypeAction(block, id)));
+}
+
+inline void doRegisterBlockType(const action::RegisterBlockTypeAction* data) {
+	engine->addBlockType(data->block_, data->id_);
 }
 
 void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textureCount ) {
 	if ( !checkEngine() ) return;
 
 	info(*logger, "[MCGL-ENGINE] SetTextures");
-	engineThread.enqueue(std::make_unique<action::Action>(action::SetTexturesAction(path, textureSize, textureCount)));
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::SetTexturesAction(path, textureSize, textureCount)));
+}
+
+inline void doSetTextures(const action::SetTexturesAction* data) {
+	texture::TextureAtlas textureAtlas(data->path_, data->textureSize_, data->textureCount_);
+
+	engine->setTextures(std::move(textureAtlas));
 }
 
 void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath ) {
 	if ( !checkEngine() ) return;
 
 	info(*logger, "[MCGL-ENGINE] SetShader");
-	engineThread.enqueue(std::make_unique<action::Action>(action::SetShaderData(vertexShaderPath, fragmentShaderPath)));
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::SetShaderAction(vertexShaderPath, fragmentShaderPath)));
 }
 
-void AddChunk( const UNUM32 x, const UNUM32 z, const world::chunk::Chunk& chunk ) {
+inline void doSetShader(const action::SetShaderAction* data) {
+	Shader shader = Shader();
+	shader.addVertexShader(data->vertexPath_);
+	shader.addFragmentShader(data->fragmentPath_);
+	shader.compile();
+
+	engine->setShader(std::move(shader));
+}
+
+void AddChunk( const NUM32 x, const NUM32 z, const world::chunk::Chunk& chunk ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] AddChunk" );
-	engineThread.enqueue(std::make_unique<action::Action>(action::AddChunkAction(x, z, chunk)));
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::AddChunkAction(x, z, chunk)));
+}
+
+inline void doAddChunk(const action::AddChunkAction* data) {
+	engine->addChunk(data->x_, data->z_, data->chunk_);
+}
+
+void RemoveChunk(const NUM32 x, const NUM32 z) {
+	if (!checkEngine()) return;
+
+	info(*logger, "[MCGL-ENGINE] RemoveChunk");
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::RemoveChunkAction(x, z)));
+}
+
+inline void doRemoveChunk(const action::RemoveChunkAction* data) {
+	engine->removeChunk(data->x_, data->z_);
 }
 
 UNUM32 CreateCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll ) {
 	if ( !checkEngine() ) return 0;
 
 	info( *logger, "[MCGL-ENGINE] CreateCamera" );
-	return engine->createCamera( x, y, z, pitch, yaw, roll );
+	
+	unsigned int cameraId_ = 0;
+	std::promise<void> promise = std::promise<void>();
+	auto future = promise.get_future();
+
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::CreateCameraAction(x, y, z, pitch, yaw, roll, [&cameraId_, &promise](unsigned int cameraId) {
+		cameraId_ = cameraId;
+		promise.set_value();
+	})));
+
+	future.wait();
+	return cameraId_;
+}
+
+inline void doCreateCamera(const action::CreateCameraAction* data) {
+	auto cameraId = engine->createCamera(data->x_, data->y_, data->z_, data->pitch_, data->yaw_, data->roll_);
+	data->returnCallback_(cameraId);
 }
 
 void MoveCamera( const UNUM32 cameraId, const double dx, const double dy, const double dz ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] MoveCamera" );
-	engine->moveCamera( cameraId, dx, dy, dz );
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::MoveCameraAction(cameraId, dx, dy, dz)));
+}
+
+inline void doMoveCamera(const action::MoveCameraAction* data) {
+	engine->moveCamera(data->cameraId_, data->dx_, data->dy_, data->dz_);
 }
 
 void RotateCamera( const UNUM32 cameraId, const double pitch, const double yaw, const double roll ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] RotateCamera" );
-	engine->rotateCamera( cameraId, pitch, yaw, roll );
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::RotateCameraAction(cameraId, pitch, yaw, roll)));
+}
+
+inline void doRotateCamera(const action::RotateCameraAction* data) {
+	engine->rotateCamera(data->cameraId_, data->pitch_, data->yaw_, data->roll_);
 }
 
 void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] RegisterKeyEventCallback" );
-	engine->registerKeyEventCallback( callback );
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::RegisterKeyEventCallbackAction(callback)));
+}
+
+inline void doRegisterKeyEventCallback(const action::RegisterKeyEventCallbackAction* data) {
+	engine->registerKeyEventCallback(data->callback_);
 }
 
 void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] RegisterMouseEventCallback" );
-	engine->registerMouseEventCallback( callback );
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::RegisterMouseEventCallbackAction(callback)));
+}
+
+inline void doRegisterMouseEventCallback(const action::RegisterMouseEventCallbackAction* data) {
+	engine->registerMouseEventCallback(data->callback_);
 }
 
 void RegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) {
-	engine->registerStatusEventCallback( callback );
+	engineThread.enqueue(std::unique_ptr<action::Action>(new action::RegisterStatusEventCallbackAction(callback)));
+}
+
+inline void doRegisterStatusEventCallback(const action::RegisterStatusEventCallbackAction* data) {
+	engine->registerStatusEventCallback(data->callback_);
 }
 
 float GetDeltaTime() {

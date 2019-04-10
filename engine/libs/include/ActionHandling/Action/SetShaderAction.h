@@ -8,9 +8,9 @@
 namespace action {
 
 
-struct SetShaderData : public Action {
+struct SetShaderAction : public Action {
 public:
-	SetShaderData( const std::string& vertexPath, const std::string& fragmentPath ) : vertexPath_( vertexPath ), fragmentPath_( fragmentPath ) {}
+	SetShaderAction( const std::string& vertexPath, const std::string& fragmentPath ) : vertexPath_( vertexPath ), fragmentPath_( fragmentPath ) {}
 
 	ActionType type() const override { return ActionType::SetShaderAction; }
 

@@ -66,6 +66,10 @@ void Engine::addChunk( int x, int z, const world::chunk::Chunk& chunk ) {
 	world_.addChunk( x, z, chunk );
 }
 
+void Engine::removeChunk(unsigned int x, unsigned int z) {
+	world_.removeChunk(x, z);
+}
+
 void Engine::setTextures( texture::TextureAtlas&& textureAtlas ) {
 	renderer_->setTextures( std::move( textureAtlas ) );
 }
@@ -131,6 +135,10 @@ void Engine::run() {
 		glfwSwapBuffers( window_.get() );
 		glfwPollEvents();
 		KeyEventHandler::pollEvents();
+	}
+
+	if (statusCallback_) {
+		statusCallback_({StatusEventType::Stopped});
 	}
 }
 
