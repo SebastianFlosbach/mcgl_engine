@@ -23,7 +23,7 @@ Engine::Engine( const ILogger& logger ) : logger_( logger ) {
 	renderer_ = std::make_unique<Renderer>();
 }
 
-void Engine::createWindow( unsigned int width, unsigned int height, const std::string& title ) {
+void Engine::doCreateWindow( unsigned int width, unsigned int height, const std::string& title ) {
 	info( logger_, "createWindow()" );
 
 	window_ = Window( width, height, title );
@@ -34,64 +34,64 @@ void Engine::createWindow( unsigned int width, unsigned int height, const std::s
 	}
 }
 
-void Engine::closeWindow() {
+void Engine::doCloseWindow() {
 	window_.close();
 }
 
-void Engine::addBlockType( const world::block::Block& block, unsigned int id ) {
+void Engine::doAddBlockType( const world::block::Block& block, unsigned int id ) {
 	info( logger_, "addBlockType()" );
 
 	blockLibrary_.addBlock( block, id );
 }
 
-void Engine::registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
+void Engine::doRegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
 	info( logger_, "registerKeyEventCallback" );
 
 	KeyEventHandler::registerCallback( window_.get(), callback );
 }
 
-void Engine::registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
+void Engine::doRegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
 	info( logger_, "registerMouseEventCallback" );
 
 	MouseEventHandler::registerCallback( window_.get(), callback );
 }
 
-void Engine::registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) {
+void Engine::doRegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) {
 	info( logger_, "registerStatusEventCallback" );
 
 	statusCallback_ = callback;
 }
 
-void Engine::addChunk( int x, int z, const world::chunk::Chunk& chunk ) {
+void Engine::doAddChunk( int x, int z, const world::chunk::Chunk& chunk ) {
 	world_.addChunk( x, z, chunk );
 }
 
-void Engine::removeChunk(unsigned int x, unsigned int z) {
+void Engine::doRemoveChunk(unsigned int x, unsigned int z) {
 	world_.removeChunk(x, z);
 }
 
-void Engine::setTextures( texture::TextureAtlas&& textureAtlas ) {
+void Engine::doSetTextures( texture::TextureAtlas&& textureAtlas ) {
 	renderer_->setTextures( std::move( textureAtlas ) );
 }
 
-void Engine::setShader( Shader&& shader ) {
+void Engine::doSetShader( Shader&& shader ) {
 	renderer_->setShader( std::move( shader ) );
 }
 
-unsigned int Engine::createCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll ) {
+unsigned int Engine::doCreateCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll ) {
 	camera_ = Camera( x, y, z, pitch, yaw, roll );
 	return 1;
 }
 
-void Engine::moveCamera( const unsigned int cameraId, const double dx, const double dy, const double dz ) {
+void Engine::doMoveCamera( const unsigned int cameraId, const double dx, const double dy, const double dz ) {
 	camera_.move( dx, dy, dz );
 }
 
-void Engine::rotateCamera( const unsigned int cameraId, const double pitch, const double yaw, const double roll ) {
+void Engine::doRotateCamera( const unsigned int cameraId, const double pitch, const double yaw, const double roll ) {
 	camera_.rotate( pitch, yaw, roll );
 }
 
-void Engine::run() {
+void Engine::doRun() {
 	info( logger_, "run()" );
 
 	isRunning_ = true;
@@ -142,6 +142,6 @@ void Engine::run() {
 	}
 }
 
-void Engine::stop() {
+void Engine::doStop() {
 	isRunning_ = false;
 }

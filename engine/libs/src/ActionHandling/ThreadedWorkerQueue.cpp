@@ -22,7 +22,7 @@ action::Action_ptr ThreadedWorkerQueue<action::Action_ptr>::dequeue() {
 }
 
 template<>
-action::Action_ptr& ThreadedWorkerQueue<action::Action_ptr>::peek() const {
+const action::Action_ptr& ThreadedWorkerQueue<action::Action_ptr>::peek() {
 	std::lock_guard<std::mutex> lock(mQueue_);
 	return actionQueue_.front();
 }

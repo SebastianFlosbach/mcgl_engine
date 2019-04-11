@@ -42,7 +42,7 @@ public:
 
 	T dequeue();
 
-	T& peek() const;
+	const T& peek();
 
 	bool isRunning() {
 		return isRunning_;
