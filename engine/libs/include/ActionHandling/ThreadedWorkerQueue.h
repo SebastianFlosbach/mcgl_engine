@@ -24,7 +24,7 @@ public:
 	const T& peek();
 
 	bool empty() {
-		queue_.empty();
+		return queue_.empty();
 	}
 
 private:

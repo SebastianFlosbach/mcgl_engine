@@ -13,6 +13,7 @@ MCGL_ENGINE_EXTERN void DestroyEngine();
 MCGL_ENGINE_EXTERN void CreateWindow( const NUM32 width, const NUM32 height, const std::string& title );
 MCGL_ENGINE_EXTERN void CloseWindow();
 MCGL_ENGINE_EXTERN void Run();
+MCGL_ENGINE_EXTERN void Draw();
 MCGL_ENGINE_EXTERN void Stop();
 MCGL_ENGINE_EXTERN void RegisterBlockType( const world::block::Block& block, NUM32 id );
 MCGL_ENGINE_EXTERN void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textureCount );

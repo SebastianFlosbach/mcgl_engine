@@ -130,7 +130,7 @@ void Engine::setShader( Shader&& shader ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetShaderAction( std::move( shader ) ) ) );
 }
 
-UNUM32 Engine::createCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll = 0.0 ) {
+UNUM32 Engine::createCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll ) {
 	std::promise<void> promise{};
 	auto future = promise.get_future();
 
@@ -150,7 +150,7 @@ void Engine::moveCamera( const UNUM32 cameraId, const double dx, const double dy
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::MoveCameraAction( cameraId, dx, dy, dz ) ) );
 }
 
-void Engine::rotateCamera( const UNUM32 cameraId, const double pitch, const double yaw, const double roll = 0.0 ) {
+void Engine::rotateCamera( const UNUM32 cameraId, const double pitch, const double yaw, const double roll ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RotateCameraAction( cameraId, pitch, yaw, roll ) ) );
 }
 

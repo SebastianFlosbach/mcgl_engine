@@ -111,13 +111,9 @@ int main() {
 	//}
 	//AddChunk( 0, 0, chunk );
 
-	Run();
-
-	//DestroyEngine();
-
-	futureStop.wait();
-
-	//Stop();
+	while( true ) {
+		Draw();
+	}
 
 	return 0;
 }
