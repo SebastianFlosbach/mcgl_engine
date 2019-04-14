@@ -11,13 +11,7 @@
 const std::string loggerName { "mcgl_file_logger" };
 const std::string loggerPath { "logs/mcgllog.log" };
 
-
-std::atomic_bool isRunning = false;
-
 std::unique_ptr<SpdFileLogger> logger;
-
-ThreadedWorkerQueue<action::Action_ptr> engineThread{};
-
 std::unique_ptr<Engine> engine;
 
 
@@ -30,86 +24,11 @@ inline bool checkEngine() {
 	return true;
 }
 
-inline void doCreateWindow(const action::CreateWindowAction* data);
-inline void doCloseWindow();
-inline void doRun();
-inline void doStop();
-inline void doRegisterBlockType(const action::RegisterBlockTypeAction* data);
-inline void doSetTextures(const action::SetTexturesAction* data);
-inline void doSetShader(const action::SetShaderAction* data);
-inline void doAddChunk(const action::AddChunkAction* data);
-inline void doRemoveChunk(const action::RemoveChunkAction* data);
-inline void doCreateCamera(const action::CreateCameraAction* data);
-inline void doMoveCamera(const action::MoveCameraAction* data);
-inline void doRotateCamera(const action::RotateCameraAction* data);
-inline void doRegisterKeyEventCallback(const action::RegisterKeyEventCallbackAction* data);
-inline void doRegisterMouseEventCallback(const action::RegisterMouseEventCallbackAction* data);
-inline void doRegisterStatusEventCallback(const action::RegisterStatusEventCallbackAction* data);
-
-void doAction( const action::Action_ptr& action ) {
-	switch (action->type())
-	{
-	case action::ActionType::AddChunkAction:
-		doAddChunk(static_cast<action::AddChunkAction*>(action.get()));
-		break;
-	case action::ActionType::CloseWindowAction:
-		doCloseWindow();
-		break;
-	case action::ActionType::CreateCameraAction:
-		doCreateCamera(static_cast<action::CreateCameraAction*>(action.get()));
-		break;
-	case action::ActionType::CreateWindowAction:
-		doCreateWindow(static_cast<action::CreateWindowAction*>(action.get()));
-		break;
-	case action::ActionType::MoveCameraAction:
-		doMoveCamera(static_cast<action::MoveCameraAction*>(action.get()));
-		break;
-	case action::ActionType::RegisterBlockTypeAction:
-		doRegisterBlockType(static_cast<action::RegisterBlockTypeAction*>(action.get()));
-		break;
-	case action::ActionType::RegisterKeyEventCallbackAction:
-		doRegisterKeyEventCallback(static_cast<action::RegisterKeyEventCallbackAction*>(action.get()));
-		break;
-	case action::ActionType::RegisterMouseEventCallbackAction:
-		doRegisterMouseEventCallback(static_cast<action::RegisterMouseEventCallbackAction*>(action.get()));
-		break;
-	case action::ActionType::RegisterStatusEventCallbackAction:
-		doRegisterStatusEventCallback(static_cast<action::RegisterStatusEventCallbackAction*>(action.get()));
-		break;
-	case action::ActionType::RemoveChunkAction:
-		doRemoveChunk(static_cast<action::RemoveChunkAction*>(action.get()));
-		break;
-	case action::ActionType::RotateCameraAction:
-		doRotateCamera(static_cast<action::RotateCameraAction*>(action.get()));
-		break;
-	case action::ActionType::RunAction:
-		doRun();
-		break;
-	case action::ActionType::SetShaderAction:
-		doSetShader(static_cast<action::SetShaderAction*>(action.get()));
-		break;
-	case action::ActionType::SetTexturesAction:
-		doSetTextures(static_cast<action::SetTexturesAction*>(action.get()));
-		break;
-	case action::ActionType::StopAction:
-		doStop();
-		break;
-	default:
-		break;
-	}
-}
-
 void CreateEngine() {
-	if ( isRunning.exchange( true ) ) {
-		return;
-	}
-
 	logger = std::make_unique<SpdFileLogger>( loggerName, loggerPath );
 	info( *logger, "[MCGL-ENGINE] CreateEngine" );
 
 	engine = std::make_unique<Engine>( *logger );
-
-	engineThread.start( doAction );
 }
 
 void DestroyEngine() {

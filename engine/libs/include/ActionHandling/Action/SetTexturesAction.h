@@ -10,13 +10,11 @@ namespace action {
 
 	struct SetTexturesAction : public Action {
 	public:
-		SetTexturesAction(const char* path, const unsigned int textureSize, const unsigned int textureCount) : path_( path ), textureSize_( textureSize ), textureCount_( textureCount ) {}
+		SetTexturesAction( texture::TextureAtlas&& textureAtlas ) : textureAtlas_( std::move( textureAtlas ) ) {}
 
 		ActionType type() const override { return ActionType::SetTexturesAction; }
 
-		const char* path_;
-		unsigned int textureSize_;
-		unsigned int textureCount_;
+		texture::TextureAtlas textureAtlas_;
 	};
 
 

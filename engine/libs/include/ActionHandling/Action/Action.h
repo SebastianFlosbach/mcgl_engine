@@ -11,6 +11,8 @@ namespace action {
 		CloseWindowAction,
 		CreateCameraAction,
 		CreateWindowAction,
+		DrawAction,
+		EngineInitAction,
 		GetDeltaTimeAction,
 		MoveCameraAction,
 		RegisterBlockTypeAction,

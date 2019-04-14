@@ -46,31 +46,40 @@ public:
 	void rotateCamera( const UNUM32 cameraId, const double pitch, const double yaw, const double roll = 0.0 );
 
 	void run();
+	void draw();
 	void stop();
 
 private:
-	void doCreateWindow( const UNUM32 width, const UNUM32 height, const std::string& title );
-	void doCloseWindow();
-	void doAddBlockType( const world::block::Block& block, UNUM32 id );
-	void doRegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
-	void doRegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
-	void doRegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
-	void doAddChunk( const NUM32 x, const NUM32 z, const world::chunk::Chunk& chunk);
-	void doRemoveChunk( const UNUM32 x, const UNUM32 z );
-		 
-	void doSetTextures( texture::TextureAtlas&& textureAtlas );
-	void doSetShader( Shader&& shader );
+	void doAction( action::Action_ptr& action );
 
-	UNUM32 doCreateCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll = 0.0 );
-	void doMoveCamera( const UNUM32 cameraId, const double dx, const double dy, const double dz );
-	void doRotateCamera( const UNUM32 cameraId, const double pitch, const double yaw, const double roll = 0.0 );
+	void doEngine();
+	void doCreateWindow( const action::CreateWindowAction* data );
+	void doCloseWindow();
+	void doAddBlockType( const action::RegisterBlockTypeAction* data );
+	void doRegisterKeyEventCallback( const action::RegisterKeyEventCallbackAction* data );
+	void doRegisterMouseEventCallback( const action::RegisterMouseEventCallbackAction* data );
+	void doRegisterStatusEventCallback( const action::RegisterStatusEventCallbackAction* data );
+	void doAddChunk( const action::AddChunkAction* data );
+	void doRemoveChunk( const action::RemoveChunkAction* data );
+		 
+	void doSetTextures( action::SetTexturesAction* data );
+	void doSetShader( action::SetShaderAction* data );
+
+	void doCreateCamera( const action::CreateCameraAction* data );
+	void doMoveCamera( const action::MoveCameraAction* data );
+	void doRotateCamera( const action::RotateCameraAction* data );
 
 	void doRun();
+	void doDraw();
 	void doStop();
 
 	const ILogger& logger_;
 
-	ThreadedWorkerQueue<action::Action> workerQueue_{};
+	std::thread workerThread_;
+
+	ThreadedWorkerQueue<action::Action_ptr> workerQueue_{};
+	std::mutex mQueue_{};
+	std::condition_variable cvQueue_{};
 
 	Window window_;
 
@@ -89,5 +98,5 @@ private:
 	float deltaTime_ = 0.0f;
 	float lastFrame_ = 0.0f;
 
-	bool isRunning_ = false;
+	std::atomic_bool isRunning_ = false;
 };
