@@ -25,39 +25,40 @@ public:
 	World& operator=( World&& other ) = delete;
 
 	void addChunk( const int x, const int z, const chunk::Chunk& chunk ) {
-		chunks_.insert( { { x, z }, chunk } );
+		newChunks_.insert( { { x, z }, chunk } );
 		isValid_ = false;
 	}
 
 	void removeChunk( const int x, const int z ) {
-		chunks_.erase( { x, z } );
+		mesh_.erase( { x, z } );
 		isValid_ = false;
 	}
 
-	std::vector<Mesh_ptr>& getMesh( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas ) {
-		if( isValid_ ) {
-			return meshCache_;
+	std::unordered_map<chunk::ChunkPosition, Mesh_ptr>& getMesh( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas ) {
+		if( !isValid_ ) {
+			chunk::ChunkMeshBuilder meshBuilder( blockLibrary );
+
+			for ( auto& chunk : newChunks_ ) {
+				mesh_.insert( { chunk.first, std::make_unique<Mesh>( meshBuilder.createChunkMesh( chunk.second, textureAtlas ) ) } );
+			}
+
+			newChunks_.clear();
+
+			isValid_ = true;
 		}
 
-		chunk::ChunkMeshBuilder meshBuilder( blockLibrary );
-		std::vector<std::unique_ptr<Mesh>> mesh( chunks_.size() );
-
-		int i = 0;
-		for ( auto& chunk : chunks_ ) {
-			mesh[i++] = std::make_unique<Mesh>( meshBuilder.createChunkMesh( chunk.second, textureAtlas ) );
-		}
-
-		meshCache_ = std::move( mesh );
-		isValid_ = true;
-
-		return meshCache_;
+		return mesh_;
 	}
 
 private:
-	std::unordered_map<chunk::ChunkPosition, chunk::Chunk> chunks_;
-	std::vector<Mesh_ptr> meshCache_;
+	std::unordered_map<chunk::ChunkPosition, chunk::Chunk> newChunks_;
+	std::unordered_map<chunk::ChunkPosition, Mesh_ptr> mesh_;
 
 	bool isValid_{ false };
+
+	void generateMesh() {
+
+	}
 
 };
 

@@ -1,10 +1,12 @@
 #include "Mesh/Mesh.h"
 
-Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const texture::TextureAtlas& textureAtlas ) : vertices_( vertices ), indices_( indices ), textureAtlas_( textureAtlas ) {
+Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const texture::TextureAtlas& textureAtlas, const glm::vec3& position ) : 
+	vertices_( vertices ), indices_( indices ), textureAtlas_( textureAtlas ), position_( position ) {
 	setupMesh();
 }
 
-Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, const texture::TextureAtlas& textureAtlas ) : vertices_( std::move( vertices ) ), indices_( std::move( indices ) ), textureAtlas_( textureAtlas ) {
+Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, const texture::TextureAtlas& textureAtlas, const glm::vec3& position ) :
+	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ), textureAtlas_( textureAtlas ), position_( position ) {
 	setupMesh();
 }
 
@@ -35,10 +37,18 @@ void Mesh::setupMesh() {
 }
 
 void Mesh::draw( Renderer& renderer ) {
-	renderer.bindTexture();
-	glActiveTexture( GL_TEXTURE0 );
+	glm::mat4 model = glm::mat4( 1.0f );
+	model = glm::translate( model, position_ );
 
-	glBindVertexArray( hVertexArray_ );
+	renderer.setModelMatrix( model );
+	renderer.update();
+
+	glActiveTexture( GL_TEXTURE0 );
+	renderer.bindTexture();
+
+	glBindVertexArray( hVertexBuffer_ );
+	glBindBuffer( GL_ARRAY_BUFFER, hVertexArray_ );
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
 	glDrawElements( GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0 );
 	glBindVertexArray( 0 );
 }

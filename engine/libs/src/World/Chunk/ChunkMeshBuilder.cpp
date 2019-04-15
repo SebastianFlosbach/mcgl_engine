@@ -108,7 +108,7 @@ Mesh ChunkMeshBuilder::createChunkMesh( const Chunk& chunk, const texture::Textu
 		}
 	}
 
-	return { std::move( vertices_ ), std::move( indices_ ), textureAtlas };
+	return { std::move( vertices_ ), std::move( indices_ ), textureAtlas, { chunk.getPosition().x_ * CHUNK_WIDTH, 0.0, chunk.getPosition().z_ * CHUNK_LENGTH } };
 }
 
 

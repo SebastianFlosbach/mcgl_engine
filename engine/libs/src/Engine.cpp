@@ -277,7 +277,7 @@ void Engine::doDraw() {
 	renderer_->update();
 
 	for( auto& chunkMesh : world_.getMesh( blockLibrary_, renderer_->getTextureAtlas() ) ) {
-		chunkMesh->draw( *renderer_ );
+		chunkMesh.second->draw( *renderer_ );
 	}
 
 	glfwSwapBuffers( window_.get() );

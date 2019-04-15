@@ -6,7 +6,7 @@
 #include <mcgl-engine.h>
 #include <future>
 
-static double movementSpeed = 3.0;
+static double movementSpeed = 10.0;
 static std::promise<void> promiseStop;
 static std::future<void> futureStop;
 
@@ -111,11 +111,20 @@ int main() {
 			}
 		}
 	}
-	AddChunk( 0, 0, chunk );
+
+	for( int x = -10; x < 11; x++ ) {
+		for( int z = -10; z < 11; z++ ) {
+			chunk.setPosition( { x, z } );
+			AddChunk( x, z, chunk );
+		}
+	}
 
 	Draw();
 
-	while( true ){}
+	int x = 0;
+
+	while( true ){
+	}
 
 	return 0;
 }

@@ -8,8 +8,8 @@
 
 class Mesh {
 public:
-	Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const texture::TextureAtlas& textureAtlas );
-	Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, const texture::TextureAtlas& textureAtlas );
+	Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const texture::TextureAtlas& textureAtlas, const glm::vec3& position );
+	Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, const texture::TextureAtlas& textureAtlas, const glm::vec3& position );
 
 	Mesh( const Mesh& other ) = delete;
 	Mesh& operator=( const Mesh& other ) = delete;
@@ -26,7 +26,13 @@ public:
 		this->vertices_ = std::move( other.vertices_ );
 		this->indices_ = std::move( other.indices_ );
 
+		this->position_ = std::move( other.position_ );
+
 		return *this;
+	}
+
+	void setPosition( const glm::vec3& position ) {
+		position_ = position;
 	}
 
 	std::vector<Vertex> vertices_;
@@ -40,8 +46,11 @@ private:
 	unsigned int hVertexArray_;
 	unsigned int hElementBuffer_;
 
+	glm::vec3 position_;
+
 	/*  Functions    */
 	void setupMesh();
+
 };
 
 

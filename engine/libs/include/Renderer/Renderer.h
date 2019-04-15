@@ -67,5 +67,5 @@ private:
 
 	glm::mat4 model_ = glm::mat4( 1.0f );
 	glm::mat4 view_ = glm::mat4( 1.0f );
-	glm::mat4 projection_ = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 100.0f );
+	glm::mat4 projection_ = glm::perspective( glm::radians( 45.0f ), (float)window_.width() / (float)window_.height(), 0.1f, 500.0f );
 };
