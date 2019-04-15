@@ -43,3 +43,6 @@ private:
 	/*  Functions    */
 	void setupMesh();
 };
+
+
+typedef std::unique_ptr<Mesh> Mesh_ptr;

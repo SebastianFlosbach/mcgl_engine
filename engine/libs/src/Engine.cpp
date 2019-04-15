@@ -22,7 +22,9 @@ Engine::Engine( const ILogger& logger ) : logger_( logger ) {
 			std::unique_lock<std::mutex> lock( mQueue_ );
 
 			if( workerQueue_.empty() ) {
-				cvQueue_.wait( lock, [this]() { return workerQueue_.empty(); } );
+				std::cout << "Queue empty: waiting" << std::endl;
+				workerQueue_.wait();
+				std::cout << "finished waiting" << std::endl;
 			}
 
 			doAction( workerQueue_.dequeue() );
@@ -122,12 +124,12 @@ void Engine::removeChunk( const UNUM32 x, const UNUM32 z ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RemoveChunkAction( x, z ) ) );
 }
 
-void Engine::setTextures( texture::TextureAtlas&& textureAtlas ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetTexturesAction( std::move( textureAtlas ) ) ) );
+void Engine::setTextures( const char* texturePath, const NUM32 size, const NUM32 textureCount ) {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetTexturesAction( texturePath, size, textureCount ) ) );
 }
 
-void Engine::setShader( Shader&& shader ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetShaderAction( std::move( shader ) ) ) );
+void Engine::setShader( const char* vertexShaderPath, const char* fragmentShaderPath ) {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetShaderAction( vertexShaderPath, fragmentShaderPath ) ) );
 }
 
 UNUM32 Engine::createCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll ) {
@@ -188,6 +190,10 @@ void Engine::doCreateWindow( const action::CreateWindowAction* data ) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return;
 	}
+
+	glfwSetInputMode( window_.get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
+
+	glEnable( GL_DEPTH_TEST );
 }
 
 void Engine::doCloseWindow() {
@@ -227,11 +233,18 @@ void Engine::doRemoveChunk( const action::RemoveChunkAction* data ) {
 }
 
 void Engine::doSetTextures( action::SetTexturesAction* data ) {
-	renderer_->setTextures( std::move( data->textureAtlas_ ) );
+	texture::TextureAtlas textureAtlas( data->texturePath_, data->size_, data->textureCount_ );
+
+	renderer_->setTextures( std::move( textureAtlas ) );
 }
 
 void Engine::doSetShader( action::SetShaderAction* data ) {
-	renderer_->setShader( std::move( data->shader_ ) );
+	Shader shader = Shader();
+	shader.addVertexShader( data->vertexShaderPath_ );
+	shader.addFragmentShader( data->fragmentShaderPath_ );
+	shader.compile();
+
+	renderer_->setShader( std::move( shader ) );
 }
 
 void Engine::doCreateCamera( const action::CreateCameraAction* data ) {
@@ -252,7 +265,26 @@ void Engine::doRun() {
 }
 
 void Engine::doDraw() {
+	float currentFrame = glfwGetTime();
+	deltaTime_ = currentFrame - lastFrame_;
+	lastFrame_ = currentFrame;
 
+	glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+
+	renderer_->use();
+	renderer_->setViewMatrix( camera_.getView() );
+	renderer_->update();
+
+	for( auto& chunkMesh : world_.getMesh( blockLibrary_, renderer_->getTextureAtlas() ) ) {
+		chunkMesh->draw( *renderer_ );
+	}
+
+	glfwSwapBuffers( window_.get() );
+	glfwPollEvents();
+	KeyEventHandler::pollEvents();
+
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::DrawAction() ) );
 }
 
 void Engine::doStop() {

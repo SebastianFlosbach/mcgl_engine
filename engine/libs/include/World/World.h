@@ -26,13 +26,19 @@ public:
 
 	void addChunk( const int x, const int z, const chunk::Chunk& chunk ) {
 		chunks_.insert( { { x, z }, chunk } );
+		isValid_ = false;
 	}
 
 	void removeChunk( const int x, const int z ) {
 		chunks_.erase( { x, z } );
+		isValid_ = false;
 	}
 
-	std::vector<std::unique_ptr<Mesh>> generateMesh( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas ) {
+	std::vector<Mesh_ptr>& getMesh( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas ) {
+		if( isValid_ ) {
+			return meshCache_;
+		}
+
 		chunk::ChunkMeshBuilder meshBuilder( blockLibrary );
 		std::vector<std::unique_ptr<Mesh>> mesh( chunks_.size() );
 
@@ -41,11 +47,17 @@ public:
 			mesh[i++] = std::make_unique<Mesh>( meshBuilder.createChunkMesh( chunk.second, textureAtlas ) );
 		}
 
-		return mesh;
+		meshCache_ = std::move( mesh );
+		isValid_ = true;
+
+		return meshCache_;
 	}
 
 private:
 	std::unordered_map<chunk::ChunkPosition, chunk::Chunk> chunks_;
+	std::vector<Mesh_ptr> meshCache_;
+
+	bool isValid_{ false };
 
 };
 

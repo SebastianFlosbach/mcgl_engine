@@ -38,8 +38,8 @@ public:
 	void addChunk( const NUM32 x, const NUM32 z, const world::chunk::Chunk& chunk );
 	void removeChunk( const UNUM32 x, const UNUM32 z );
 
-	void setTextures( texture::TextureAtlas&& textureAtlas );
-	void setShader( Shader&& shader );
+	void setTextures( const char* texturePath, const NUM32 size, const NUM32 textureCount );
+	void setShader( const char* vertexShaderPath, const char* fragmentShaderPath );
 
 	UNUM32 createCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll = 0.0 );
 	void moveCamera( const UNUM32 cameraId, const double dx, const double dy, const double dz );

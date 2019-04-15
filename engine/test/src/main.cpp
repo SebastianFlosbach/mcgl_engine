@@ -82,6 +82,8 @@ void statusEventCallback( const StatusEvent& statusEvent ) {
 	}
 }
 
+static const float frameTime = 1.0f / 60.0f;
+
 int main() {
 	promiseStop = std::promise<void>();
 	futureStop = promiseStop.get_future();
@@ -98,22 +100,22 @@ int main() {
 	SetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
 	SetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
 
-	//RegisterBlockType( { true }, 0 );
-	//RegisterBlockType( { false, 2, 2, 2, 2, 0, 1 }, 1 );
+	RegisterBlockType( { true }, 0 );
+	RegisterBlockType( { false, 2, 2, 2, 2, 0, 1 }, 1 );
 
-	//world::chunk::Chunk chunk = world::chunk::Chunk();
-	//for ( int x = 0; x < world::chunk::CHUNK_WIDTH; x++ ) {
-	//	for ( int z = 0; z < world::chunk::CHUNK_LENGTH; z++ ) {
-	//		for ( int y = 0; y < 5; y++ ) {
-	//			chunk.setBlock( 1, x, y, z );
-	//		}
-	//	}
-	//}
-	//AddChunk( 0, 0, chunk );
-
-	while( true ) {
-		Draw();
+	world::chunk::Chunk chunk = world::chunk::Chunk();
+	for ( int x = 0; x < world::chunk::CHUNK_WIDTH; x++ ) {
+		for ( int z = 0; z < world::chunk::CHUNK_LENGTH; z++ ) {
+			for ( int y = 0; y < 5; y++ ) {
+				chunk.setBlock( 1, x, y, z );
+			}
+		}
 	}
+	AddChunk( 0, 0, chunk );
+
+	Draw();
+
+	while( true ){}
 
 	return 0;
 }

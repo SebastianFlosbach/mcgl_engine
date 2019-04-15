@@ -10,11 +10,12 @@ namespace action {
 
 struct SetShaderAction : public Action {
 public:
-	SetShaderAction( Shader&& shader ) : shader_( std::move( shader ) ) {}
+	SetShaderAction( const char* vertexShaderPath, const char* fragmentShaderPath ) : vertexShaderPath_( vertexShaderPath ), fragmentShaderPath_( fragmentShaderPath ) {}
 
 	ActionType type() const override { return ActionType::SetShaderAction; }
 
-	Shader shader_;
+	const char* vertexShaderPath_{ nullptr };
+	const char* fragmentShaderPath_{ nullptr };
 };
 
 

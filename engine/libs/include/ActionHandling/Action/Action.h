@@ -27,6 +27,8 @@ namespace action {
 		StopAction,
 	};
 
+	const char* to_string( const ActionType type );
+
 	struct Action {
 	public:
 		virtual ActionType type() const = 0;

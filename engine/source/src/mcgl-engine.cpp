@@ -85,9 +85,7 @@ void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textu
 
 	info(*logger, "[MCGL-ENGINE] SetTextures");
 
-	texture::TextureAtlas textureAtlas( path, textureSize, textureCount );
-
-	engine->setTextures( std::move( textureAtlas ) );
+	engine->setTextures( path, textureSize, textureCount );
 }
 
 void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath ) {
@@ -95,15 +93,10 @@ void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath ) {
 
 	info(*logger, "[MCGL-ENGINE] SetShader");
 
-	Shader shader = Shader();
-	shader.addVertexShader( vertexShaderPath );
-	shader.addFragmentShader( fragmentShaderPath );
-	shader.compile();
-
-	engine->setShader( std::move( shader ) );
+	engine->setShader( vertexShaderPath, fragmentShaderPath );
 }
 
-void AddChunk( const NUM32 x, const NUM32 z, const world::chunk::Chunk& chunk ) {
+void AddChunk( const UNUM32 x, const UNUM32 z, const world::chunk::Chunk& chunk ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] AddChunk" );
