@@ -96,7 +96,7 @@ void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath ) {
 	engine->setShader( vertexShaderPath, fragmentShaderPath );
 }
 
-void AddChunk( const UNUM32 x, const UNUM32 z, const world::chunk::Chunk& chunk ) {
+void AddChunk( const NUM32 x, const NUM32 z, const world::chunk::Chunk& chunk ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] AddChunk" );

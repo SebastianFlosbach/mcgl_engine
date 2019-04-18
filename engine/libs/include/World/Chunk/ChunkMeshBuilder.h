@@ -2,11 +2,14 @@
 
 #include <vector>
 
-#include "Chunk.h"
-#include "../Block/BlockLibrary.h"
-#include "../../Mesh/Mesh.h"
+#include "World/Chunk/Chunk.h"
+#include "World/Block/BlockLibrary.h"
+#include "Mesh/Mesh.h"
+
 
 namespace world {
+	class World;
+
 namespace chunk {
 
 
@@ -15,7 +18,7 @@ public:
 	ChunkMeshBuilder( const block::BlockLibrary& blockLibrary ) : blockLibrary_( blockLibrary ) {
 	}
 
-	Mesh createChunkMesh( const Chunk& chunk, const texture::TextureAtlas& textureAtlas );
+	Mesh_ptr createChunkMesh( const int x, const int z, const World& world, const texture::TextureAtlas& textureAtlas );
 
 private:
 

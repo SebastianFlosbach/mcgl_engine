@@ -1,14 +1,23 @@
 #include "World/Chunk/ChunkMeshBuilder.h"
 
+#include "World/World.h"
+
 
 namespace world {
 namespace chunk {
 
 
-Mesh ChunkMeshBuilder::createChunkMesh( const Chunk& chunk, const texture::TextureAtlas& textureAtlas ) {
+Mesh_ptr ChunkMeshBuilder::createChunkMesh( const int xChunk, const int zChunk, const World& world, const texture::TextureAtlas& textureAtlas ) {
 	indexBase_ = 0;
 	vertices_.clear();
 	indices_.clear();
+
+	auto* chunk_ptr = world.getChunk( xChunk, zChunk );
+	if( chunk_ptr == nullptr ) {
+		throw std::runtime_error( "Could not create mesh. Chunk does not exist" );
+	}
+
+	auto chunk = *chunk_ptr;
 
 	for ( int x = 0; x < CHUNK_WIDTH; x++ ) {
 		for ( int y = 0; y < CHUNK_HEIGHT; y++ ) {
@@ -19,10 +28,20 @@ Mesh ChunkMeshBuilder::createChunkMesh( const Chunk& chunk, const texture::Textu
 					continue;
 				}
 
-				unsigned int neighbourId;
+				unsigned int neighbourId = 0;
 
 				// Left
-				neighbourId = chunk.getBlockId( x - 1, y, z );
+				if( x == 0 ) {
+					auto* neighbourChunk = world.getChunk( xChunk - 1, zChunk );
+					if( neighbourChunk != nullptr ) {
+						neighbourId = neighbourChunk->getBlockId( CHUNK_WIDTH - 1, y, z );
+					} else {
+						neighbourId = -1;
+					}
+				} else {
+					neighbourId = chunk.getBlockId( x - 1, y, z );
+				}
+
 				if ( neighbourId == -1 || blockLibrary_.getBlock( neighbourId ).isTransparent_ ) {
 					auto texCoords = textureAtlas.getTextureCoords( blockLibrary_.getBlock( blockId ).leftTexture_ );
 
@@ -36,7 +55,17 @@ Mesh ChunkMeshBuilder::createChunkMesh( const Chunk& chunk, const texture::Textu
 				}
 
 				// Right
-				neighbourId = chunk.getBlockId( x + 1, y, z );
+				if( x == CHUNK_WIDTH - 1 ) {
+					auto* neighbourChunk = world.getChunk( xChunk + 1, zChunk );
+					if( neighbourChunk != nullptr ) {
+						neighbourId = neighbourChunk->getBlockId( 0, y, z );
+					} else {
+						neighbourId = -1;
+					}
+				} else {
+					neighbourId = chunk.getBlockId( x + 1, y, z );
+				}
+
 				if ( neighbourId == -1 || blockLibrary_.getBlock( neighbourId ).isTransparent_ ) {
 					auto texCoords = textureAtlas.getTextureCoords( blockLibrary_.getBlock( blockId ).rightTexture_ );
 
@@ -77,8 +106,18 @@ Mesh ChunkMeshBuilder::createChunkMesh( const Chunk& chunk, const texture::Textu
 					addIndices();
 				}
 
-				// Front
-				neighbourId = chunk.getBlockId( x, y, z - 1 );
+				//Front
+				if( z == 0 ) {
+					auto* neighbourChunk = world.getChunk( xChunk, zChunk - 1 );
+					if( neighbourChunk != nullptr ) {
+						neighbourId = neighbourChunk->getBlockId( x, y, CHUNK_LENGTH - 1 );
+					} else {
+						neighbourId = -1;
+					}
+				} else {
+					neighbourId = chunk.getBlockId( x, y, z - 1 );
+				}
+
 				if ( neighbourId == -1 || blockLibrary_.getBlock( neighbourId ).isTransparent_ ) {
 					auto texCoords = textureAtlas.getTextureCoords( blockLibrary_.getBlock( blockId ).frontTexture_ );
 
@@ -91,8 +130,18 @@ Mesh ChunkMeshBuilder::createChunkMesh( const Chunk& chunk, const texture::Textu
 					addIndices();
 				}
 
-				// Back
-				neighbourId = chunk.getBlockId( x, y, z + 1 );
+				//Back
+				if( z == CHUNK_LENGTH - 1 ) {
+					auto* neighbourChunk = world.getChunk( xChunk, zChunk + 1 );
+					if( neighbourChunk != nullptr ) {
+						neighbourId = neighbourChunk->getBlockId( x, y, 0 );
+					} else {
+						neighbourId = -1;
+					}
+				} else {
+					neighbourId = chunk.getBlockId( x, y, z + 1 );
+				}
+
 				if ( neighbourId == -1 || blockLibrary_.getBlock( neighbourId ).isTransparent_ ) {
 					auto texCoords = textureAtlas.getTextureCoords( blockLibrary_.getBlock( blockId ).backTexture_ );
 
@@ -108,7 +157,7 @@ Mesh ChunkMeshBuilder::createChunkMesh( const Chunk& chunk, const texture::Textu
 		}
 	}
 
-	return { std::move( vertices_ ), std::move( indices_ ), textureAtlas, { chunk.getPosition().x_ * CHUNK_WIDTH, 0.0, chunk.getPosition().z_ * CHUNK_LENGTH } };
+	return std::unique_ptr<Mesh>( new Mesh( std::move( vertices_ ), std::move( indices_ ), textureAtlas, { chunk.getPosition().x_ * (int)CHUNK_WIDTH, 0.0, chunk.getPosition().z_ * (int)CHUNK_LENGTH } ) );
 }
 
 

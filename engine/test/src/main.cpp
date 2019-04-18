@@ -101,7 +101,7 @@ int main() {
 	SetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
 
 	RegisterBlockType( { true }, 0 );
-	RegisterBlockType( { false, 2, 2, 2, 2, 0, 1 }, 1 );
+	RegisterBlockType( { false, 5, 4, 2, 3, 0, 1 }, 1 );
 
 	world::chunk::Chunk chunk = world::chunk::Chunk();
 	for ( int x = 0; x < world::chunk::CHUNK_WIDTH; x++ ) {
@@ -112,12 +112,21 @@ int main() {
 		}
 	}
 
-	for( int x = -10; x < 11; x++ ) {
-		for( int z = -10; z < 11; z++ ) {
-			chunk.setPosition( { x, z } );
-			AddChunk( x, z, chunk );
-		}
-	}
+	//for( int x = -10; x < 11; x++ ) {
+	//	for( int z = -10; z < 11; z++ ) {
+	//		chunk.setPosition( { x, z } );
+	//		AddChunk( x, z, chunk );
+	//	}
+	//}
+
+	chunk.setPosition( { 0, 0 } );
+	AddChunk( 0, 0, chunk );
+
+	chunk.setPosition( { -1, 0 } );
+	AddChunk( -1, 0, chunk );
+
+	chunk.setPosition( { 0, -1 } );
+	AddChunk( 0, -1, chunk );
 
 	Draw();
 
