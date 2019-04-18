@@ -144,6 +144,10 @@ void RegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) {
 	engine->registerStatusEventCallback( callback );
 }
 
+void Set( MCGL_CONFIG config, void* data ) {
+	throw std::runtime_error( "Not implemented" );
+}
+
 float GetDeltaTime() {
 	if ( !checkEngine() ) return -1.0f;
 

@@ -27,4 +27,6 @@ MCGL_ENGINE_EXTERN void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callba
 MCGL_ENGINE_EXTERN void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
 MCGL_ENGINE_EXTERN void RegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
 
+MCGL_ENGINE_EXTERN void Set( MCGL_CONFIG config, void* data );
+
 MCGL_ENGINE_EXTERN float GetDeltaTime();

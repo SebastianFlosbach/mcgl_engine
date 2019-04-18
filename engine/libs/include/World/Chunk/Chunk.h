@@ -2,37 +2,12 @@
 
 #include <glm/glm.hpp>
 
-#include "../Block/Block.h"
+#include "World/Block/Block.h"
+#include "Helper/WorldChunkCoordinates.h"
 
 
 namespace world {
 namespace chunk {
-
-struct ChunkPosition {
-	ChunkPosition( int x, int z ) : x_( x ), z_( z ) {}
-
-	ChunkPosition( const ChunkPosition& other ) {
-		*this = other;
-	}
-
-	ChunkPosition& operator=( const ChunkPosition& other ) {
-		if( this == &other ) {
-			return *this;
-		}
-
-		x_ = other.x_;
-		z_ = other.z_;
-
-		return *this;
-	}
-
-	int x_;
-	int z_;
-};
-
-constexpr unsigned int CHUNK_WIDTH = 16;
-constexpr unsigned int CHUNK_LENGTH = 16;
-constexpr unsigned int CHUNK_HEIGHT = 128;
 
 struct Chunk {
 public:
@@ -67,11 +42,11 @@ public:
 		return blocks_[x][y][z];
 	}
 
-	void setPosition( const ChunkPosition& position ) {
+	void setPosition( const ChunkCoordinates& position ) {
 		position_ = position;
 	}
 
-	const ChunkPosition& getPosition() const {
+	const ChunkCoordinates& getPosition() const {
 		return position_;
 	}
 
@@ -79,7 +54,7 @@ public:
 
 private:
 	unsigned int blocks_[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_LENGTH]{ 0 };
-	ChunkPosition position_{ 0, 0 };
+	ChunkCoordinates position_{ 0, 0 };
 
 };
 
@@ -90,20 +65,20 @@ private:
 namespace std {
 
 template<>
-struct hash<world::chunk::ChunkPosition> {
-	size_t operator()( const world::chunk::ChunkPosition& chunkPosition ) const noexcept {
+struct hash<ChunkCoordinates> {
+	size_t operator()( const ChunkCoordinates& ChunkCoordinates ) const noexcept {
 		int x, z;
 
-		if ( chunkPosition.x_ >= 0 ) {
-			x = chunkPosition.x_ * 2;
+		if ( ChunkCoordinates.x_ >= 0 ) {
+			x = ChunkCoordinates.x_ * 2;
 		} else {
-			x = -chunkPosition.x_ * 2 - 1;
+			x = -ChunkCoordinates.x_ * 2 - 1;
 		}
 
-		if ( chunkPosition.z_ >= 0 ) {
-			z = chunkPosition.z_ * 2;
+		if ( ChunkCoordinates.z_ >= 0 ) {
+			z = ChunkCoordinates.z_ * 2;
 		} else {
-			z = -chunkPosition.z_ * 2 - 1;
+			z = -ChunkCoordinates.z_ * 2 - 1;
 		}
 
 		return ((x + z) * (x + z + 1) / 2) * z;
@@ -111,8 +86,8 @@ struct hash<world::chunk::ChunkPosition> {
 };
 
 template<>
-struct equal_to<world::chunk::ChunkPosition> {
-	constexpr bool operator()( const world::chunk::ChunkPosition& left, const world::chunk::ChunkPosition& right ) const {	// apply operator== to operands
+struct equal_to<ChunkCoordinates> {
+	constexpr bool operator()( const ChunkCoordinates& left, const ChunkCoordinates& right ) const {	// apply operator== to operands
 		return left.x_ == right.x_ && left.z_ == right.z_;
 	}
 };

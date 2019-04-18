@@ -8,7 +8,7 @@
 #include "Block/BlockLibrary.h"
 #include "Texture/TextureAtlas.h"
 #include "Mesh/Mesh.h"
-#include "Shader.h"
+#include "Helper/WorldChunkCoordinates.h"
 
 
 namespace world {
@@ -33,22 +33,22 @@ public:
 
 		if( worldChunks_.find( { x + 1, z } ) != worldChunks_.end() ) {
 			mesh_.erase( { x + 1, z } );
-			mesh_.insert( { chunk::ChunkPosition( x + 1, z ), pChunkMeshBuilder_->createChunkMesh( x + 1, z, *this ) } );
+			mesh_.insert( { ChunkCoordinates( x + 1, z ), pChunkMeshBuilder_->createChunkMesh( x + 1, z, *this ) } );
 		}
 
 		if( worldChunks_.find( { x - 1, z } ) != worldChunks_.end() ) {
 			mesh_.erase( { x - 1, z } );
-			mesh_.insert( { chunk::ChunkPosition( x - 1, z ), pChunkMeshBuilder_->createChunkMesh( x - 1, z, *this ) } );
+			mesh_.insert( { ChunkCoordinates( x - 1, z ), pChunkMeshBuilder_->createChunkMesh( x - 1, z, *this ) } );
 		}
 		
 		if( worldChunks_.find( { x, z + 1 } ) != worldChunks_.end() ) {
 			mesh_.erase( { x, z + 1 } );
-			mesh_.insert( { chunk::ChunkPosition( x, z + 1 ), pChunkMeshBuilder_->createChunkMesh( x, z + 1, *this ) } );
+			mesh_.insert( { ChunkCoordinates( x, z + 1 ), pChunkMeshBuilder_->createChunkMesh( x, z + 1, *this ) } );
 		}		
 		
 		if( worldChunks_.find( { x, z - 1 } ) != worldChunks_.end() ) {
 			mesh_.erase( { x, z - 1 } );
-			mesh_.insert( { chunk::ChunkPosition( x, z - 1 ), pChunkMeshBuilder_->createChunkMesh( x, z - 1, *this ) } );
+			mesh_.insert( { ChunkCoordinates( x, z - 1 ), pChunkMeshBuilder_->createChunkMesh( x, z - 1, *this ) } );
 		}
 
 		mesh_.insert( { position, pChunkMeshBuilder_->createChunkMesh( x, z, *this ) } );
@@ -67,13 +67,13 @@ public:
 		return nullptr;
 	}
 
-	std::unordered_map<chunk::ChunkPosition, Mesh_ptr>& getMesh() {
+	std::unordered_map<ChunkCoordinates, Mesh_ptr>& getMesh() {
 		return mesh_;
 	}
 
 private:
-	std::unordered_map<chunk::ChunkPosition, chunk::Chunk> worldChunks_;
-	std::unordered_map<chunk::ChunkPosition, Mesh_ptr> mesh_;
+	std::unordered_map<ChunkCoordinates, chunk::Chunk> worldChunks_;
+	std::unordered_map<ChunkCoordinates, Mesh_ptr> mesh_;
 
 	std::unique_ptr<chunk::ChunkMeshBuilder> pChunkMeshBuilder_;
 
