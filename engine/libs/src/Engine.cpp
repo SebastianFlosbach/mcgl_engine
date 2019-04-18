@@ -76,7 +76,7 @@ void Engine::doAction( action::Action_ptr& action ) {
 		doRotateCamera( static_cast<action::RotateCameraAction*>( action.get() ) );
 		break;
 	case action::ActionType::RunAction:
-		doRun();
+		doDraw();
 		break;
 	case action::ActionType::SetShaderAction:
 		doSetShader( static_cast<action::SetShaderAction*>( action.get() ) );
@@ -158,10 +158,6 @@ void Engine::rotateCamera( const UNUM32 cameraId, const double pitch, const doub
 
 void Engine::run() {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RunAction() ) );
-}
-
-void Engine::draw() {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::DrawAction() ) );
 }
 
 void Engine::stop() {
@@ -258,10 +254,6 @@ void Engine::doMoveCamera( const action::MoveCameraAction* data ) {
 
 void Engine::doRotateCamera( const action::RotateCameraAction* data ) {
 	camera_.rotate( data->pitch_, data->yaw_, data->roll_ );
-}
-
-void Engine::doRun() {
-
 }
 
 void Engine::doDraw() {

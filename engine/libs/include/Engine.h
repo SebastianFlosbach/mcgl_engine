@@ -46,7 +46,6 @@ public:
 	void rotateCamera( const UNUM32 cameraId, const double pitch, const double yaw, const double roll = 0.0 );
 
 	void run();
-	void draw();
 	void stop();
 
 private:
@@ -69,7 +68,6 @@ private:
 	void doMoveCamera( const action::MoveCameraAction* data );
 	void doRotateCamera( const action::RotateCameraAction* data );
 
-	void doRun();
 	void doDraw();
 	void doStop();
 

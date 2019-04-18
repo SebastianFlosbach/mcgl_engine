@@ -60,12 +60,6 @@ void Run() {
 	engine->run();
 }
 
-void Draw() {
-	if( !checkEngine() ) return;
-
-	engine->draw();
-}
-
 void Stop() {
 	if ( !checkEngine() ) return;
 
