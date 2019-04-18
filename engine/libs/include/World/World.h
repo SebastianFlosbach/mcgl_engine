@@ -15,7 +15,7 @@ namespace world {
 
 class World {
 public:
-	World() = default;
+	World( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas ) : pChunkMeshBuilder_( new chunk::ChunkMeshBuilder( blockLibrary, textureAtlas ) ) {}
 
 	World( const World& other ) = delete;
 	World& operator=( const World& other ) = delete;
@@ -23,19 +23,40 @@ public:
 	World( World&& other ) = delete;
 	World& operator=( World&& other ) = delete;
 
-	void addChunk( const int x, const int z, const chunk::Chunk& chunk ) {
-		newChunks_.insert( { { x, z }, chunk } );
-		isValid_ = false;
+	void addChunk( const chunk::Chunk& chunk ) {
+		worldChunks_.insert( { { chunk.getPosition().x_, chunk.getPosition().z_ }, chunk } );
+
+		auto& position = chunk.getPosition();
+
+		auto x = position.x_;
+		auto z = position.z_;
+
+		if( worldChunks_.find( { x + 1, z } ) != worldChunks_.end() ) {
+			mesh_.erase( { x + 1, z } );
+			mesh_.insert( { chunk::ChunkPosition( x + 1, z ), pChunkMeshBuilder_->createChunkMesh( x + 1, z, *this ) } );
+		}
+
+		if( worldChunks_.find( { x - 1, z } ) != worldChunks_.end() ) {
+			mesh_.erase( { x - 1, z } );
+			mesh_.insert( { chunk::ChunkPosition( x - 1, z ), pChunkMeshBuilder_->createChunkMesh( x - 1, z, *this ) } );
+		}
+		
+		if( worldChunks_.find( { x, z + 1 } ) != worldChunks_.end() ) {
+			mesh_.erase( { x, z + 1 } );
+			mesh_.insert( { chunk::ChunkPosition( x, z + 1 ), pChunkMeshBuilder_->createChunkMesh( x, z + 1, *this ) } );
+		}		
+		
+		if( worldChunks_.find( { x, z - 1 } ) != worldChunks_.end() ) {
+			mesh_.erase( { x, z - 1 } );
+			mesh_.insert( { chunk::ChunkPosition( x, z - 1 ), pChunkMeshBuilder_->createChunkMesh( x, z - 1, *this ) } );
+		}
+
+		mesh_.insert( { position, pChunkMeshBuilder_->createChunkMesh( x, z, *this ) } );
 	}
 
 	void removeChunk( const int x, const int z ) {
-		if( worldChunks_.find( { x, z } ) != worldChunks_.end() ) {
-			worldChunks_.erase( { x, z } );
-			mesh_.erase( { x, z } );
-		} else if( newChunks_.find( { x, z } ) != newChunks_.end() ) {
-			newChunks_.erase( { x, z } );
-		}
-		isValid_ = false;
+		worldChunks_.erase( { x, z } );
+		mesh_.erase( { x, z } );
 	}
 
 	const chunk::Chunk* getChunk( const int x, const int z ) const {
@@ -43,36 +64,18 @@ public:
 			return &worldChunks_.at( { x, z } );
 		}
 
-		if( newChunks_.find( { x, z } ) != newChunks_.end() ) {
-			return &newChunks_.at( { x, z } );
-		}
-
 		return nullptr;
 	}
 
-	std::unordered_map<chunk::ChunkPosition, Mesh_ptr>& getMesh( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas ) {
-		if( !isValid_ ) {
-			chunk::ChunkMeshBuilder meshBuilder( blockLibrary );
-
-			for ( auto& chunk : newChunks_ ) {
-				mesh_.insert( { chunk.first, meshBuilder.createChunkMesh( chunk.first.x_, chunk.first.z_, *this, textureAtlas ) } );
-			}
-
-			worldChunks_.insert( newChunks_.begin(), newChunks_.end() );
-			newChunks_.clear();
-
-			isValid_ = true;
-		}
-
+	std::unordered_map<chunk::ChunkPosition, Mesh_ptr>& getMesh() {
 		return mesh_;
 	}
 
 private:
-	std::unordered_map<chunk::ChunkPosition, chunk::Chunk> newChunks_;
 	std::unordered_map<chunk::ChunkPosition, chunk::Chunk> worldChunks_;
 	std::unordered_map<chunk::ChunkPosition, Mesh_ptr> mesh_;
 
-	bool isValid_{ false };
+	std::unique_ptr<chunk::ChunkMeshBuilder> pChunkMeshBuilder_;
 
 };
 

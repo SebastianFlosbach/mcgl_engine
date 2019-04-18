@@ -35,7 +35,7 @@ public:
 	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
 	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
 	void registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
-	void addChunk( const NUM32 x, const NUM32 z, const world::chunk::Chunk& chunk );
+	void addChunk( const world::chunk::Chunk& chunk );
 	void removeChunk( const UNUM32 x, const UNUM32 z );
 
 	void setTextures( const char* texturePath, const NUM32 size, const NUM32 textureCount );
@@ -73,6 +73,14 @@ private:
 	void doDraw();
 	void doStop();
 
+	inline world::World& getWorld() {
+		if( !pWorld_ ) {
+			pWorld_ = std::make_unique<world::World>( blockLibrary_, pRenderer_->getTextureAtlas() );
+		}
+
+		return *pWorld_;
+	}
+
 	const ILogger& logger_;
 
 	std::thread workerThread_;
@@ -84,8 +92,8 @@ private:
 	Window window_;
 
 	world::block::BlockLibrary blockLibrary_{};
-	world::World world_{};
-	std::unique_ptr<Renderer> renderer_;
+	std::unique_ptr<world::World> pWorld_;
+	std::unique_ptr<Renderer> pRenderer_;
 	Camera camera_;
 
 	MCGL_STATUS_EVENT_CALLBACK statusCallback_;

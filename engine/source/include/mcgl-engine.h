@@ -18,7 +18,7 @@ MCGL_ENGINE_EXTERN void Stop();
 MCGL_ENGINE_EXTERN void RegisterBlockType( const world::block::Block& block, NUM32 id );
 MCGL_ENGINE_EXTERN void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textureCount );
 MCGL_ENGINE_EXTERN void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath );
-MCGL_ENGINE_EXTERN void AddChunk( const NUM32 x, const NUM32 z, const world::chunk::Chunk& chunk );
+MCGL_ENGINE_EXTERN void AddChunk( const world::chunk::Chunk& chunk );
 
 MCGL_ENGINE_EXTERN UNUM32 CreateCamera( const double x = 0.0, const double y = 0.0, const double z = 0.0, const double pitch = 1.0, const double yaw = 0.0, const double roll = 0.0 );
 MCGL_ENGINE_EXTERN void MoveCamera( const UNUM32 cameraId, const double dx, const double dy, const double dz );

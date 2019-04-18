@@ -15,10 +15,10 @@ namespace chunk {
 
 class ChunkMeshBuilder {
 public:
-	ChunkMeshBuilder( const block::BlockLibrary& blockLibrary ) : blockLibrary_( blockLibrary ) {
+	ChunkMeshBuilder( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas ) : blockLibrary_( blockLibrary ), textureAtlas_( textureAtlas ) {
 	}
 
-	Mesh_ptr createChunkMesh( const int x, const int z, const World& world, const texture::TextureAtlas& textureAtlas );
+	Mesh_ptr createChunkMesh( const int x, const int z, const World& world );
 
 private:
 
@@ -26,6 +26,7 @@ private:
 	std::vector<unsigned int> indices_;
 
 	const block::BlockLibrary& blockLibrary_;
+	const texture::TextureAtlas& textureAtlas_;
 
 	unsigned int indexBase_ = 0;
 
@@ -39,6 +40,13 @@ private:
 		
 		indexBase_ += 4;
 	}
+
+	inline void left( const int x, const int y, const int z, const int xChunk, const int zChunk, unsigned int& neighbourId, const World& world, const Chunk& chunk, const texture::TextureAtlas& textureAtlas, const unsigned int blockId );
+	inline void right( const int x, const int y, const int z, const int xChunk, const int zChunk, unsigned int& neighbourId, const World& world, const Chunk& chunk, const texture::TextureAtlas& textureAtlas, const unsigned int blockId );
+	inline void top( const int x, const int y, const int z, const int xChunk, const int zChunk, unsigned int& neighbourId, const World& world, const Chunk& chunk, const texture::TextureAtlas& textureAtlas, const unsigned int blockId );
+	inline void bottom( const int x, const int y, const int z, const int xChunk, const int zChunk, unsigned int& neighbourId, const World& world, const Chunk& chunk, const texture::TextureAtlas& textureAtlas, const unsigned int blockId );
+	inline void front( const int x, const int y, const int z, const int xChunk, const int zChunk, unsigned int& neighbourId, const World& world, const Chunk& chunk, const texture::TextureAtlas& textureAtlas, const unsigned int blockId );
+	inline void back( const int x, const int y, const int z, const int xChunk, const int zChunk, unsigned int& neighbourId, const World& world, const Chunk& chunk, const texture::TextureAtlas& textureAtlas, const unsigned int blockId );
 
 };
 

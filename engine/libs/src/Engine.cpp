@@ -116,8 +116,8 @@ void Engine::registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) 
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RegisterStatusEventCallbackAction( callback ) ) );
 }
 
-void Engine::addChunk( const NUM32 x, const NUM32 z, const world::chunk::Chunk& chunk ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddChunkAction( x, z, chunk ) ) );
+void Engine::addChunk( const world::chunk::Chunk& chunk ) {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddChunkAction( chunk ) ) );
 }
 
 void Engine::removeChunk( const UNUM32 x, const UNUM32 z ) {
@@ -178,7 +178,7 @@ void Engine::doEngine() {
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
 	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 
-	renderer_ = std::make_unique<Renderer>();
+	pRenderer_ = std::make_unique<Renderer>();
 }
 
 void Engine::doCreateWindow( const action::CreateWindowAction* data ) {
@@ -225,17 +225,17 @@ void Engine::doRegisterStatusEventCallback( const action::RegisterStatusEventCal
 }
 
 void Engine::doAddChunk( const action::AddChunkAction* data ) {
-	world_.addChunk( data->x_, data->z_, data->chunk_ );
+	getWorld().addChunk( data->chunk_ );
 }
 
 void Engine::doRemoveChunk( const action::RemoveChunkAction* data ) {
-	world_.removeChunk( data->x_, data->z_ );
+	getWorld().removeChunk( data->x_, data->z_ );
 }
 
 void Engine::doSetTextures( action::SetTexturesAction* data ) {
 	texture::TextureAtlas textureAtlas( data->texturePath_, data->size_, data->textureCount_ );
 
-	renderer_->setTextures( std::move( textureAtlas ) );
+	pRenderer_->setTextures( std::move( textureAtlas ) );
 }
 
 void Engine::doSetShader( action::SetShaderAction* data ) {
@@ -244,7 +244,7 @@ void Engine::doSetShader( action::SetShaderAction* data ) {
 	shader.addFragmentShader( data->fragmentShaderPath_ );
 	shader.compile();
 
-	renderer_->setShader( std::move( shader ) );
+	pRenderer_->setShader( std::move( shader ) );
 }
 
 void Engine::doCreateCamera( const action::CreateCameraAction* data ) {
@@ -272,12 +272,12 @@ void Engine::doDraw() {
 	glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	renderer_->use();
-	renderer_->setViewMatrix( camera_.getView() );
-	renderer_->update();
+	pRenderer_->use();
+	pRenderer_->setViewMatrix( camera_.getView() );
+	pRenderer_->update();
 
-	for( auto& chunkMesh : world_.getMesh( blockLibrary_, renderer_->getTextureAtlas() ) ) {
-		chunkMesh.second->draw( *renderer_ );
+	for( auto& chunkMesh : getWorld().getMesh() ) {
+		chunkMesh.second->draw( *pRenderer_ );
 	}
 
 	glfwSwapBuffers( window_.get() );
