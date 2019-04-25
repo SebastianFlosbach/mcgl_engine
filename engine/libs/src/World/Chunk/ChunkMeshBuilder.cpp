@@ -1,10 +1,23 @@
 #include "World/Chunk/ChunkMeshBuilder.h"
 
 #include "World/World.h"
+#include "World/Block/BlockLibrary.h"
+#include "World/Chunk/Chunk.h"
 
 
 namespace world {
 	namespace chunk {
+
+		void ChunkMeshBuilder::addIndices() {
+			indices_.push_back( indexBase_ + 0 );
+			indices_.push_back( indexBase_ + 1 );
+			indices_.push_back( indexBase_ + 3 );
+			indices_.push_back( indexBase_ + 1 );
+			indices_.push_back( indexBase_ + 2 );
+			indices_.push_back( indexBase_ + 3 );
+
+			indexBase_ += 4;
+		}
 
 		void ChunkMeshBuilder::left( const int x, const int y, const int z, const int xChunk, const int zChunk, unsigned int& neighbourId, const World& world, const Chunk& chunk, const texture::TextureAtlas& textureAtlas, const unsigned int blockId ) {
 			if( x == 0 ) {
@@ -136,7 +149,7 @@ namespace world {
 			}
 		}
 
-		Mesh_ptr ChunkMeshBuilder::createChunkMesh( const int xChunk, const int zChunk, const World& world ) {
+		Mesh* ChunkMeshBuilder::createChunkMesh( const int xChunk, const int zChunk, const World& world ) {
 			indexBase_ = 0;
 			vertices_.clear();
 			indices_.clear();
@@ -170,7 +183,7 @@ namespace world {
 				}
 			}
 
-			return std::unique_ptr<Mesh>( new Mesh( std::move( vertices_ ), std::move( indices_ ), textureAtlas_, { chunk.getPosition().x_ * (int)CHUNK_WIDTH, 0.0, chunk.getPosition().z_ * (int)CHUNK_LENGTH } ) );
+			return new Mesh( std::move( vertices_ ), std::move( indices_ ), textureAtlas_, { chunk.getPosition().x_ * (int)CHUNK_WIDTH, 0.0, chunk.getPosition().z_ * (int)CHUNK_LENGTH } );
 		}
 
 
