@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 
 #include "Block.h"
 
@@ -21,6 +22,8 @@ private:
 
 };
 
+typedef std::unique_ptr<BlockLibrary> BlockLibrary_ptr;
+typedef std::shared_ptr<BlockLibrary> BlockLibrary_sptr;
 
 }
 }

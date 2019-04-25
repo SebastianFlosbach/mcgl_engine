@@ -56,3 +56,5 @@ private:
 	inline void addShader( const std::string& path, GLenum type );
 
 };
+
+typedef std::unique_ptr<Shader> Shader_ptr;

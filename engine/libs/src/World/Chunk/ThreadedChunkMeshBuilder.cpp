@@ -8,7 +8,7 @@
 namespace world {
 	namespace chunk {
 
-		ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas, const unsigned int threadCount ) :
+		ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, const unsigned int threadCount ) :
 			threadPool_( threadCount ),
 			pChunkMeshBuilder_( new ChunkMeshBuilder( blockLibrary, textureAtlas ) ) {
 		}

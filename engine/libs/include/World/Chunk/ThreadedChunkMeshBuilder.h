@@ -4,6 +4,7 @@
 #include <ctpl_stl.h>
 
 #include "Mesh/Mesh.h"
+#include "World/Chunk/ChunkMeshBuilder.h"
 
 struct ChunkCoordinates;
 
@@ -18,13 +19,11 @@ namespace world {
 
 	namespace chunk {
 
-		class ChunkMeshBuilder;
-
 		typedef std::function<void( const ChunkCoordinates& position, Mesh_ptr&& mesh )> CHUNK_MESH_BUILDER_CALLBACK;
 
 		class ThreadedChunkMeshBuilder {
 		public:
-			ThreadedChunkMeshBuilder( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas, const unsigned int threadCount );
+			ThreadedChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, const unsigned int threadCount );
 
 			void createChunkMesh( int x, int z, world::World& world, CHUNK_MESH_BUILDER_CALLBACK callback );
 

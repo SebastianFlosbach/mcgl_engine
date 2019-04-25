@@ -60,8 +60,8 @@ public:
 	}
 
 private:
-	std::unique_ptr<texture::TextureAtlas> pTextureAtlas_;
-	std::unique_ptr<Shader> pShader_;
+	texture::TextureAtlas_ptr pTextureAtlas_;
+	Shader_ptr pShader_;
 
 	Window window_;
 

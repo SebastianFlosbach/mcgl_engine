@@ -3,27 +3,22 @@
 #include <vector>
 #include <memory>
 
+#include "World/Chunk/Chunk.h"
+#include "World/Block/BlockLibrary.h"
+#include "Texture/TextureAtlas.h"
+
+
 class Mesh;
 struct Vertex;
-
-namespace texture {
-	class TextureAtlas;
-}
 
 namespace world {
 	class World;
 
 	namespace chunk {
 
-		class Chunk;
-
-		namespace block {
-			class BlockLibrary;
-		}
-
 		class ChunkMeshBuilder {
 		public:
-			ChunkMeshBuilder( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas ) : blockLibrary_( blockLibrary ), textureAtlas_( textureAtlas ) {}
+			ChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
 
 			Mesh* createChunkMesh( const int x, const int z, const World& world );
 
@@ -32,8 +27,8 @@ namespace world {
 			std::vector<Vertex> vertices_;
 			std::vector<unsigned int> indices_;
 
-			const block::BlockLibrary& blockLibrary_;
-			const texture::TextureAtlas& textureAtlas_;
+			const block::BlockLibrary_sptr blockLibrary_;
+			const texture::TextureAtlas_sptr textureAtlas_;
 
 			unsigned int indexBase_ = 0;
 

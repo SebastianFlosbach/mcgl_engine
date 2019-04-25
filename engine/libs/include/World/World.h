@@ -9,17 +9,14 @@
 #include "Mesh/Mesh.h"
 #include "Helper/WorldChunkCoordinates.h"
 #include "World/Chunk/ThreadedChunkMeshBuilder.h"
+#include "World/Chunk/Chunk.h"
 
 
 namespace world {
 
-	namespace chunk {
-		struct Chunk;
-	}
-
 	class World {
 	public:
-		World( const block::BlockLibrary& blockLibrary, const texture::TextureAtlas& textureAtlas );
+		World( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
 
 		World( const World& other ) = delete;
 		World& operator=( const World& other ) = delete;

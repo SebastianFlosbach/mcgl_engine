@@ -36,5 +36,7 @@ private:
 
 };
 
+typedef std::unique_ptr<TextureAtlas> TextureAtlas_ptr;
+typedef std::shared_ptr<TextureAtlas> TextureAtlas_sptr;
 
 }
