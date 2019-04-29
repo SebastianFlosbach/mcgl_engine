@@ -1,7 +1,7 @@
 #pragma once
 
 
-namespace world {
+namespace chunk {
 namespace block {
 
 

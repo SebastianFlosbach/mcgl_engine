@@ -7,7 +7,6 @@
 #include "World/Chunk/Chunk.h"
 
 
-namespace world {
 namespace chunk {
 
 
@@ -73,5 +72,4 @@ private:
 typedef std::unique_ptr<ChunkCollection> ChunkCollection_ptr;
 
 
-}
 }

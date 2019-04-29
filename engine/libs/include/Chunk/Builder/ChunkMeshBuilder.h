@@ -11,7 +11,8 @@
 
 
 namespace world {
-class World;
+	class World;
+}
 
 namespace chunk {
 namespace builder {
@@ -60,6 +61,5 @@ private:
 
 typedef std::unique_ptr<ChunkMeshBuilder> ChunkMeshBuilder_ptr;
 
-}
 }
 }

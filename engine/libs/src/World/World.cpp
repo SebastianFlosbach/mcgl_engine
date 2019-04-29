@@ -10,6 +10,14 @@ World& World::operator=( World&& other ) {
 	return std::move( other );
 }
 
+void World::addMesh( const glm::vec3& position, mesh::Mesh_ptr&& mesh ) {
+	meshes_.insert( { position, std::move( mesh ) } );
+}
+
+void World::removeMesh( const glm::vec3& position ) {
+	meshes_.erase( position );
+}
+
 void World::draw( Renderer& renderer ) {
 	for ( auto& meshData : meshes_ ) {
 

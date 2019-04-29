@@ -1,7 +1,6 @@
 #include "World/Chunk/ChunkCollection.h"
 
 
-namespace world {
 namespace chunk {
 
 
@@ -42,5 +41,4 @@ void ChunkCollection::deregisterCollectionChangedCallback() {
 }
 
 
-}
 }

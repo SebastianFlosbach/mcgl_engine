@@ -8,7 +8,6 @@
 #include "World/Chunk/ChunkCollection.h"
 
 
-namespace world {
 namespace chunk {
 namespace builder {
 
@@ -52,6 +51,5 @@ private:
 typedef std::unique_ptr<ThreadedChunkMeshBuilder> ThreadedChunkMeshBuilder_ptr;
 
 
-}
 }
 }

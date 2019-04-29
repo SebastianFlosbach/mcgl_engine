@@ -2,15 +2,15 @@
 #include "Definition/mcgl_engine_def.h"
 #include "Logging/ILogger.h"
 #include "Window.h"
-#include "World/Block/BlockLibrary.h"
-#include "World/Chunk/Chunk.h"
+#include "Chunk/Block/BlockLibrary.h"
+#include "Chunk/Chunk.h"
 #include "World/World.h"
 #include "Renderer/Renderer.h"
 #include "Camera.h"
 #include "ActionHandling/ThreadedWorkerQueue.h"
 #include "ActionHandling/actions.h"
-#include "World/Chunk/ChunkCollection.h"
-#include "World/Chunk/Builder/ThreadedChunkMeshBuilder.h"
+#include "Chunk/ChunkCollection.h"
+#include "Chunk/Builder/ThreadedChunkMeshBuilder.h"
 
 
 class Engine {
@@ -34,11 +34,11 @@ public:
 
 	void createWindow( const UNUM32 width, const UNUM32 height, const std::string& title );
 	void closeWindow();
-	void registerBlockType( const world::block::Block& block, UNUM32 id );
+	void registerBlockType( const chunk::block::Block& block, UNUM32 id );
 	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
 	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
 	void registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
-	void addChunk( const world::chunk::Chunk& chunk );
+	void addChunk( const chunk::Chunk& chunk );
 	void removeChunk( const UNUM32 x, const UNUM32 z );
 
 	void setTextures( const char* texturePath, const NUM32 size, const NUM32 textureCount );
@@ -86,11 +86,11 @@ private:
 
 	std::unique_ptr<Renderer> pRenderer_;
 
-	world::block::BlockLibrary blockLibrary_{};
+	chunk::block::BlockLibrary blockLibrary_{};
 	
-	world::chunk::ChunkCollection_ptr pChunks_;
+	chunk::ChunkCollection_ptr pChunks_;
 	world::World_ptr pWorld_;
-	world::chunk::builder::ThreadedChunkMeshBuilder_ptr pChunkMeshBuilder_;
+	chunk::builder::ThreadedChunkMeshBuilder_ptr pChunkMeshBuilder_;
 
 	Camera camera_;
 

@@ -12,18 +12,21 @@
 #include "Eventing/KeyEventHandler.h"
 #include "Eventing/MouseEventHandler.h"
 
+
 Engine::Engine( const ILogger& logger ) : logger_( logger ), pWorld_(), pChunks_() {
 	if( isRunning_.exchange( true ) ) {
 		return;
 	}
 
-	pChunks_->registerCollectionChangedCallback( world::chunk::CHUNK_COLLECTION_CHANGED_CALLBACK( 
-		[this]( const world::chunk::ChunkCollectionChangedEventType& type, const ChunkCoordinates& position ) {
+	pChunks_->registerCollectionChangedCallback( chunk::CHUNK_COLLECTION_CHANGED_CALLBACK( 
+		[this]( const chunk::ChunkCollectionChangedEventType& type, const ChunkCoordinates& position ) {
 			switch ( type ) {
-				case world::chunk::ChunkCollectionChangedEventType::ChunkAdded:
-					pChunkMeshBuilder->build( position,  );
+				case chunk::ChunkCollectionChangedEventType::ChunkAdded:
+					pChunkMeshBuilder_->build( position, *pChunks_, chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const ChunkCoordinates& position, mesh::Mesh* mesh ) {
+						pWorld_->addMesh( {}, std::make_unique<mesh::Mesh>( mesh ) );
+					} ) );
 					break;
-				case world::chunk::ChunkCollectionChangedEventType::ChunkRemoved:
+				case chunk::ChunkCollectionChangedEventType::ChunkRemoved:
 					break;
 				default:
 					break;

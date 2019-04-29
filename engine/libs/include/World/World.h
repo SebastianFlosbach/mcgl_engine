@@ -11,7 +11,7 @@
 namespace world {
 
 	/**
-		A collection of meshes
+		A collection of meshes with their world space coordinates
 	*/
 	class World {
 	public:
@@ -23,6 +23,23 @@ namespace world {
 		World( World&& other ) noexcept;
 		World& operator=( World&& other ) noexcept;
 
+		/**
+			Add a mesh to the world.
+			\param position Position of the mesh inside the world
+			\param mesh Mesh to add to the world
+		*/
+		void addMesh( const glm::vec3& position, mesh::Mesh_ptr&& mesh );
+
+		/**
+			Remove a mesh from the world.
+			\param position The mesh at this position will be removed
+		*/
+		void removeMesh( const glm::vec3& position );
+
+		/**
+			Draw all meshes at their positions.
+			\param renderer Renderer to draw with
+		*/
 		void draw( Renderer& renderer );
 		
 	private:
