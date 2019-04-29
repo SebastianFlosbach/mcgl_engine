@@ -10,11 +10,11 @@ namespace action {
 
 	struct AddChunkAction : public Action {
 	public:
-		AddChunkAction( const world::chunk::Chunk& chunk ) : chunk_( chunk ) {}
+		AddChunkAction( world::chunk::Chunk_ptr&& chunk ) : pChunk_( std::move( chunk ) ) {}
 
 		ActionType type() const override { return ActionType::AddChunkAction; }
 
-		world::chunk::Chunk chunk_;
+		world::chunk::Chunk_ptr pChunk_;
 	};
 
 

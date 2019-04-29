@@ -27,6 +27,9 @@ namespace world {
 			*/
 			Chunk( const ChunkCoordinates& position );
 
+			Chunk( Chunk&& other ) noexcept;
+			Chunk& operator=( Chunk&& other ) noexcept;
+
 			/**
 				Set a block inside chunk space.
 				Only the blocks id is safed, so any change to the blocks data will affect all blocks of that type in the chunk.

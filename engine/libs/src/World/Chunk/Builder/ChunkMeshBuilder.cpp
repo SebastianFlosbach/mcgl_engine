@@ -1,4 +1,4 @@
-#include "World/Chunk/ChunkMeshBuilder.h"
+#include "World/Chunk/Builder/ChunkMeshBuilder.h"
 
 #include "World/World.h"
 #include "World/Block/BlockLibrary.h"
@@ -153,7 +153,7 @@ namespace world {
 			}
 		}
 
-		Mesh* ChunkMeshBuilder::createChunkMesh( const int xChunk, const int zChunk, const World& world ) {
+		mesh::Mesh* ChunkMeshBuilder::build( const int xChunk, const int zChunk, const World& world ) {
 			indexBase_ = 0;
 			vertices_.clear();
 			indices_.clear();

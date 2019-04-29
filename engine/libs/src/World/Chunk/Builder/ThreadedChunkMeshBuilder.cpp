@@ -1,9 +1,9 @@
-#include "World/Chunk/ThreadedChunkMeshBuilder.h"
+#include "World/Chunk/Builder/ThreadedChunkMeshBuilder.h"
 
 #include "World/Block/BlockLibrary.h"
 #include "Texture/TextureAtlas.h"
 #include "World/World.h"
-#include "World/Chunk/ChunkMeshBuilder.h"
+#include "World/Chunk/Builder/ChunkMeshBuilder.h"
 
 namespace world {
 	namespace chunk {
@@ -13,8 +13,8 @@ namespace world {
 			threadPool_( threadCount ) 
 		{}
 
-		void ThreadedChunkMeshBuilder::createChunkMesh( const ChunkCoordinates& position, world::World& world, CHUNK_MESH_BUILDER_CALLBACK callback ) {
-			threadPool_.push( [this, &position, &world, &callback]( int id ) {
+		void ThreadedChunkMeshBuilder::build( const ChunkCoordinates& position, const ChunkCollection& chunks, CHUNK_MESH_BUILDER_CALLBACK& callback ) {
+			threadPool_.push( [this, &position, &chunks, &callback]( int id ) {
 				auto* mesh = ChunkMeshBuilder::createChunkMesh( position, world );
 				callback( position, mesh );
 			} );

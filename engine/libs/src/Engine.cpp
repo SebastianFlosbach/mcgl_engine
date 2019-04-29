@@ -12,19 +12,31 @@
 #include "Eventing/KeyEventHandler.h"
 #include "Eventing/MouseEventHandler.h"
 
-Engine::Engine( const ILogger& logger ) : logger_( logger ) {
+Engine::Engine( const ILogger& logger ) : logger_( logger ), pWorld_(), pChunks_() {
 	if( isRunning_.exchange( true ) ) {
 		return;
 	}
+
+	pChunks_->registerCollectionChangedCallback( world::chunk::CHUNK_COLLECTION_CHANGED_CALLBACK( 
+		[this]( const world::chunk::ChunkCollectionChangedEventType& type, const ChunkCoordinates& position ) {
+			switch ( type ) {
+				case world::chunk::ChunkCollectionChangedEventType::ChunkAdded:
+					pChunkMeshBuilder->build( position,  );
+					break;
+				case world::chunk::ChunkCollectionChangedEventType::ChunkRemoved:
+					break;
+				default:
+					break;
+			}
+		} ) 
+	);
 
 	workerThread_ = std::thread( [this]() {
 		while( isRunning_ ) {
 			std::unique_lock<std::mutex> lock( mQueue_ );
 
 			if( workerQueue_.empty() ) {
-				std::cout << "Queue empty: waiting" << std::endl;
 				workerQueue_.wait();
-				std::cout << "finished waiting" << std::endl;
 			}
 
 			doAction( workerQueue_.dequeue() );
@@ -58,7 +70,7 @@ void Engine::doAction( action::Action_ptr& action ) {
 		doMoveCamera( static_cast<action::MoveCameraAction*>( action.get() ) );
 		break;
 	case action::ActionType::RegisterBlockTypeAction:
-		doAddBlockType( static_cast<action::RegisterBlockTypeAction*>( action.get() ) );
+		doRegisterBlockType( static_cast<action::RegisterBlockTypeAction*>( action.get() ) );
 		break;
 	case action::ActionType::RegisterKeyEventCallbackAction:
 		doRegisterKeyEventCallback( static_cast<action::RegisterKeyEventCallbackAction*>( action.get() ) );
@@ -100,7 +112,7 @@ void Engine::closeWindow() {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::CloseWindowAction() ) );
 }
 
-void Engine::addBlockType( const world::block::Block& block, UNUM32 id ) {
+void Engine::registerBlockType( const world::block::Block& block, UNUM32 id ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RegisterBlockTypeAction( block, id ) ) );
 }
 
@@ -117,7 +129,7 @@ void Engine::registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) 
 }
 
 void Engine::addChunk( const world::chunk::Chunk& chunk ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddChunkAction( chunk ) ) );
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddChunkAction( std::make_unique<world::chunk::Chunk>( chunk ) ) ) );
 }
 
 void Engine::removeChunk( const UNUM32 x, const UNUM32 z ) {
@@ -177,7 +189,7 @@ void Engine::doEngine() {
 	pRenderer_ = std::make_unique<Renderer>();
 }
 
-void Engine::doCreateWindow( const action::CreateWindowAction* data ) {
+void Engine::doCreateWindow( action::CreateWindowAction* data ) {
 	info( logger_, "createWindow()" );
 
 	window_ = Window( data->width_, data->height_, data->title_ );
@@ -196,36 +208,36 @@ void Engine::doCloseWindow() {
 	window_.close();
 }
 
-void Engine::doAddBlockType( const action::RegisterBlockTypeAction* data ) {
+void Engine::doRegisterBlockType( action::RegisterBlockTypeAction* data ) {
 	info( logger_, "addBlockType()" );
 
-	blockLibrary_.addBlock( data->block_, data->id_ );
+	blockLibrary_.registerBlock( data->block_ );
 }
 
-void Engine::doRegisterKeyEventCallback( const action::RegisterKeyEventCallbackAction* data ) {
+void Engine::doRegisterKeyEventCallback( action::RegisterKeyEventCallbackAction* data ) {
 	info( logger_, "registerKeyEventCallback" );
 
 	KeyEventHandler::registerCallback( window_.get(), data->callback_ );
 }
 
-void Engine::doRegisterMouseEventCallback( const action::RegisterMouseEventCallbackAction* data ) {
+void Engine::doRegisterMouseEventCallback( action::RegisterMouseEventCallbackAction* data ) {
 	info( logger_, "registerMouseEventCallback" );
 
 	MouseEventHandler::registerCallback( window_.get(), data->callback_ );
 }
 
-void Engine::doRegisterStatusEventCallback( const action::RegisterStatusEventCallbackAction* data ) {
+void Engine::doRegisterStatusEventCallback( action::RegisterStatusEventCallbackAction* data ) {
 	info( logger_, "registerStatusEventCallback" );
 
 	statusCallback_ = data->callback_;
 }
 
-void Engine::doAddChunk( const action::AddChunkAction* data ) {
-	getWorld().addChunk( data->chunk_ );
+void Engine::doAddChunk( action::AddChunkAction* data ) {
+	pChunks_->addChunk( std::move( data->pChunk_ ) );
 }
 
-void Engine::doRemoveChunk( const action::RemoveChunkAction* data ) {
-	getWorld().removeChunk( data->x_, data->z_ );
+void Engine::doRemoveChunk( action::RemoveChunkAction* data ) {
+	pChunks_->removeChunk( { data->x_, data->z_ } );
 }
 
 void Engine::doSetTextures( action::SetTexturesAction* data ) {
@@ -243,16 +255,16 @@ void Engine::doSetShader( action::SetShaderAction* data ) {
 	pRenderer_->setShader( std::move( shader ) );
 }
 
-void Engine::doCreateCamera( const action::CreateCameraAction* data ) {
+void Engine::doCreateCamera( action::CreateCameraAction* data ) {
 	camera_ = Camera( data->x_, data->y_, data->z_, data->pitch_, data->yaw_, data->roll_ );
 	data->returnCallback_( 1 );
 }
 
-void Engine::doMoveCamera( const action::MoveCameraAction* data ) {
+void Engine::doMoveCamera( action::MoveCameraAction* data ) {
 	camera_.move( data->dx_, data->dy_, data->dz_ );
 }
 
-void Engine::doRotateCamera( const action::RotateCameraAction* data ) {
+void Engine::doRotateCamera( action::RotateCameraAction* data ) {
 	camera_.rotate( data->pitch_, data->yaw_, data->roll_ );
 }
 
@@ -268,11 +280,8 @@ void Engine::doDraw() {
 
 
 	pRenderer_->setViewMatrix( camera_.getView() );
-	pRenderer_->use();
 
-	for( auto& chunkMesh : getWorld().getMesh() ) {
-		chunkMesh.second->draw( *pRenderer_ );
-	}
+	pWorld_->draw( *pRenderer_ );
 
 	glfwSwapBuffers( window_.get() );
 	glfwPollEvents();

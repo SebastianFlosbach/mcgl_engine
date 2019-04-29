@@ -1,5 +1,8 @@
 #include "Mesh/Mesh.h"
 
+namespace mesh {
+
+
 Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) : 
 	vertices_( vertices ), indices_( indices ) {
 	setupMesh();
@@ -27,10 +30,7 @@ Mesh::Mesh( Mesh&& other ) :
 }
 
 Mesh& Mesh::operator=( Mesh&& other ) {
-
-
-
-	return *this;
+	return std::move( other );
 }
 
 Mesh::~Mesh() {
@@ -66,13 +66,14 @@ void Mesh::setupMesh() {
 }
 
 void Mesh::draw( Renderer& renderer ) {
-	renderer.updateShader();
-
-	renderer.bindTexture();
+	renderer.use();
 
 	glBindVertexArray( hVertexBuffer_ );
 	glBindBuffer( GL_ARRAY_BUFFER, hVertexArray_ );
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
 	glDrawElements( GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0 );
 	glBindVertexArray( 0 );
+}
+
+
 }

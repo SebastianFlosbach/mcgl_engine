@@ -4,14 +4,14 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Helper/WorldChunkCoordinates.h"
-#include "World/Chunk/Chunk.h"
+#include "Mesh/Mesh.h"
+#include "Renderer/Renderer.h"
 
 
 namespace world {
 
 	/**
-		A collection of chunks to contain all information about this world
+		A collection of meshes
 	*/
 	class World {
 	public:
@@ -23,38 +23,13 @@ namespace world {
 		World( World&& other ) noexcept;
 		World& operator=( World&& other ) noexcept;
 
-		/**
-			Add a chunk to this world.
-			If a chunk already exists on this position it is overwritten.
-			\param chunk Chunk to add to this world
-		*/
-		void addChunk( const chunk::Chunk& chunk );
-
-		/**
-			Add a chunk to this world.
-			If a chunk already exists on this position it is overwritten.
-			\param chunk Pointer to chunk data that will be moved
-		*/
-		void addChunk( chunk::Chunk_ptr&& chunk );
-
-		/**
-			Remove chunk from this world
-			\param position Position of the chunk to remove
-		*/
-		void removeChunk( const ChunkCoordinates& position );
-
-		/**
-			Get chunk from this world.
-			If the chunk does not exist nullptr is returned.
-			\param position Position of the chunk
-			\return Chunk at position or nullptr
-		*/
-		const chunk::Chunk* getChunk( const ChunkCoordinates& position ) const;
-
+		void draw( Renderer& renderer );
+		
 	private:
-		std::unordered_map<ChunkCoordinates, chunk::Chunk_ptr> worldChunks_;
-
+		std::unordered_map<glm::vec3, mesh::Mesh_ptr> meshes_;
+		
 	};
 
+	typedef std::unique_ptr<World> World_ptr;
 
 }

@@ -9,6 +9,9 @@
 #include "Camera.h"
 #include "ActionHandling/ThreadedWorkerQueue.h"
 #include "ActionHandling/actions.h"
+#include "World/Chunk/ChunkCollection.h"
+#include "World/Chunk/Builder/ThreadedChunkMeshBuilder.h"
+
 
 class Engine {
 public:
@@ -52,32 +55,24 @@ private:
 	void doAction( action::Action_ptr& action );
 
 	void doEngine();
-	void doCreateWindow( const action::CreateWindowAction* data );
+	void doCreateWindow( action::CreateWindowAction* data );
 	void doCloseWindow();
-	void doRegisterBlockType( const action::RegisterBlockTypeAction* data );
-	void doRegisterKeyEventCallback( const action::RegisterKeyEventCallbackAction* data );
-	void doRegisterMouseEventCallback( const action::RegisterMouseEventCallbackAction* data );
-	void doRegisterStatusEventCallback( const action::RegisterStatusEventCallbackAction* data );
-	void doAddChunk( const action::AddChunkAction* data );
-	void doRemoveChunk( const action::RemoveChunkAction* data );
+	void doRegisterBlockType( action::RegisterBlockTypeAction* data );
+	void doRegisterKeyEventCallback( action::RegisterKeyEventCallbackAction* data );
+	void doRegisterMouseEventCallback( action::RegisterMouseEventCallbackAction* data );
+	void doRegisterStatusEventCallback( action::RegisterStatusEventCallbackAction* data );
+	void doAddChunk( action::AddChunkAction* data );
+	void doRemoveChunk( action::RemoveChunkAction* data );
 		 
 	void doSetTextures( action::SetTexturesAction* data );
 	void doSetShader( action::SetShaderAction* data );
 
-	void doCreateCamera( const action::CreateCameraAction* data );
-	void doMoveCamera( const action::MoveCameraAction* data );
-	void doRotateCamera( const action::RotateCameraAction* data );
+	void doCreateCamera( action::CreateCameraAction* data );
+	void doMoveCamera( action::MoveCameraAction* data );
+	void doRotateCamera( action::RotateCameraAction* data );
 
 	void doDraw();
 	void doStop();
-
-	inline world::World& getWorld() {
-		if( !pWorld_ ) {
-			pWorld_ = std::make_unique<world::World>( blockLibrary_, pRenderer_->getTextureAtlas() );
-		}
-
-		return *pWorld_;
-	}
 
 	const ILogger& logger_;
 
@@ -89,9 +84,14 @@ private:
 
 	Window window_;
 
-	world::block::BlockLibrary blockLibrary_{};
-	std::unique_ptr<world::World> pWorld_;
 	std::unique_ptr<Renderer> pRenderer_;
+
+	world::block::BlockLibrary blockLibrary_{};
+	
+	world::chunk::ChunkCollection_ptr pChunks_;
+	world::World_ptr pWorld_;
+	world::chunk::builder::ThreadedChunkMeshBuilder_ptr pChunkMeshBuilder_;
+
 	Camera camera_;
 
 	MCGL_STATUS_EVENT_CALLBACK statusCallback_;

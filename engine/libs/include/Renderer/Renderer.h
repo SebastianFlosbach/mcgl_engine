@@ -2,9 +2,9 @@
 
 #include <glm/glm.hpp>
 
-#include "../Texture/TextureAtlas.h"
-#include "../Shader.h"
-#include "../Window.h"
+#include "Texture/TextureAtlas.h"
+#include "Shader.h"
+#include "Window.h"
 
 
 class Renderer {
@@ -17,7 +17,7 @@ public:
 
 	~Renderer() = default;
 
-	/*void setWindow( Window&& window ) {
+	void setWindow( Window&& window ) {
 		window_ = std::move( window );
 	}
 
@@ -35,11 +35,7 @@ public:
 
 	const texture::TextureAtlas& getTextureAtlas() const {
 		return *pTextureAtlas_;
-	}*/
-
-	//void bindTexture() {
-	//	pTextureAtlas_->bind();
-	//}
+	}
 
 	void setModelMatrix( const glm::mat4& model ) {
 		model_ = model;

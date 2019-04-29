@@ -7,6 +7,8 @@
 #include "Renderer/Renderer.h"
 #include "Texture/TextureAtlas.h"
 
+namespace mesh {
+
 
 class Mesh {
 public:
@@ -20,14 +22,6 @@ public:
 	Mesh& operator=( Mesh&& other ) noexcept;
 
 	~Mesh();
-
-	const std::vector<Vertex>& vertices() const {
-		return vertices_;
-	}
-
-	const std::vector<UNUM32>& indices() const {
-		return indices_;
-	}
 	
 	void draw( Renderer& renderer );
 
@@ -45,3 +39,5 @@ private:
 
 
 typedef std::unique_ptr<Mesh> Mesh_ptr;
+
+}

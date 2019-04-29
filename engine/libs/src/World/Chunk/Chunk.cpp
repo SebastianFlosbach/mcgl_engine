@@ -9,6 +9,12 @@ namespace world {
 
 		Chunk::Chunk( const ChunkCoordinates& position ) : position_( position ) {}
 
+		Chunk::Chunk( Chunk&& other ) : blocks_( std::move( other.blocks_ ) ), position_( other.position_ ) {}
+
+		Chunk& Chunk::operator=( Chunk&& other ) {
+			return std::move( other )
+		}
+
 		void Chunk::setBlock( NUM32 x, NUM32 y, NUM32 z, const block::Block& block ) {
 			if( x < 0 || x >= CHUNK_WIDTH
 				|| y < 0 || y >= CHUNK_HEIGHT
