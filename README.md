@@ -10,3 +10,5 @@ GLM: https://glm.g-truc.net/0.9.9/index.html
 STB: https://github.com/nothings/stb/blob/master/stb_image.h
 
 SPDLOG: https://github.com/gabime/spdlog
+
+CTPL: https://github.com/vit-vit/CTPL

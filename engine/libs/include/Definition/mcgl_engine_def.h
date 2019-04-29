@@ -9,6 +9,9 @@
 typedef uint32_t UNUM32;
 typedef int32_t NUM32;
 
+constexpr UNUM32 UNUM32_MAX = UINT32_MAX;
+constexpr NUM32 NUM32_MAX = INT32_MAX;
+
 // TODO: Remove after config implementation
 constexpr unsigned int CHUNK_WIDTH = 16;
 constexpr unsigned int CHUNK_LENGTH = 16;

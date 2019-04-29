@@ -7,54 +7,56 @@
 
 namespace texture {
 
+	struct Texture {
+	public:
+		Texture( const char* path );
+		Texture( const std::string& path );
 
-struct Texture {
-public:
-	Texture( const char* path );
-	Texture( const std::string& path );
+		Texture( const Texture& other ) = delete;
+		Texture& operator=( const Texture& other ) = delete;
 
-	Texture( const Texture& other ) = delete;
-	Texture& operator=( const Texture& other ) = delete;
+		Texture( Texture&& other ) {
+			*this = std::move( other );
+		}
 
-	Texture( Texture&& other ) {
-		*this = std::move( other );
-	}
+		Texture& operator=( Texture&& other ) {
+			this->hTexture_ = other.hTexture_;
 
-	Texture& operator=( Texture&& other ) {
-		this->hTexture_ = other.hTexture_;
+			// Cleanup to avoid texture being reused or deleted
+			other.hTexture_ = 0;
 
-		// Cleanup to avoid texture being reused or deleted
-		other.hTexture_ = 0;
+			return *this;
+		}
 
-		return *this;
-	}
+		~Texture() {
+			glDeleteTextures( 1, &hTexture_ );
+		}
 
-	~Texture() {
-		glDeleteTextures( 1, &hTexture_ );
-	}
+		
+		void bind() const {
+			// TODO: Add support for multiple texture units
+			glActiveTexture( GL_TEXTURE0 );
+			glBindTexture( GL_TEXTURE_2D, hTexture_ );
+		}
 
-	void bind() const {
-		glBindTexture( GL_TEXTURE_2D, hTexture_ );
-	}
+		unsigned int get() const {
+			return hTexture_;
+		}
 
-	unsigned int get() const {
-		return hTexture_;
-	}
+		int width() const {
+			return width_;
+		}
 
-	int width() const {
-		return width_;
-	}
+		int height() const {
+			return height_;
+		}
 
-	int height() const {
-		return height_;
-	}
+	private:
+		unsigned int hTexture_;
 
-private:
-	unsigned int hTexture_;
-	
-	int width_;
-	int height_;
-};
+		int width_;
+		int height_;
+	};
 
 
 }

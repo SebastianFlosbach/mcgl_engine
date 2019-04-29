@@ -257,16 +257,18 @@ void Engine::doRotateCamera( const action::RotateCameraAction* data ) {
 }
 
 void Engine::doDraw() {
+	// Generate delta time
 	float currentFrame = glfwGetTime();
 	deltaTime_ = currentFrame - lastFrame_;
 	lastFrame_ = currentFrame;
 
+	// Clear current frame
 	glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	pRenderer_->use();
+
 	pRenderer_->setViewMatrix( camera_.getView() );
-	pRenderer_->update();
+	pRenderer_->use();
 
 	for( auto& chunkMesh : getWorld().getMesh() ) {
 		chunkMesh.second->draw( *pRenderer_ );

@@ -2,53 +2,43 @@
 
 #include <vector>
 
-#include "../Texture/TextureAtlas.h"
-#include "Vertex.h"
-#include "../Renderer/Renderer.h"
+#include "Definition/mcgl_engine_def.h"
+#include "Mesh/Vertex.h"
+#include "Renderer/Renderer.h"
+#include "Texture/TextureAtlas.h"
+
 
 class Mesh {
 public:
-	Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const texture::TextureAtlas& textureAtlas, const glm::vec3& position );
-	Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, const texture::TextureAtlas& textureAtlas, const glm::vec3& position );
+	Mesh( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices );
+	Mesh( std::vector<Vertex>&& vertices, std::vector<UNUM32>&& indices );
 
 	Mesh( const Mesh& other ) = delete;
 	Mesh& operator=( const Mesh& other ) = delete;
 
-	Mesh( Mesh&& other ) : textureAtlas_( other.textureAtlas_ ) {
-		*this = std::move( other );
+	Mesh( Mesh&& other ) noexcept;
+	Mesh& operator=( Mesh&& other ) noexcept;
+
+	~Mesh();
+
+	const std::vector<Vertex>& vertices() const {
+		return vertices_;
 	}
 
-	Mesh& operator=( Mesh&& other ) {
-		this->hVertexBuffer_ = other.hVertexBuffer_;
-		this->hVertexArray_ = other.hVertexArray_;
-		this->hElementBuffer_ = other.hElementBuffer_;
-
-		this->vertices_ = std::move( other.vertices_ );
-		this->indices_ = std::move( other.indices_ );
-
-		this->position_ = std::move( other.position_ );
-
-		return *this;
+	const std::vector<UNUM32>& indices() const {
+		return indices_;
 	}
-
-	void setPosition( const glm::vec3& position ) {
-		position_ = position;
-	}
-
-	std::vector<Vertex> vertices_;
-	std::vector<unsigned int> indices_;
-	const texture::TextureAtlas& textureAtlas_;
 	
 	void draw( Renderer& renderer );
+
 private:
-	/*  Render data  */
-	unsigned int hVertexBuffer_;
-	unsigned int hVertexArray_;
-	unsigned int hElementBuffer_;
+	UNUM32 hVertexBuffer_{ 0 };
+	UNUM32 hVertexArray_{ 0 };
+	UNUM32 hElementBuffer_{ 0 };
 
-	glm::vec3 position_;
+	std::vector<Vertex> vertices_;
+	std::vector<UNUM32> indices_;
 
-	/*  Functions    */
 	void setupMesh();
 
 };

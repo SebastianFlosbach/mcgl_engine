@@ -31,7 +31,7 @@ public:
 
 	void createWindow( const UNUM32 width, const UNUM32 height, const std::string& title );
 	void closeWindow();
-	void addBlockType( const world::block::Block& block, UNUM32 id );
+	void registerBlockType( const world::block::Block& block, UNUM32 id );
 	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
 	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
 	void registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
@@ -54,7 +54,7 @@ private:
 	void doEngine();
 	void doCreateWindow( const action::CreateWindowAction* data );
 	void doCloseWindow();
-	void doAddBlockType( const action::RegisterBlockTypeAction* data );
+	void doRegisterBlockType( const action::RegisterBlockTypeAction* data );
 	void doRegisterKeyEventCallback( const action::RegisterKeyEventCallbackAction* data );
 	void doRegisterMouseEventCallback( const action::RegisterMouseEventCallbackAction* data );
 	void doRegisterStatusEventCallback( const action::RegisterStatusEventCallbackAction* data );

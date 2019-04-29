@@ -1,21 +1,30 @@
 #include "World/Block/BlockLibrary.h"
 
+
 namespace world {
-namespace block {
+	namespace block {
 
 
-void BlockLibrary::addBlock( Block block, unsigned int id ) {
-	if ( blockMap_.find( id ) != blockMap_.end() ) {
-		return;
+		void BlockLibrary::registerBlock( const Block& block ) {
+			auto it = blockMap_.find( block.id_ );
+			if( it != blockMap_.end() ) {
+				it->second = block;
+				return;
+			}
+
+			blockMap_.insert( { block.id_, block } );
+		}
+
+		const Block& BlockLibrary::getBlock( UNUM32 id ) const {
+			auto it = blockMap_.find( id );
+
+			if( it == blockMap_.end() ) {
+				return { id, true };
+			}
+
+			return it->second;
+		}
+
+
 	}
-
-	blockMap_.insert( { id, block } );
-}
-
-const Block& BlockLibrary::getBlock( unsigned int id ) const {
-	return blockMap_.find( id )->second;
-}
-
-
-}
 }

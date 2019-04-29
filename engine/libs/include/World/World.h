@@ -4,62 +4,56 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Block/BlockLibrary.h"
-#include "Texture/TextureAtlas.h"
-#include "Mesh/Mesh.h"
 #include "Helper/WorldChunkCoordinates.h"
-#include "World/Chunk/ThreadedChunkMeshBuilder.h"
 #include "World/Chunk/Chunk.h"
 
 
 namespace world {
 
+	/**
+		A collection of chunks to contain all information about this world
+	*/
 	class World {
 	public:
-		World( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
+		World() = default;
 
 		World( const World& other ) = delete;
 		World& operator=( const World& other ) = delete;
 
-		World( World&& other ) = delete;
-		World& operator=( World&& other ) = delete;
+		World( World&& other ) noexcept;
+		World& operator=( World&& other ) noexcept;
 
+		/**
+			Add a chunk to this world.
+			If a chunk already exists on this position it is overwritten.
+			\param chunk Chunk to add to this world
+		*/
 		void addChunk( const chunk::Chunk& chunk );
 
-		void removeChunk( const int x, const int z ) {
-			worldChunks_.erase( { x, z } );
-			removeMesh( { x, z } );
-		}
+		/**
+			Add a chunk to this world.
+			If a chunk already exists on this position it is overwritten.
+			\param chunk Pointer to chunk data that will be moved
+		*/
+		void addChunk( chunk::Chunk_ptr&& chunk );
 
-		const chunk::Chunk* getChunk( const int x, const int z ) const {
-			if( worldChunks_.find( { x, z } ) != worldChunks_.end() ) {
-				return &worldChunks_.at( { x, z } );
-			}
+		/**
+			Remove chunk from this world
+			\param position Position of the chunk to remove
+		*/
+		void removeChunk( const ChunkCoordinates& position );
 
-			return nullptr;
-		}
-
-		std::unordered_map<ChunkCoordinates, Mesh_ptr>& getMesh() {
-			return mesh_;
-		}
+		/**
+			Get chunk from this world.
+			If the chunk does not exist nullptr is returned.
+			\param position Position of the chunk
+			\return Chunk at position or nullptr
+		*/
+		const chunk::Chunk* getChunk( const ChunkCoordinates& position ) const;
 
 	private:
-		std::unordered_map<ChunkCoordinates, chunk::Chunk> worldChunks_;
-		std::unordered_map<ChunkCoordinates, Mesh_ptr> mesh_;
+		std::unordered_map<ChunkCoordinates, chunk::Chunk_ptr> worldChunks_;
 
-		std::mutex mMesh_;
-
-		chunk::ThreadedChunkMeshBuilder_ptr pChunkMeshBuilder_;
-
-		void addMesh( const ChunkCoordinates & position, Mesh_ptr && mesh ) {
-			std::lock_guard<std::mutex> lock( mMesh_ );
-			mesh_.emplace( position, std::move( mesh ) );
-		}
-
-		inline void removeMesh( const ChunkCoordinates & position ) {
-			std::lock_guard<std::mutex> lock( mMesh_ );
-			mesh_.erase( position );
-		}
 	};
 
 

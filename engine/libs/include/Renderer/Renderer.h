@@ -17,7 +17,7 @@ public:
 
 	~Renderer() = default;
 
-	void setWindow( Window&& window ) {
+	/*void setWindow( Window&& window ) {
 		window_ = std::move( window );
 	}
 
@@ -35,11 +35,11 @@ public:
 
 	const texture::TextureAtlas& getTextureAtlas() const {
 		return *pTextureAtlas_;
-	}
+	}*/
 
-	void bindTexture() {
-		pTextureAtlas_->bind();
-	}
+	//void bindTexture() {
+	//	pTextureAtlas_->bind();
+	//}
 
 	void setModelMatrix( const glm::mat4& model ) {
 		model_ = model;
@@ -49,18 +49,22 @@ public:
 		view_ = view;
 	}
 
-	void update() {
-		pShader_->setUniformMat4f( "model", model_ );
-		pShader_->setUniformMat4f( "view", view_ );
-		pShader_->setUniformMat4f( "projection", projection_ );
+	void setProjectionMatrix( const glm::mat4& projection ) {
+		projection_ = projection;
 	}
 
 	void use() {
 		pShader_->use();
+		pShader_->setUniformMat4f( "model", model_ );
+		pShader_->setUniformMat4f( "view", view_ );
+		pShader_->setUniformMat4f( "projection", projection_ );
+
+		pTextureAtlas_->bind();
 	}
 
 private:
 	texture::TextureAtlas_ptr pTextureAtlas_;
+
 	Shader_ptr pShader_;
 
 	Window window_;

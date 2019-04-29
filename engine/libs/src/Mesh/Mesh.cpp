@@ -1,13 +1,42 @@
 #include "Mesh/Mesh.h"
 
-Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const texture::TextureAtlas& textureAtlas, const glm::vec3& position ) : 
-	vertices_( vertices ), indices_( indices ), textureAtlas_( textureAtlas ), position_( position ) {
+Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) : 
+	vertices_( vertices ), indices_( indices ) {
 	setupMesh();
 }
 
-Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices, const texture::TextureAtlas& textureAtlas, const glm::vec3& position ) :
-	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ), textureAtlas_( textureAtlas ), position_( position ) {
+Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices ) :
+	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ) {
 	setupMesh();
+}
+
+Mesh::Mesh( Mesh&& other ) :
+	hVertexArray_( other.hVertexArray_ ),
+	hVertexBuffer_( other.hVertexBuffer_ ),
+	hElementBuffer_( other.hElementBuffer_ ),
+	vertices_( std::move( other.vertices_ ) ),
+	indices_( std::move( other.indices_ ) )
+{
+	if( this == &other ) {
+		return;
+	}
+
+	other.hVertexArray_ = 0;
+	other.hVertexBuffer_ = 0;
+	other.hElementBuffer_ = 0;
+}
+
+Mesh& Mesh::operator=( Mesh&& other ) {
+
+
+
+	return *this;
+}
+
+Mesh::~Mesh() {
+	glDeleteBuffers( 1, &hVertexBuffer_ );
+	glDeleteBuffers( 1, &hElementBuffer_ );
+	glDeleteVertexArrays( 1, &hVertexArray_ );
 }
 
 void Mesh::setupMesh() {
@@ -37,13 +66,8 @@ void Mesh::setupMesh() {
 }
 
 void Mesh::draw( Renderer& renderer ) {
-	glm::mat4 model = glm::mat4( 1.0f );
-	model = glm::translate( model, position_ );
+	renderer.updateShader();
 
-	renderer.setModelMatrix( model );
-	renderer.update();
-
-	glActiveTexture( GL_TEXTURE0 );
 	renderer.bindTexture();
 
 	glBindVertexArray( hVertexBuffer_ );

@@ -6,24 +6,35 @@
 #include "World/Chunk/Chunk.h"
 #include "World/Block/BlockLibrary.h"
 #include "Texture/TextureAtlas.h"
-
-
-class Mesh;
-struct Vertex;
+#include "Mesh/Mesh.h"
 
 namespace world {
 	class World;
 
 	namespace chunk {
 
+		/**
+			Class to create meshes from chunks
+		*/
 		class ChunkMeshBuilder {
 		public:
+
+			/**
+				Create a ChunkMeshBuilder that uses a specific block library and texture atlas
+				\param blockLibrary BlockLibrary for interpreting chunk data
+				\param textureAtlas TextureAtlas to use for the mesh
+			*/
 			ChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
 
-			Mesh* createChunkMesh( const int x, const int z, const World& world );
+			/**
+				Create the mesh for chunk at a position in the world
+				\param position Position of the chunk
+				\param world World the chunk is in
+				\return Mesh pointer or nullptr if chunk does not exist
+			*/
+			Mesh* createChunkMesh( const ChunkCoordinates& position, const World& world );
 
 		private:
-
 			std::vector<Vertex> vertices_;
 			std::vector<unsigned int> indices_;
 

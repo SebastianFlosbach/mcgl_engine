@@ -1,15 +1,24 @@
 #include "World/World.h"
 
-#include "World/Chunk/Chunk.h"
 
 namespace world {
 
-	World::World( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas ) : pChunkMeshBuilder_( new chunk::ThreadedChunkMeshBuilder( blockLibrary, textureAtlas, 4 ) ) {}
+	World::World( World&& other ) {
+		if( this == &other ) {
+			return;
+		}
+
+		this->worldChunks_ = std::move( other.worldChunks_ );
+	}
+
+	World& World::operator=( World&& other ) {
+		return std::move( other );
+	}
 
 	void World::addChunk( const chunk::Chunk& chunk ) {
-		worldChunks_.insert( { { chunk.getPosition().x_, chunk.getPosition().z_ }, chunk } );
+		worldChunks_.insert( { chunk.getPosition(), std::make_unique<chunk::Chunk>( chunk ) } );
 
-		auto& position = chunk.getPosition();
+		/*auto& position = chunk.getPosition();
 
 		auto x = position.x_;
 		auto z = position.z_;
@@ -34,6 +43,25 @@ namespace world {
 			pChunkMeshBuilder_->createChunkMesh( x, z - 1, *this, std::bind( &World::addMesh, this, std::placeholders::_1, std::placeholders::_2 ) );
 		}
 
-		pChunkMeshBuilder_->createChunkMesh( x, z, *this, std::bind( &World::addMesh, this, std::placeholders::_1, std::placeholders::_2 ) );
+		pChunkMeshBuilder_->createChunkMesh( x, z, *this, std::bind( &World::addMesh, this, std::placeholders::_1, std::placeholders::_2 ) );*/
 	}
+
+	void World::addChunk( chunk::Chunk_ptr&& chunk ) {
+		worldChunks_.insert( { chunk->getPosition(), std::move( chunk ) } );
+	}
+
+	void World::removeChunk( const ChunkCoordinates& position ) {
+		worldChunks_.erase( position );
+	}
+
+	const chunk::Chunk* World::getChunk( const ChunkCoordinates& position ) const {
+		auto it = worldChunks_.find( position );
+
+		if( it != worldChunks_.end() ) {
+			return &it->second;
+		}
+
+		return nullptr;
+	}
+
 }

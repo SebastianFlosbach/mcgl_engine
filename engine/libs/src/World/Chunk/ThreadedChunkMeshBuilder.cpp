@@ -9,15 +9,15 @@ namespace world {
 	namespace chunk {
 
 		ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, const unsigned int threadCount ) :
-			threadPool_( threadCount ),
-			pChunkMeshBuilder_( new ChunkMeshBuilder( blockLibrary, textureAtlas ) ) {
-		}
+			ChunkMeshBuilder( blockLibrary, textureAtlas ),
+			threadPool_( threadCount ) 
+		{}
 
-		void ThreadedChunkMeshBuilder::createChunkMesh( int x, int z, world::World& world, CHUNK_MESH_BUILDER_CALLBACK callback ) {
-			threadPool_.push( [this, &x, &z, &world, &callback]( int id ) {
-				auto mesh = std::unique_ptr<Mesh>( pChunkMeshBuilder_->createChunkMesh( x, z, world ) );
-				callback( { x, z }, std::move( mesh ) );
-				} );
+		void ThreadedChunkMeshBuilder::createChunkMesh( const ChunkCoordinates& position, world::World& world, CHUNK_MESH_BUILDER_CALLBACK callback ) {
+			threadPool_.push( [this, &position, &world, &callback]( int id ) {
+				auto* mesh = ChunkMeshBuilder::createChunkMesh( position, world );
+				callback( position, mesh );
+			} );
 		}
 
 	}
