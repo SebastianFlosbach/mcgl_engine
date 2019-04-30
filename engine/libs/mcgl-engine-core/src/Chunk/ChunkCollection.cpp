@@ -1,4 +1,4 @@
-#include "World/Chunk/ChunkCollection.h"
+#include "Chunk/ChunkCollection.h"
 
 
 namespace chunk {
@@ -26,7 +26,7 @@ const chunk::Chunk* ChunkCollection::getChunk( const ChunkCoordinates& position 
 	auto it = chunks_.find( position );
 
 	if ( it != chunks_.end() ) {
-		return &it->second;
+		return it->second.get();
 	}
 
 	return nullptr;

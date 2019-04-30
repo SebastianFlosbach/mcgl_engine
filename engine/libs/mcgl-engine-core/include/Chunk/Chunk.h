@@ -3,8 +3,8 @@
 #include <glm/glm.hpp>
 #include <memory>
 
-#include "World/Block/Block.h"
-#include "Helper/WorldChunkCoordinates.h"
+#include "Chunk/Block/Block.h"
+#include "Coordinates/ChunkCoordinates.h"
 
 
 namespace chunk {
@@ -24,7 +24,7 @@ namespace chunk {
 			Create chunk at position
 			\param position Position of the chunk
 		*/
-		Chunk( const ChunkCoordinates& position );
+		Chunk( const coordinates::ChunkCoordinates& position );
 
 		Chunk( Chunk&& other ) noexcept;
 		Chunk& operator=( Chunk&& other ) noexcept;
@@ -55,19 +55,19 @@ namespace chunk {
 			Set the position of this chunk inside the world
 			\param position New coordinates for this chunk
 		*/
-		void setPosition( const ChunkCoordinates& position );
+		void setPosition( const coordinates::ChunkCoordinates& position );
 
 		/**
 			Get the position of this chunk inside the world
 			\return Coordinates of this chunk
 		*/
-		const ChunkCoordinates& getPosition() const;
+		const coordinates::ChunkCoordinates& getPosition() const;
 
 	private:
 		static const UNUM32 DEFAULT_ID;
 
 		UNUM32 blocks_[CHUNK_WIDTH][CHUNK_HEIGHT][CHUNK_LENGTH]{ 0 };
-		ChunkCoordinates position_{ 0, 0 };
+		coordinates::ChunkCoordinates position_{ 0, 0 };
 
 	};
 

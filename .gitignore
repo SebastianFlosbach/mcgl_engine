@@ -2,6 +2,7 @@
 externals/glfw
 externals/glm
 externals/spdlog
+externals/gtest
 engine_java_interface/test/.idea
 engine_java_interface/test/bin
 engine_java_interface/test/logs

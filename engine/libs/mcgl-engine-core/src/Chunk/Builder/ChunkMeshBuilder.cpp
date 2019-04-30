@@ -1,11 +1,13 @@
-#include "World/Chunk/Builder/ChunkMeshBuilder.h"
+#include "Chunk/Builder/ChunkMeshBuilder.h"
 
 #include "World/World.h"
-#include "World/Block/BlockLibrary.h"
-#include "World/Chunk/Chunk.h"
+#include "Chunk/Block/BlockLibrary.h"
+#include "Chunk/Chunk.h"
 
 
 namespace chunk {
+namespace builder {
+
 
 ChunkMeshBuilder::ChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas ) :
 	blockLibrary_( blockLibrary ), textureAtlas_( textureAtlas ) {
@@ -199,4 +201,5 @@ mesh::Mesh * ChunkMeshBuilder::build( const int xChunk, const int zChunk, const 
 }
 
 
+}
 }

@@ -3,8 +3,8 @@
 #include <functional>
 #include <unordered_map>
 
-#include "Helper/WorldChunkCoordinates.h"
-#include "World/Chunk/Chunk.h"
+#include "Coordinates/ChunkCoordinates.h"
+#include "Chunk/Chunk.h"
 
 
 namespace chunk {

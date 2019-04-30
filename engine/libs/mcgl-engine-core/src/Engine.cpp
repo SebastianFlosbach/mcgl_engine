@@ -22,11 +22,10 @@ Engine::Engine( const ILogger& logger ) : logger_( logger ), pWorld_(), pChunks_
 		[this]( const chunk::ChunkCollectionChangedEventType& type, const ChunkCoordinates& position ) {
 			switch ( type ) {
 				case chunk::ChunkCollectionChangedEventType::ChunkAdded:
-					pChunkMeshBuilder_->build( position, *pChunks_, chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const ChunkCoordinates& position, mesh::Mesh* mesh ) {
-						pWorld_->addMesh( {}, std::make_unique<mesh::Mesh>( mesh ) );
-					} ) );
+					pChunkMeshBuilder_->build( position, *pChunks_ );
 					break;
 				case chunk::ChunkCollectionChangedEventType::ChunkRemoved:
+					pWorld_->removeMesh( position );
 					break;
 				default:
 					break;

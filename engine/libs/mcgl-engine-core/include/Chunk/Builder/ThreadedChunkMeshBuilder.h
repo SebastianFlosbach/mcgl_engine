@@ -4,9 +4,9 @@
 #include <ctpl_stl.h>
 
 #include "Mesh/Mesh.h"
-#include "World/Chunk/Builder/ChunkMeshBuilder.h"
-#include "World/Chunk/ChunkCollection.h"
-
+#include "Chunk/Builder/ChunkMeshBuilder.h"
+#include "Chunk/ChunkCollection.h"
+#include "Coordinates/ChunkCoordinates.h"
 
 namespace chunk {
 namespace builder {
@@ -41,10 +41,24 @@ public:
 		\param callback Callback that returns the generated mesh. \see CHUNK_MESH_BUILDER_CALLBACK
 		\return Mesh pointer or nullptr if chunk does not exist
 	*/
-	void build( const ChunkCoordinates& position, const ChunkCollection& world, CHUNK_MESH_BUILDER_CALLBACK callback );
+	void build( const ChunkCoordinates& position, const ChunkCollection& world );
+
+	/**
+		Register callback that is called whenever a mesh is build
+		\param callback Callback to register
+	*/
+	void registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback );
+
+	/**
+		Deregister the mesh callback.
+		All further meshes are lost.
+	*/
+	void deregisterCallback();
 
 private:
 	ctpl::thread_pool threadPool_;
+
+	CHUNK_MESH_BUILDER_CALLBACK callback_;
 
 };
 

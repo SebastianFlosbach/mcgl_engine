@@ -5,8 +5,6 @@ namespace chunk {
 namespace block {
 
 
-constexpr float BLOCK_SIZE = 1.0f;
-
 /**
 	Contains data about a type of block
 */

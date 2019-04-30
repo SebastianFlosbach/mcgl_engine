@@ -1,14 +1,12 @@
-#include "World/Chunk/Chunk.h"
-#include <stdexcept>
+#include "Chunk/Chunk.h"
 
+#include "Definition/mcgl_engine_def.h"
 
 namespace chunk {
 
-const UNUM32 Chunk::DEFAULT_ID = 0;
+Chunk::Chunk( const coordinates::ChunkCoordinates& position ) : position_( position ) {}
 
-Chunk::Chunk( const ChunkCoordinates& position ) : position_( position ) {}
-
-void Chunk::setBlock( NUM32 x, NUM32 y, NUM32 z, const block::Block& block ) {
+void Chunk::setBlock( NUM32 x, NUM32 y, NUM32 z, const chunk::block::Block& block ) {
 	if( x < 0 || x >= CHUNK_WIDTH
 		|| y < 0 || y >= CHUNK_HEIGHT
 		|| z < 0 || z >= CHUNK_LENGTH ) {
@@ -22,17 +20,17 @@ UNUM32 Chunk::getBlockId( NUM32 x, NUM32 y, NUM32 z ) const {
 	if( x < 0 || x >= CHUNK_WIDTH
 		|| y < 0 || y >= CHUNK_HEIGHT
 		|| z < 0 || z >= CHUNK_LENGTH ) {
-		return DEFAULT_ID;
+		return BLOCK_DEFAULT_ID;
 	}
 
 	return blocks_[x][y][z];
 }
 
-void Chunk::setPosition( const ChunkCoordinates& position ) {
+void Chunk::setPosition( const coordinates::ChunkCoordinates& position ) {
 	position_ = position;
 }
 
-const ChunkCoordinates& Chunk::getPosition() const {
+const coordinates::ChunkCoordinates& Chunk::getPosition() const {
 	return position_;
 }
 
