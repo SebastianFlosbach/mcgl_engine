@@ -4,19 +4,19 @@
 
 #include <string>
 
-#include "../../World/Block/Block.h"
+#include "Chunk/Block/Block.h"
 
 namespace action {
 
 
 	struct RegisterBlockTypeAction final : public Action {
 	public:
-		RegisterBlockTypeAction( const world::block::Block& block, int id ) : block_( block ), id_( id ) {}
+		RegisterBlockTypeAction( const chunk::block::Block& block ) : block_( block ) {}
 
 		ActionType type() const override { return ActionType::RegisterBlockTypeAction; }
 
-		world::block::Block block_;
-		int id_;
+		chunk::block::Block block_;
+
 	};
 
 

@@ -1,30 +1,22 @@
 #pragma once
 
+#include <functional>
+
 #include "Definition/mcgl_engine_def.h"
-#include "Coordinates/BlockCoordinates.h"
-#include "Coordinates/WorldCoordinates.h"
 
 
 namespace coordinates {
+struct WorldCoordinates;
+struct BlockCoordinates;
 
 
 struct ChunkCoordinates {
-	ChunkCoordinates( NUM32 x, NUM32 z ) : x_( x ), z_( z ) {}
+	ChunkCoordinates( NUM32 x, NUM32 z );
 
 
-	WorldCoordinates toWorldCoordinates() const {
-		float x = x_ * CHUNK_WIDTH * BLOCK_SIZE;
-		float z = z_ * CHUNK_LENGTH * BLOCK_SIZE;
+	WorldCoordinates toWorldCoordinates() const;
 
-		return { x, 0.0f, z };
-	}
-
-	BlockCoordinates toBlockCoordinates() const {
-		NUM32 x = x_ * CHUNK_WIDTH;
-		NUM32 z = z_ * CHUNK_LENGTH;
-
-		return { x, 0, z };
-	}
+	BlockCoordinates toBlockCoordinates() const;
 
 	NUM32 x_, z_;
 };

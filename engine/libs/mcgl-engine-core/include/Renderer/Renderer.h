@@ -12,7 +12,7 @@ public:
 	Renderer() = default;
 	Renderer( Shader&& shader, texture::TextureAtlas&& textureAtlas, Window&& window ) : 
 		pShader_( std::make_unique<Shader>( std::move( shader ) ) ), 
-		pTextureAtlas_( std::make_unique<texture::TextureAtlas>( std::move( textureAtlas ) ) ), 
+		pTextureAtlas_( std::make_shared<texture::TextureAtlas>( std::move( textureAtlas ) ) ), 
 		window_( std::move( window ) ) {}
 
 	~Renderer() = default;
@@ -33,8 +33,8 @@ public:
 		pTextureAtlas_ = std::make_unique<texture::TextureAtlas>( std::move( textureAtlas ) );
 	}
 
-	const texture::TextureAtlas& getTextureAtlas() const {
-		return *pTextureAtlas_;
+	const texture::TextureAtlas_sptr& getTextureAtlas() const {
+		return pTextureAtlas_;
 	}
 
 	void setModelMatrix( const glm::mat4& model ) {
@@ -59,7 +59,7 @@ public:
 	}
 
 private:
-	texture::TextureAtlas_ptr pTextureAtlas_;
+	texture::TextureAtlas_sptr pTextureAtlas_;
 
 	Shader_ptr pShader_;
 

@@ -26,8 +26,8 @@ namespace chunk {
 		*/
 		Chunk( const coordinates::ChunkCoordinates& position );
 
-		Chunk( Chunk&& other ) noexcept;
-		Chunk& operator=( Chunk&& other ) noexcept;
+		//Chunk( Chunk&& other ) noexcept;
+		//Chunk& operator=( Chunk&& other ) noexcept;
 
 		/**
 			Set a block inside chunk space.
@@ -39,6 +39,8 @@ namespace chunk {
 			\param block Block data to set
 		*/
 		void setBlock( NUM32 x, NUM32 y, NUM32 z, const block::Block& block ) noexcept;
+
+		void setBlock( NUM32 x, NUM32 y, NUM32 z, NUM32 id ) noexcept;
 
 		/**
 			Get the block id at a position inside this chunk.

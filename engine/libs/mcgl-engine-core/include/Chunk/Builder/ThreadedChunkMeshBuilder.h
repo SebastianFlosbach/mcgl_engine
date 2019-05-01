@@ -17,7 +17,7 @@ namespace builder {
 	\param position Position of the chunk the mesh was build from
 	\param mesh Pointer to the generated mesh
 */
-typedef std::function<void( const ChunkCoordinates& position, mesh::Mesh* mesh )> CHUNK_MESH_BUILDER_CALLBACK;
+typedef std::function<void( const coordinates::ChunkCoordinates& position, mesh::Mesh* mesh )> CHUNK_MESH_BUILDER_CALLBACK;
 
 /**
 	Class to create meshes from chunks asynchronously
@@ -25,6 +25,8 @@ typedef std::function<void( const ChunkCoordinates& position, mesh::Mesh* mesh )
 */
 class ThreadedChunkMeshBuilder : private ChunkMeshBuilder {
 public:
+
+	ThreadedChunkMeshBuilder() = default;
 
 	/**
 		Create ThreadedChunkMeshBuilder.
@@ -35,13 +37,24 @@ public:
 	ThreadedChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, const unsigned int threadCount );
 
 	/**
+		
+	*/
+	void setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary );
+
+	/**
+		
+	*/
+	void setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas );
+
+
+	/**
 		Create the mesh for chunk at a position in the world
 		\param position Position of the chunk
 		\param world World the chunk is in
 		\param callback Callback that returns the generated mesh. \see CHUNK_MESH_BUILDER_CALLBACK
 		\return Mesh pointer or nullptr if chunk does not exist
 	*/
-	void build( const ChunkCoordinates& position, const ChunkCollection& world );
+	void build( const coordinates::ChunkCoordinates& position, const ChunkCollection& world );
 
 	/**
 		Register callback that is called whenever a mesh is build

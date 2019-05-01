@@ -5,7 +5,7 @@ namespace chunk {
 namespace block {
 
 
-void BlockLibrary::registerBlock( const Block& block ) {
+void BlockLibrary::registerBlock( const Block& block ) noexcept {
 	auto it = blockMap_.find( block.id_ );
 	if( it != blockMap_.end() ) {
 		it->second = block;

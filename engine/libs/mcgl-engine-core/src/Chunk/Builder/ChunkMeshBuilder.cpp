@@ -10,7 +10,15 @@ namespace builder {
 
 
 ChunkMeshBuilder::ChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas ) :
-	blockLibrary_( blockLibrary ), textureAtlas_( textureAtlas ) {
+	pBlockLibrary_( blockLibrary ), pTextureAtlas_( textureAtlas ) {
+}
+
+void ChunkMeshBuilder::setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary ) {
+	pBlockLibrary_ = blockLibrary;
+}
+
+void ChunkMeshBuilder::setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas ) {
+	pTextureAtlas_ = textureAtlas;
 }
 
 void ChunkMeshBuilder::addIndices() {
@@ -24,23 +32,22 @@ void ChunkMeshBuilder::addIndices() {
 	indexBase_ += 4;
 }
 
-void ChunkMeshBuilder::left( int x, int y, int z, const ChunkCoordinates & position, UNUM32 & neighbourId, const ChunkCollection & chunks, const Chunk & chunk, const texture::TextureAtlas & textureAtlas, UNUM32 blockId ) {
+void ChunkMeshBuilder::left		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId ) {
+	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
+	
 	// Check neighbouring chunk
 	if( x == 0 ) {
-		auto* neighbourChunk = world.getChunk( position.x_ - 1, position.z_ );
+		auto* neighbourChunk = chunks.getChunk( position.x_ - 1, position.z_ );
 		if( neighbourChunk != nullptr ) {
 			neighbourId = neighbourChunk->getBlockId( CHUNK_WIDTH - 1, y, z );
-		}
-		else {
-			neighbourId = -1;
 		}
 	}
 	else {
 		neighbourId = chunk.getBlockId( x - 1, y, z );
 	}
 
-	if( neighbourId == -1 || blockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
-		auto texCoords = textureAtlas.getTextureCoords( blockLibrary_->getBlock( blockId ).leftTexture_ );
+	if( neighbourId == BLOCK_DEFAULT_ID || pBlockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
+		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).leftTextureId_ );
 
 		vertices_.reserve( 4 );
 		vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { texCoords[0], texCoords[1] } } );
@@ -51,23 +58,22 @@ void ChunkMeshBuilder::left( int x, int y, int z, const ChunkCoordinates & posit
 		addIndices();
 	}
 }
-
-void ChunkMeshBuilder::right( int x, int y, int z, const ChunkCoordinates & position, UNUM32 & neighbourId, const ChunkCollection & chunks, const Chunk & chunk, const texture::TextureAtlas & textureAtlas, UNUM32 blockId ) {
+								  		   	
+void ChunkMeshBuilder::right	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId ) {
+	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
+	
 	if( x == CHUNK_WIDTH - 1 ) {
-		auto* neighbourChunk = world.getChunk( xChunk + 1, zChunk );
+		auto* neighbourChunk = chunks.getChunk( position.x_ + 1, position.z_ );
 		if( neighbourChunk != nullptr ) {
 			neighbourId = neighbourChunk->getBlockId( 0, y, z );
-		}
-		else {
-			neighbourId = -1;
 		}
 	}
 	else {
 		neighbourId = chunk.getBlockId( x + 1, y, z );
 	}
 
-	if( neighbourId == -1 || blockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
-		auto texCoords = textureAtlas.getTextureCoords( blockLibrary_->getBlock( blockId ).rightTexture_ );
+	if( neighbourId == -1 || pBlockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
+		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).rightTextureId_ );
 
 		vertices_.reserve( 4 );
 		vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 0.0f }, { texCoords[0], texCoords[1] } } );
@@ -78,11 +84,13 @@ void ChunkMeshBuilder::right( int x, int y, int z, const ChunkCoordinates & posi
 		addIndices();
 	}
 }
-
-void ChunkMeshBuilder::top( int x, int y, int z, const ChunkCoordinates & position, UNUM32 & neighbourId, const ChunkCollection & chunks, const Chunk & chunk, const texture::TextureAtlas & textureAtlas, UNUM32 blockId ) {
+								  		   	
+void ChunkMeshBuilder::top		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId ) {
+	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
+	
 	neighbourId = chunk.getBlockId( x, y + 1, z );
-	if( neighbourId == -1 || blockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
-		auto texCoords = textureAtlas.getTextureCoords( blockLibrary_->getBlock( blockId ).topTexture_ );
+	if( neighbourId == -1 || pBlockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
+		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).topTextureId_ );
 
 		vertices_.reserve( 4 );
 		vertices_.push_back( { { x + 0.0f, y + 1.0f, z + 0.0f }, { texCoords[0], texCoords[1] } } );
@@ -93,11 +101,13 @@ void ChunkMeshBuilder::top( int x, int y, int z, const ChunkCoordinates & positi
 		addIndices();
 	}
 }
-
-void ChunkMeshBuilder::bottom( int x, int y, int z, const ChunkCoordinates & position, UNUM32 & neighbourId, const ChunkCollection & chunks, const Chunk & chunk, const texture::TextureAtlas & textureAtlas, UNUM32 blockId ) {
+								  		   	
+void ChunkMeshBuilder::bottom	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId ) {
+	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
+	
 	neighbourId = chunk.getBlockId( x, y - 1, z );
-	if( neighbourId == -1 || blockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
-		auto texCoords = textureAtlas.getTextureCoords( blockLibrary_->getBlock( blockId ).bottomTexture_ );
+	if( neighbourId == -1 || pBlockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
+		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).bottomTextureId_ );
 
 		vertices_.reserve( 4 );
 		vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { texCoords[0], texCoords[1] } } );
@@ -108,23 +118,22 @@ void ChunkMeshBuilder::bottom( int x, int y, int z, const ChunkCoordinates & pos
 		addIndices();
 	}
 }
-
-void ChunkMeshBuilder::front( int x, int y, int z, const ChunkCoordinates & position, UNUM32 & neighbourId, const ChunkCollection & chunks, const Chunk & chunk, const texture::TextureAtlas & textureAtlas, UNUM32 blockId ) {
+								  		   	
+void ChunkMeshBuilder::front	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId ) {
+	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
+	
 	if( z == 0 ) {
-		auto* neighbourChunk = world.getChunk( xChunk, zChunk - 1 );
+		auto* neighbourChunk = chunks.getChunk( position.x_, position.z_ - 1 );
 		if( neighbourChunk != nullptr ) {
 			neighbourId = neighbourChunk->getBlockId( x, y, CHUNK_LENGTH - 1 );
-		}
-		else {
-			neighbourId = -1;
 		}
 	}
 	else {
 		neighbourId = chunk.getBlockId( x, y, z - 1 );
 	}
 
-	if( neighbourId == -1 || blockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
-		auto texCoords = textureAtlas.getTextureCoords( blockLibrary_->getBlock( blockId ).frontTexture_ );
+	if( neighbourId == -1 || pBlockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
+		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).frontTextureId_ );
 
 		vertices_.reserve( 4 );
 		vertices_.push_back( { { x + 0.0f, y + 0.0f, z + 0.0f }, { texCoords[0], texCoords[1] } } );
@@ -135,23 +144,22 @@ void ChunkMeshBuilder::front( int x, int y, int z, const ChunkCoordinates & posi
 		addIndices();
 	}
 }
-
-void ChunkMeshBuilder::back( int x, int y, int z, const ChunkCoordinates & position, UNUM32 & neighbourId, const ChunkCollection & chunks, const Chunk & chunk, const texture::TextureAtlas & textureAtlas, UNUM32 blockId ) {
+								  		   	
+void ChunkMeshBuilder::back		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId ) {
+	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
+	
 	if( z == CHUNK_LENGTH - 1 ) {
-		auto* neighbourChunk = world.getChunk( xChunk, zChunk + 1 );
+		auto* neighbourChunk = chunks.getChunk( position.x_, position.z_ + 1 );
 		if( neighbourChunk != nullptr ) {
 			neighbourId = neighbourChunk->getBlockId( x, y, 0 );
-		}
-		else {
-			neighbourId = -1;
 		}
 	}
 	else {
 		neighbourId = chunk.getBlockId( x, y, z + 1 );
 	}
 
-	if( neighbourId == -1 || blockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
-		auto texCoords = textureAtlas.getTextureCoords( blockLibrary_->getBlock( blockId ).backTexture_ );
+	if( neighbourId == -1 || pBlockLibrary_->getBlock( neighbourId ).isTransparent_ ) {
+		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).backTextureId_ );
 
 		vertices_.reserve( 4 );
 		vertices_.push_back( { { x + 1.0f, y + 0.0f, z + 1.0f }, { texCoords[0], texCoords[1] } } );
@@ -163,41 +171,43 @@ void ChunkMeshBuilder::back( int x, int y, int z, const ChunkCoordinates & posit
 	}
 }
 
-mesh::Mesh * ChunkMeshBuilder::build( const int xChunk, const int zChunk, const World & world ) {
+mesh::Mesh* ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) {
+	if( !pBlockLibrary_ || !pTextureAtlas_ ) {
+		return nullptr;
+	}
+
 	indexBase_ = 0;
 	vertices_.clear();
 	indices_.clear();
 
-	auto* chunk_ptr = world.getChunk( xChunk, zChunk );
+	auto* chunk_ptr = chunks.getChunk( position );
 	if( chunk_ptr == nullptr ) {
 		throw std::runtime_error( "Could not create mesh. Chunk does not exist" );
 	}
 
-	auto chunk = *chunk_ptr;
+	auto& chunk = *chunk_ptr;
 
 	for( int x = 0; x < CHUNK_WIDTH; x++ ) {
 		for( int y = 0; y < CHUNK_HEIGHT; y++ ) {
 			for( int z = 0; z < CHUNK_LENGTH; z++ ) {
 				unsigned int blockId = chunk.getBlockId( x, y, z );
 
-				if( blockId == -1 || blockLibrary_->getBlock( blockId ).isTransparent_ ) {
+				if( blockId == BLOCK_DEFAULT_ID || pBlockLibrary_->getBlock( blockId ).isTransparent_ ) {
 					continue;
 				}
 
-				unsigned int neighbourId = 0;
-
-				left( x, y, z, xChunk, zChunk, neighbourId, world, chunk, *textureAtlas_.get(), blockId );
-				right( x, y, z, xChunk, zChunk, neighbourId, world, chunk, *textureAtlas_.get(), blockId );
-				bottom( x, y, z, xChunk, zChunk, neighbourId, world, chunk, *textureAtlas_.get(), blockId );
-				top( x, y, z, xChunk, zChunk, neighbourId, world, chunk, *textureAtlas_.get(), blockId );
-				front( x, y, z, xChunk, zChunk, neighbourId, world, chunk, *textureAtlas_.get(), blockId );
-				back( x, y, z, xChunk, zChunk, neighbourId, world, chunk, *textureAtlas_.get(), blockId );
+				left	( x, y, z, position, chunks, chunk, blockId );
+				right	( x, y, z, position, chunks, chunk, blockId );
+				bottom	( x, y, z, position, chunks, chunk, blockId );
+				top		( x, y, z, position, chunks, chunk, blockId );
+				front	( x, y, z, position, chunks, chunk, blockId );
+				back	( x, y, z, position, chunks, chunk, blockId );
 
 			}
 		}
 	}
 
-	return new Mesh( std::move( vertices_ ), std::move( indices_ ), *textureAtlas_.get(), { chunk.getPosition().x_ * (int)CHUNK_WIDTH, 0.0, chunk.getPosition().z_ * (int)CHUNK_LENGTH } );
+	return new mesh::Mesh( std::move( vertices_ ), std::move( indices_ ) );
 }
 
 

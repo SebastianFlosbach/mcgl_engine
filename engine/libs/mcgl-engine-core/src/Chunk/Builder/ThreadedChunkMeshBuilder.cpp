@@ -15,7 +15,7 @@ ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const block::BlockLibrary_sp
 	threadPool_( threadCount ) {
 }
 
-void ThreadedChunkMeshBuilder::build( const ChunkCoordinates& position, const ChunkCollection& chunks ) {
+void ThreadedChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) {
 	threadPool_.push( [this, &position, &chunks]( int id ) {
 		auto* mesh = ChunkMeshBuilder::build( position, chunks );
 
@@ -23,6 +23,14 @@ void ThreadedChunkMeshBuilder::build( const ChunkCoordinates& position, const Ch
 			callback_( position, mesh );
 		}
 	} );
+}
+
+void ThreadedChunkMeshBuilder::setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary ) {
+	ChunkMeshBuilder::setBlockLibrary( blockLibrary );
+}
+
+void ThreadedChunkMeshBuilder::setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas ) {
+	ChunkMeshBuilder::setTextureAtlas( textureAtlas );
 }
 
 void ThreadedChunkMeshBuilder::registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback ) {

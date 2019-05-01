@@ -6,6 +6,7 @@
 
 #include "Mesh/Mesh.h"
 #include "Renderer/Renderer.h"
+#include "Coordinates/WorldCoordinates.h"
 
 
 namespace world {
@@ -20,21 +21,21 @@ namespace world {
 		World( const World& other ) = delete;
 		World& operator=( const World& other ) = delete;
 
-		World( World&& other ) noexcept;
-		World& operator=( World&& other ) noexcept;
+		World( World&& other ) = delete;
+		World& operator=( World&& other ) = delete;
 
 		/**
 			Add a mesh to the world.
 			\param position Position of the mesh inside the world
 			\param mesh Mesh to add to the world
 		*/
-		void addMesh( const glm::vec3& position, mesh::Mesh_ptr&& mesh );
+		void addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh_ptr&& mesh );
 
 		/**
 			Remove a mesh from the world.
 			\param position The mesh at this position will be removed
 		*/
-		void removeMesh( const glm::vec3& position );
+		void removeMesh( const coordinates::WorldCoordinates& position );
 
 		/**
 			Draw all meshes at their positions.
@@ -43,7 +44,7 @@ namespace world {
 		void draw( Renderer& renderer );
 		
 	private:
-		std::unordered_map<glm::vec3, mesh::Mesh_ptr> meshes_;
+		std::unordered_map<coordinates::WorldCoordinates, mesh::Mesh_ptr> meshes_;
 		
 	};
 

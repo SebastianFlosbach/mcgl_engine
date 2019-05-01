@@ -15,11 +15,11 @@ namespace texture {
 		Texture( const Texture& other ) = delete;
 		Texture& operator=( const Texture& other ) = delete;
 
-		Texture( Texture&& other ) {
+		Texture( Texture&& other ) noexcept {
 			*this = std::move( other );
 		}
 
-		Texture& operator=( Texture&& other ) {
+		Texture& operator=( Texture&& other ) noexcept {
 			this->hTexture_ = other.hTexture_;
 
 			// Cleanup to avoid texture being reused or deleted

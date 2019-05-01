@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Definition/mcgl_engine_def.h"
+
 
 namespace chunk {
 namespace block {

@@ -15,7 +15,7 @@ enum class ChunkCollectionChangedEventType {
 	ChunkRemoved
 };
 
-typedef std::function<void(const ChunkCollectionChangedEventType&, const ChunkCoordinates&)> CHUNK_COLLECTION_CHANGED_CALLBACK;
+typedef std::function<void(const ChunkCollectionChangedEventType&, const coordinates::ChunkCoordinates&)> CHUNK_COLLECTION_CHANGED_CALLBACK;
 
 /**
 	A collection of chunks
@@ -40,7 +40,7 @@ public:
 		Remove chunk from this collection
 		\param position Position of the chunk to remove
 	*/
-	void removeChunk( const ChunkCoordinates& position );
+	void removeChunk( const coordinates::ChunkCoordinates& position );
 
 	/**
 		Get chunk from this collection.
@@ -48,7 +48,16 @@ public:
 		\param position Position of the chunk
 		\return Chunk at position or nullptr
 	*/
-	const chunk::Chunk* getChunk( const ChunkCoordinates& position ) const;
+	const chunk::Chunk* getChunk( const coordinates::ChunkCoordinates& position ) const;
+
+	/**
+		Get chunk from this collection.
+		If the chunk does not exist nullptr is returned.
+		\param x X coordinate of the chunk
+		\param z Z coordinate of the chunk
+		\return Chunk at position or nullptr
+	*/
+	const chunk::Chunk* getChunk( NUM32 x, NUM32 z ) const;
 
 	/**
 		Register a callback that is called whenever a chunk is added or removed.
@@ -63,7 +72,7 @@ public:
 	void deregisterCollectionChangedCallback();
 
 private:
-	std::unordered_map<ChunkCoordinates, chunk::Chunk_ptr> chunks_;
+	std::unordered_map<coordinates::ChunkCoordinates, chunk::Chunk_ptr> chunks_;
 
 	CHUNK_COLLECTION_CHANGED_CALLBACK collectionChangedCallback_;
 

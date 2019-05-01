@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Definition/mcgl_engine_def.h"
 #include "Logging/ILogger.h"
 #include "Window.h"
@@ -34,7 +35,7 @@ public:
 
 	void createWindow( const UNUM32 width, const UNUM32 height, const std::string& title );
 	void closeWindow();
-	void registerBlockType( const chunk::block::Block& block, UNUM32 id );
+	void registerBlockType( const chunk::block::Block& block );
 	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
 	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
 	void registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
@@ -86,7 +87,7 @@ private:
 
 	std::unique_ptr<Renderer> pRenderer_;
 
-	chunk::block::BlockLibrary blockLibrary_{};
+	chunk::block::BlockLibrary_sptr pBlockLibrary_{};
 	
 	chunk::ChunkCollection_ptr pChunks_;
 	world::World_ptr pWorld_;

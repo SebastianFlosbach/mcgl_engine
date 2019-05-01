@@ -67,11 +67,11 @@ void Stop() {
 	engine->stop();
 }
 
-void RegisterBlockType( const world::block::Block& block, const NUM32 id ) {
+void RegisterBlockType( const chunk::block::Block& block ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] RegisterBockType" );
-	engine->addBlockType( block, id );
+	engine->registerBlockType( block );
 }
 
 void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textureCount ) {
@@ -90,7 +90,7 @@ void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath ) {
 	engine->setShader( vertexShaderPath, fragmentShaderPath );
 }
 
-void AddChunk( const world::chunk::Chunk& chunk ) {
+void AddChunk( const chunk::Chunk& chunk ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] AddChunk" );

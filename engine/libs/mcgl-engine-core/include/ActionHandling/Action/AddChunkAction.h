@@ -2,7 +2,7 @@
 
 #include "Action.h"
 
-#include "../../World/Chunk/Chunk.h"
+#include "Chunk/Chunk.h"
 
 
 namespace action {
@@ -10,11 +10,11 @@ namespace action {
 
 	struct AddChunkAction : public Action {
 	public:
-		AddChunkAction( world::chunk::Chunk_ptr&& chunk ) : pChunk_( std::move( chunk ) ) {}
+		AddChunkAction( chunk::Chunk_ptr&& chunk ) : pChunk_( std::move( chunk ) ) {}
 
 		ActionType type() const override { return ActionType::AddChunkAction; }
 
-		world::chunk::Chunk_ptr pChunk_;
+		chunk::Chunk_ptr pChunk_;
 	};
 
 

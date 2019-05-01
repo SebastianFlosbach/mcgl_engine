@@ -12,20 +12,25 @@
 #include "Eventing/KeyEventHandler.h"
 #include "Eventing/MouseEventHandler.h"
 
+#include "Coordinates/ChunkCoordinates.h"
+#include "Coordinates/WorldCoordinates.h"
 
-Engine::Engine( const ILogger& logger ) : logger_( logger ), pWorld_(), pChunks_() {
+
+Engine::Engine( const ILogger& logger ) : logger_( logger ), pWorld_(), pChunks_(), pChunkMeshBuilder_() {
 	if( isRunning_.exchange( true ) ) {
 		return;
 	}
 
+	pChunkMeshBuilder_->setBlockLibrary( pBlockLibrary_ );
+
 	pChunks_->registerCollectionChangedCallback( chunk::CHUNK_COLLECTION_CHANGED_CALLBACK( 
-		[this]( const chunk::ChunkCollectionChangedEventType& type, const ChunkCoordinates& position ) {
+		[this]( const chunk::ChunkCollectionChangedEventType& type, const coordinates::ChunkCoordinates& position ) {
 			switch ( type ) {
 				case chunk::ChunkCollectionChangedEventType::ChunkAdded:
 					pChunkMeshBuilder_->build( position, *pChunks_ );
 					break;
 				case chunk::ChunkCollectionChangedEventType::ChunkRemoved:
-					pWorld_->removeMesh( position );
+					pWorld_->removeMesh( position.toWorldCoordinates() );
 					break;
 				default:
 					break;
@@ -114,8 +119,8 @@ void Engine::closeWindow() {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::CloseWindowAction() ) );
 }
 
-void Engine::registerBlockType( const world::block::Block& block, UNUM32 id ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RegisterBlockTypeAction( block, id ) ) );
+void Engine::registerBlockType( const chunk::block::Block& block ) {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RegisterBlockTypeAction( block ) ) );
 }
 
 void Engine::registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
@@ -130,8 +135,8 @@ void Engine::registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) 
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RegisterStatusEventCallbackAction( callback ) ) );
 }
 
-void Engine::addChunk( const world::chunk::Chunk& chunk ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddChunkAction( std::make_unique<world::chunk::Chunk>( chunk ) ) ) );
+void Engine::addChunk( const chunk::Chunk& chunk ) {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddChunkAction( std::make_unique<chunk::Chunk>( chunk ) ) ) );
 }
 
 void Engine::removeChunk( const UNUM32 x, const UNUM32 z ) {
@@ -213,7 +218,7 @@ void Engine::doCloseWindow() {
 void Engine::doRegisterBlockType( action::RegisterBlockTypeAction* data ) {
 	info( logger_, "addBlockType()" );
 
-	blockLibrary_.registerBlock( data->block_ );
+	pBlockLibrary_->registerBlock( data->block_ );
 }
 
 void Engine::doRegisterKeyEventCallback( action::RegisterKeyEventCallbackAction* data ) {
@@ -246,6 +251,7 @@ void Engine::doSetTextures( action::SetTexturesAction* data ) {
 	texture::TextureAtlas textureAtlas( data->texturePath_, data->size_, data->textureCount_ );
 
 	pRenderer_->setTextures( std::move( textureAtlas ) );
+	pChunkMeshBuilder_->setTextureAtlas( pRenderer_->getTextureAtlas() );
 }
 
 void Engine::doSetShader( action::SetShaderAction* data ) {

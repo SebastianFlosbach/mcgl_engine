@@ -100,14 +100,14 @@ int main() {
 	SetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
 	SetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
 
-	RegisterBlockType( { true }, 0 );
-	RegisterBlockType( { false, 2, 2, 2, 2, 0, 1 }, 1 );
+	RegisterBlockType( { 0, true } );
+	RegisterBlockType( { 1, false, 2, 2, 2, 2, 0, 1 } );
 
-	world::chunk::Chunk chunk = world::chunk::Chunk();
+	chunk::Chunk chunk = chunk::Chunk();
 	for ( int x = 0; x < CHUNK_WIDTH; x++ ) {
 		for ( int z = 0; z < CHUNK_LENGTH; z++ ) {
 			for ( int y = 0; y < 5; y++ ) {
-				chunk.setBlock( 1, x, y, z );
+				chunk.setBlock( x, y, z, 1 );
 			}
 		}
 	}

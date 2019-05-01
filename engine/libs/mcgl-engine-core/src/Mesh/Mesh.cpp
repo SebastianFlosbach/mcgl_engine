@@ -1,5 +1,6 @@
 #include "Mesh/Mesh.h"
 
+
 namespace mesh {
 
 
@@ -13,7 +14,7 @@ Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices 
 	setupMesh();
 }
 
-Mesh::Mesh( Mesh&& other ) :
+Mesh::Mesh( Mesh&& other ) noexcept :
 	hVertexArray_( other.hVertexArray_ ),
 	hVertexBuffer_( other.hVertexBuffer_ ),
 	hElementBuffer_( other.hElementBuffer_ ),
@@ -29,7 +30,7 @@ Mesh::Mesh( Mesh&& other ) :
 	other.hElementBuffer_ = 0;
 }
 
-Mesh& Mesh::operator=( Mesh&& other ) {
+Mesh& Mesh::operator=( Mesh&& other ) noexcept {
 	return std::move( other );
 }
 
