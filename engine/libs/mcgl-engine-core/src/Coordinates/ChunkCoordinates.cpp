@@ -11,8 +11,8 @@ ChunkCoordinates::ChunkCoordinates( NUM32 x, NUM32 z ) : x_( x ), z_( z ) {}
 
 
 WorldCoordinates ChunkCoordinates::toWorldCoordinates() const {
-	float x = x_ * CHUNK_WIDTH * BLOCK_SIZE;
-	float z = z_ * CHUNK_LENGTH * BLOCK_SIZE;
+	float x = x_ * (float)CHUNK_WIDTH * (float)BLOCK_SIZE;
+	float z = z_ * (float)CHUNK_LENGTH * (float)BLOCK_SIZE;
 
 	return { x, 0.0f, z };
 }

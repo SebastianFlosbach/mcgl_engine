@@ -26,7 +26,7 @@ typedef std::function<void( const coordinates::ChunkCoordinates& position, mesh:
 class ThreadedChunkMeshBuilder : private ChunkMeshBuilder {
 public:
 
-	ThreadedChunkMeshBuilder() = default;
+	ThreadedChunkMeshBuilder( UNUM32 threadCount );
 
 	/**
 		Create ThreadedChunkMeshBuilder.
@@ -34,7 +34,7 @@ public:
 		\param textureAtlas TextureAtlas to use for the mesh
 		\param threadCount Number of threads the builder is allowed to use
 	*/
-	ThreadedChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, const unsigned int threadCount );
+	ThreadedChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount );
 
 	/**
 		

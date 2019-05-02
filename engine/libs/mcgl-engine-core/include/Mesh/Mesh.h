@@ -22,6 +22,8 @@ public:
 	Mesh& operator=( Mesh&& other ) noexcept;
 
 	~Mesh();
+
+	void setupMesh();
 	
 	void draw( Renderer& renderer );
 
@@ -33,7 +35,6 @@ private:
 	std::vector<Vertex> vertices_;
 	std::vector<UNUM32> indices_;
 
-	void setupMesh();
 
 };
 

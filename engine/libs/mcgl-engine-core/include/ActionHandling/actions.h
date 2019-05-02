@@ -3,6 +3,7 @@
 #include "Action/Action.h"
 
 #include "Action/AddChunkAction.h"
+#include "Action/AddMeshAction.h"
 #include "Action/RemoveChunkAction.h"
 #include "Action/AddChunkAction.h"
 #include "Action/CloseWindowAction.h"

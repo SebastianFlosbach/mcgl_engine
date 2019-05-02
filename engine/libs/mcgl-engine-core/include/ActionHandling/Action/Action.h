@@ -8,6 +8,7 @@ namespace action {
 
 	enum class ActionType {
 		AddChunkAction,
+		AddMeshAction,
 		CloseWindowAction,
 		CreateCameraAction,
 		CreateWindowAction,

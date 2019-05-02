@@ -112,14 +112,15 @@ int main() {
 		}
 	}
 
+	Run();
+
 	for( int x = -1; x < 1; x++ ) {
 		for( int z = -1; z < 1; z++ ) {
 			chunk.setPosition( { x, z } );
 			AddChunk( chunk );
+			std::this_thread::sleep_for( std::chrono::seconds( 2 ) );
 		}
 	}
-
-	Run();
 
 	futureStop.wait();
 

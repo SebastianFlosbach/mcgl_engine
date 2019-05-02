@@ -16,12 +16,21 @@
 #include "Coordinates/WorldCoordinates.h"
 
 
-Engine::Engine( const ILogger& logger ) : logger_( logger ), pWorld_(), pChunks_(), pChunkMeshBuilder_() {
+Engine::Engine( const ILogger& logger ) : 
+	logger_( logger ),
+	pBlockLibrary_( new chunk::block::BlockLibrary() ),
+	pChunks_( new chunk::ChunkCollection() ),
+	pWorld_( new world::World() ),
+	pChunkMeshBuilder_( new chunk::builder::ThreadedChunkMeshBuilder( 4 ) ) { 
+	
 	if( isRunning_.exchange( true ) ) {
 		return;
 	}
 
 	pChunkMeshBuilder_->setBlockLibrary( pBlockLibrary_ );
+	pChunkMeshBuilder_->registerCallback( chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const coordinates::ChunkCoordinates& position, mesh::Mesh* mesh ) {
+		addMesh( position.toWorldCoordinates(), mesh );
+	} ) );
 
 	pChunks_->registerCollectionChangedCallback( chunk::CHUNK_COLLECTION_CHANGED_CALLBACK( 
 		[this]( const chunk::ChunkCollectionChangedEventType& type, const coordinates::ChunkCoordinates& position ) {
@@ -53,10 +62,24 @@ Engine::Engine( const ILogger& logger ) : logger_( logger ), pWorld_(), pChunks_
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::EngineInitAction() ) );
 }
 
+void Engine::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh* mesh ) {
+	auto mesh_ptr = std::unique_ptr<mesh::Mesh>( mesh );
+
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddMeshAction( position, std::move( mesh_ptr ) ) ) );
+}
+
+void Engine::doAddMesh( action::AddMeshAction* data ) {
+	data->pMesh_->setupMesh();
+	pWorld_->addMesh( data->position_, std::move( data->pMesh_ ) );
+}
+
 void Engine::doAction( action::Action_ptr& action ) {
 	switch( action->type() ) {
 	case action::ActionType::AddChunkAction:
 		doAddChunk( static_cast<action::AddChunkAction*>( action.get() ) );
+		break;
+	case action::ActionType::AddMeshAction:
+		doAddMesh( static_cast<action::AddMeshAction*>( action.get() ) );
 		break;
 	case action::ActionType::CloseWindowAction:
 		doCloseWindow();

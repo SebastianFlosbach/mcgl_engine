@@ -6,12 +6,12 @@ namespace mesh {
 
 Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) : 
 	vertices_( vertices ), indices_( indices ) {
-	setupMesh();
+	//setupMesh();
 }
 
 Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices ) :
 	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ) {
-	setupMesh();
+	//setupMesh();
 }
 
 Mesh::Mesh( Mesh&& other ) noexcept :

@@ -53,6 +53,9 @@ public:
 	void stop();
 
 private:
+	void addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh* mesh );
+	void doAddMesh( action::AddMeshAction* data );
+
 	void doAction( action::Action_ptr& action );
 
 	void doEngine();
@@ -87,11 +90,10 @@ private:
 
 	std::unique_ptr<Renderer> pRenderer_;
 
-	chunk::block::BlockLibrary_sptr pBlockLibrary_{};
-	
-	chunk::ChunkCollection_ptr pChunks_;
-	world::World_ptr pWorld_;
-	chunk::builder::ThreadedChunkMeshBuilder_ptr pChunkMeshBuilder_;
+	chunk::block::BlockLibrary_sptr					pBlockLibrary_;	
+	chunk::ChunkCollection_ptr						pChunks_;
+	world::World_ptr								pWorld_;
+	chunk::builder::ThreadedChunkMeshBuilder_ptr	pChunkMeshBuilder_;
 
 	Camera camera_;
 

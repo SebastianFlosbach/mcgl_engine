@@ -10,13 +10,16 @@ namespace chunk {
 namespace builder{
 
 
-ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, const unsigned int threadCount ) :
+ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( UNUM32 threadCount ) : threadPool_( threadCount ) {
+}
+
+ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount ) :
 	ChunkMeshBuilder( blockLibrary, textureAtlas ),
 	threadPool_( threadCount ) {
 }
 
 void ThreadedChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) {
-	threadPool_.push( [this, &position, &chunks]( int id ) {
+	threadPool_.push( [this, position, &chunks]( int id ) {
 		auto* mesh = ChunkMeshBuilder::build( position, chunks );
 
 		if ( callback_ ) {
