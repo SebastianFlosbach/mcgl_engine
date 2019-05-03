@@ -153,3 +153,9 @@ float GetDeltaTime() {
 
 	return engine->getDeltaTime();
 }
+
+coordinates::WorldCoordinates GetCameraPosition( UNUM32 cameraId ) {
+	if( !checkEngine() ) return { 0, 0, 0 };
+
+	return engine->getCameraPosition( cameraId );
+}

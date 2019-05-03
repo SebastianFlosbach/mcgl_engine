@@ -30,6 +30,10 @@ public:
 		move( glm::vec3( dx, dy, dz ) );
 	}
 
+	const glm::vec3& getPosition() const {
+		return pos_;
+	}
+
 	void setDirection( glm::vec3 direction ) {
 		direction_ = glm::normalize( direction );
 	}

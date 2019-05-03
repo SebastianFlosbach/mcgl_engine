@@ -4,13 +4,17 @@
 
 
 namespace coordinates {
-
+struct BlockCoordinates;
+struct ChunkCoordinates;
 
 struct WorldCoordinates {
 public:
 	WorldCoordinates( float x, float y, float z );
+	WorldCoordinates( const glm::vec3 position );
 	
 	glm::vec3 toVec3() const;
+
+	ChunkCoordinates toChunkCoordinates() const;
 
 	float x_, y_, z_;
 

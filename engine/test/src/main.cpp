@@ -6,24 +6,48 @@
 #include <mcgl-engine.h>
 #include <future>
 
+#include "Coordinates/ChunkCoordinates.h"
+#include "Coordinates/WorldCoordinates.h"
+
 static double movementSpeed = 15.0;
 static std::promise<void> promiseStop;
 static std::future<void> futureStop;
+
+chunk::Chunk myChunk;
+
+std::vector<coordinates::ChunkCoordinates> loadedChunks;
+
+void checkLoadedChunks() {
+	coordinates::WorldCoordinates position = GetCameraPosition( 1 );
+
+	coordinates::ChunkCoordinates chunkPos = position.toChunkCoordinates();
+
+	if( std::find( loadedChunks.begin(), loadedChunks.end(), chunkPos ) == loadedChunks.end() ) {
+		loadedChunks.push_back( chunkPos );
+		myChunk.setPosition( chunkPos );
+		AddChunk( myChunk );
+	}
+
+}
 
 void keyEventCallback( const KeyEvent& keyEvent ) {
 	if ( keyEvent.type_ == KeyEventType::Pressed || keyEvent.type_ == KeyEventType::Down ) {
 		switch ( keyEvent.key_ ) {
 			case GLFW_KEY_W:
 				MoveCamera( 1, 0.0, 0.0, movementSpeed * GetDeltaTime() );
+				checkLoadedChunks();
 				break;
 			case GLFW_KEY_S:
 				MoveCamera( 1, 0.0, 0.0, -movementSpeed * GetDeltaTime() );
+				checkLoadedChunks();
 				break;
 			case GLFW_KEY_A:
 				MoveCamera( 1, -movementSpeed * GetDeltaTime(), 0.0, 0.0 );
+				checkLoadedChunks();
 				break;
 			case GLFW_KEY_D:
 				MoveCamera( 1, movementSpeed * GetDeltaTime(), 0.0, 0.0 );
+				checkLoadedChunks();
 				break;
 			case GLFW_KEY_ESCAPE:
 				Stop();
@@ -103,24 +127,16 @@ int main() {
 	RegisterBlockType( { 0, true } );
 	RegisterBlockType( { 1, false, 2, 2, 2, 2, 0, 1 } );
 
-	chunk::Chunk chunk = chunk::Chunk();
+	myChunk = chunk::Chunk();
 	for ( int x = 0; x < CHUNK_WIDTH; x++ ) {
 		for ( int z = 0; z < CHUNK_LENGTH; z++ ) {
 			for ( int y = 0; y < 5; y++ ) {
-				chunk.setBlock( x, y, z, 1 );
+				myChunk.setBlock( x, y, z, 1 );
 			}
 		}
 	}
 
 	Run();
-
-	for( int x = -1; x < 1; x++ ) {
-		for( int z = -1; z < 1; z++ ) {
-			chunk.setPosition( { x, z } );
-			AddChunk( chunk );
-			std::this_thread::sleep_for( std::chrono::seconds( 2 ) );
-		}
-	}
 
 	futureStop.wait();
 

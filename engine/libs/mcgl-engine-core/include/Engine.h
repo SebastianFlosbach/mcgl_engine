@@ -33,6 +33,10 @@ public:
 		return deltaTime_;
 	}
 
+	coordinates::WorldCoordinates getCameraPosition( UNUM32 cameraId ) const {
+		return camera_.getPosition();
+	}
+
 	void createWindow( const UNUM32 width, const UNUM32 height, const std::string& title );
 	void closeWindow();
 	void registerBlockType( const chunk::block::Block& block );

@@ -19,6 +19,16 @@ struct ChunkCoordinates {
 	BlockCoordinates toBlockCoordinates() const;
 
 	NUM32 x_, z_;
+
+	bool operator==( const ChunkCoordinates& right ) const {
+		if( x_ == right.x_ && z_ == right.z_ ) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
 };
 
 
