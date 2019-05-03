@@ -4,32 +4,63 @@
 #include <iostream>
 #include <Eventing/KeyEvent.h>
 
-#include "Conversion/cpp_to_java.h"
+#include "Conversion/KeyEvent.h"
+#include "Conversion/KeyEventType.h"
 
-JNIEXPORT void JNICALL Java_MCGLEngineInterface_createEngine( JNIEnv *, jobject ) {
-	std::cout << "createEngine()" << std::endl;
+
+JNIEXPORT void JNICALL Java_MCGLEngine_CreateEngine( JNIEnv*, jobject ) {
 	CreateEngine();
 }
 
-JNIEXPORT void JNICALL Java_MCGLEngineInterface_createWindow( JNIEnv* env, jobject, jint width, jint height, jstring title ) {
-	std::cout << "createWindow()" << std::endl;
+JNIEXPORT void JNICALL Java_MCGLEngine_DestroyEngine( JNIEnv*, jobject ) {
+	DestroyEngine();
+}
 
+JNIEXPORT void JNICALL Java_MCGLEngine_CreateWindow( JNIEnv*, jobject, jint, jint, jstring ) {
 	const char* cTitle = env->GetStringUTFChars( title, false );
 	CreateWindow( width, height, cTitle );
 	env->ReleaseStringUTFChars( title, cTitle );
 }
 
-JNIEXPORT void JNICALL Java_MCGLEngineInterface_run( JNIEnv* , jobject ) {
+JNIEXPORT void JNICALL Java_MCGLEngine_CloseWindow( JNIEnv*, jobject ) {
+	CloseWindow();
+}
+
+JNIEXPORT void JNICALL Java_MCGLEngine_Run( JNIEnv*, jobject ) {
 	Run();
 }
 
-JNIEXPORT void JNICALL Java_MCGLEngineInterface_stop( JNIEnv* , jobject ) {
+JNIEXPORT void JNICALL Java_MCGLEngine_Stop( JNIEnv*, jobject ) {
+	Stop();
+}
+
+JNIEXPORT void JNICALL Java_MCGLEngine_RegisterBlockType( JNIEnv* env, jobject obj, jobject jBlock ) {
 
 }
 
-JNIEXPORT void JNICALL Java_MCGLEngineInterface_destroyEngine( JNIEnv *, jobject ) {
-	DestroyEngine();
-}
+JNIEXPORT void JNICALL Java_MCGLEngine_SetTextures( JNIEnv*, jobject, jstring, jint, jint );
+
+JNIEXPORT void JNICALL Java_MCGLEngine_SetShader( JNIEnv*, jobject, jstring, jstring );
+
+JNIEXPORT void JNICALL Java_MCGLEngine_AddChunk( JNIEnv*, jobject, jobject );
+
+JNIEXPORT void JNICALL Java_MCGLEngine_RemoveChunk( JNIEnv*, jobject, jobject );
+
+JNIEXPORT jint JNICALL Java_MCGLEngine_CreateCamera( JNIEnv*, jobject, jdouble, jdouble, jdouble, jdouble, jdouble, jdouble );
+
+JNIEXPORT void JNICALL Java_MCGLEngine_MoveCamera( JNIEnv*, jobject, jint, jdouble, jdouble, jdouble );
+
+JNIEXPORT void JNICALL Java_MCGLEngine_RotateCamera( JNIEnv*, jobject, jint, jdouble, jdouble, jdouble );
+
+JNIEXPORT void JNICALL Java_MCGLEngine_RegisterKeyEventCallback( JNIEnv*, jobject, jobject );
+
+JNIEXPORT void JNICALL Java_MCGLEngine_RegisterMouseEventCallback( JNIEnv*, jobject, jobject );
+
+JNIEXPORT void JNICALL Java_MCGLEngine_RegisterStatusEventCallback( JNIEnv*, jobject, jobject );
+
+JNIEXPORT jfloat JNICALL Java_MCGLEngine_GetDeltaTime( JNIEnv*, jobject );
+
+JNIEXPORT jobject JNICALL Java_MCGLEngine_GetCameraPosition( JNIEnv*, jobject, jint );
 
 
 
