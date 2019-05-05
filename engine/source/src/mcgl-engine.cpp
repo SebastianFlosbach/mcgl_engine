@@ -38,7 +38,7 @@ void DestroyEngine() {
 	engine.reset();
 }
 
-void CreateWindow( const NUM32 width, const NUM32 height, const std::string& title ) {
+void CreateWindow( NUM32 width, NUM32 height, const std::string& title ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] CreateWindow" );
@@ -74,7 +74,7 @@ void RegisterBlockType( const chunk::block::Block& block ) {
 	engine->registerBlockType( block );
 }
 
-void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textureCount ) {
+void SetTextures( const std::string& path, UNUM32 textureSize, UNUM32 textureCount ) {
 	if ( !checkEngine() ) return;
 
 	info(*logger, "[MCGL-ENGINE] SetTextures");
@@ -82,7 +82,7 @@ void SetTextures( const char* path, const UNUM32 textureSize, const UNUM32 textu
 	engine->setTextures( path, textureSize, textureCount );
 }
 
-void SetShader( const char* vertexShaderPath, const char* fragmentShaderPath ) {
+void SetShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
 	if ( !checkEngine() ) return;
 
 	info(*logger, "[MCGL-ENGINE] SetShader");
@@ -97,14 +97,14 @@ void AddChunk( const chunk::Chunk& chunk ) {
 	engine->addChunk( chunk );
 }
 
-void RemoveChunk(const NUM32 x, const NUM32 z) {
+void RemoveChunk( NUM32 x, NUM32 z) {
 	if (!checkEngine()) return;
 
 	info(*logger, "[MCGL-ENGINE] RemoveChunk");
 	engine->removeChunk( x, z );
 }
 
-UNUM32 CreateCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll ) {
+UNUM32 CreateCamera( double x, double y, double z, double pitch, double yaw, double roll ) {
 	if ( !checkEngine() ) return 0;
 
 	info( *logger, "[MCGL-ENGINE] CreateCamera" );
@@ -112,14 +112,14 @@ UNUM32 CreateCamera( const double x, const double y, const double z, const doubl
 	return engine->createCamera( x, y, z, pitch, yaw, roll );
 }
 
-void MoveCamera( const UNUM32 cameraId, const double dx, const double dy, const double dz ) {
+void MoveCamera( UNUM32 cameraId, double dx, double dy, double dz ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] MoveCamera" );
 	engine->moveCamera( cameraId, dx, dy, dz );
 }
 
-void RotateCamera( const UNUM32 cameraId, const double pitch, const double yaw, const double roll ) {
+void RotateCamera( UNUM32 cameraId, double pitch, double yaw, double roll ) {
 	if ( !checkEngine() ) return;
 
 	info( *logger, "[MCGL-ENGINE] RotateCamera" );

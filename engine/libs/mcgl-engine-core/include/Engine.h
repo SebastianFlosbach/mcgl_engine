@@ -37,21 +37,23 @@ public:
 		return camera_.getPosition();
 	}
 
-	void createWindow( const UNUM32 width, const UNUM32 height, const std::string& title );
+	void createWindow( UNUM32 width, UNUM32 height, const std::string& title );
 	void closeWindow();
+
 	void registerBlockType( const chunk::block::Block& block );
-	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
-	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
-	void registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
 	void addChunk( const chunk::Chunk& chunk );
 	void removeChunk( const UNUM32 x, const UNUM32 z );
 
-	void setTextures( const char* texturePath, const NUM32 size, const NUM32 textureCount );
-	void setShader( const char* vertexShaderPath, const char* fragmentShaderPath );
+	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
+	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
+	void registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
 
-	UNUM32 createCamera( const double x, const double y, const double z, const double pitch, const double yaw, const double roll = 0.0 );
-	void moveCamera( const UNUM32 cameraId, const double dx, const double dy, const double dz );
-	void rotateCamera( const UNUM32 cameraId, const double pitch, const double yaw, const double roll = 0.0 );
+	void setTextures( const std::string& texturePath, NUM32 size, NUM32 textureCount );
+	void setShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
+
+	UNUM32 createCamera( double x, double y, double z, double pitch, double yaw, double roll = 0.0 );
+	void moveCamera( UNUM32 cameraId, double dx, double dy, double dz );
+	void rotateCamera( UNUM32 cameraId, double pitch, double yaw, double roll = 0.0 );
 
 	void run();
 	void stop();
@@ -60,7 +62,7 @@ private:
 	void addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh* mesh );
 	void doAddMesh( action::AddMeshAction* data );
 
-	void doAction( action::Action_ptr& action );
+	void doAction( action::Action* action );
 
 	void doEngine();
 	void doCreateWindow( action::CreateWindowAction* data );
@@ -84,15 +86,9 @@ private:
 
 	const ILogger& logger_;
 
-	std::thread workerThread_;
-
 	ThreadedWorkerQueue<action::Action_ptr> workerQueue_{};
-	std::mutex mQueue_{};
-	std::condition_variable cvQueue_{};
 
-	Window window_;
-
-	std::unique_ptr<Renderer> pRenderer_;
+	Renderer_ptr pRenderer_;
 
 	chunk::block::BlockLibrary_sptr					pBlockLibrary_;	
 	chunk::ChunkCollection_ptr						pChunks_;

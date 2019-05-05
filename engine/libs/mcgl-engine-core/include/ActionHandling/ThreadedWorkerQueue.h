@@ -1,14 +1,20 @@
 #pragma once
 
 #include <atomic>
+#include <functional>
 #include <mutex>
 #include <queue>
+#include <thread>
 
+#include "ActionHandling/Action/Action.h"
+
+
+typedef std::function<void(action::Action* action)> MCGL_WORKER_QUEUE_CALLBACK;
 
 template<typename T>
 class ThreadedWorkerQueue {
 public:
-	ThreadedWorkerQueue() = default;
+	ThreadedWorkerQueue();
 
 	ThreadedWorkerQueue(const ThreadedWorkerQueue& other) = delete;
 	ThreadedWorkerQueue& operator=(const ThreadedWorkerQueue& other) = delete;
@@ -18,27 +24,28 @@ public:
 
 	~ThreadedWorkerQueue() = default;
 
-	void enqueue(T action);
-	T dequeue();
+	void enqueue(T&& action);
 
-	const T& peek();
-
-	bool empty() {
-		return queue_.empty();
+	void registerCallback( MCGL_WORKER_QUEUE_CALLBACK callback ) {
+		callback_ = callback;
 	}
 
-	void wait() {
-		std::unique_lock<std::mutex> lock( mQueue_ );
-		cvQueue_.wait( lock );
-	}
-
-	void notify() {
-		cvQueue_.notify_one();
+	void deregisterCallback( MCGL_WORKER_QUEUE_CALLBACK callback ) {
+		callback_ = NULL;
 	}
 
 private:
-	std::deque<T> queue_;
+	std::thread workerThread_;
 
-	std::mutex mQueue_ {};
+	MCGL_WORKER_QUEUE_CALLBACK callback_;
+
+	std::atomic_bool isRunning_;
+
+	std::deque<T> workerQueue_;
+
+	std::mutex mQueue_{};
 	std::condition_variable cvQueue_{};
+	
+	T dequeue();
+	inline void invokeCallback( action::Action* action );
 };

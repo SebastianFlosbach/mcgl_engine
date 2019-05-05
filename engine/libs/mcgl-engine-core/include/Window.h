@@ -1,57 +1,47 @@
 #pragma once
+
+#include <functional>
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
-
 #include <string>
+
+#include "Definition/mcgl_engine_def.h"
+
+
+typedef std::function<void( NUM32 width, NUM32 height )> MCGL_WINDOW_RESIZE_CALLBACK;
 
 class Window {
 public:
-	Window() {}
-	Window( unsigned int width, unsigned int height, const std::string& title );
+	static GLFWwindow* get();
+
+	static void open( UNUM32 width, UNUM32 height, const std::string& title );
+	static void close();
+
+	static NUM32 width();
+	static NUM32 height();
+
+	static void registerResizeCallback( MCGL_WINDOW_RESIZE_CALLBACK& callback );
+	static void deregisterResizeCallback();
+
+private:
+	Window() = delete;
 
 	Window( const Window& other ) = delete;
 	Window& operator=( const Window& other ) = delete;
 
-	Window( Window&& other );
-	Window& operator=( Window&& other );
+	Window( Window&& other ) = delete;
+	Window& operator=( Window&& other ) = delete;
 
-	~Window() {
-		if ( pWindow_ ) {
-			glfwDestroyWindow( pWindow_ );
-		}
-	}
+	~Window();
 
-	operator bool() const {
-		return pWindow_ != nullptr;
-	}
+	static GLFWwindow* pWindow_;
+	static bool isOpen_;
 
-	GLFWwindow* get() {
-		return pWindow_;
-	}
+	static NUM32 width_;
+	static NUM32 height_;
 
-	void close() {
-		if ( pWindow_ ) {
-			glfwDestroyWindow( pWindow_ );
-			pWindow_ = nullptr;
-		}
-	}
+	static MCGL_WINDOW_RESIZE_CALLBACK callback_;
 
-	// TODO: Get width and height from pWindow_
-	unsigned int width() {
-		return width_;
-	}
+	static void framebufferSizeCallback( GLFWwindow* window, int width, int height );
 
-	unsigned int height() {
-		return height_;
-	}
-
-private:
-	GLFWwindow* pWindow_ = nullptr;
-
-	unsigned int width_ = 800;
-	unsigned int height_ = 600;
-
-	static void framebufferSizeCallback( GLFWwindow* window, int width, int height ) {
-		glViewport( 0, 0, width, height );
-	}
 };

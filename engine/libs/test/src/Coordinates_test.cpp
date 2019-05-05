@@ -78,9 +78,7 @@ TEST( Coordinates_test, Convert_Block_To_Chunk ) {
 	ASSERT_EQ( chunkCoordinates.z_, 0 );
 }
 
-// TODO: Finish tests
 TEST( Coordinates_test, Convert_Block_To_World ) {
-
 }
 
 TEST( Coordinates_test, Convert_Chunk_To_Block ) {

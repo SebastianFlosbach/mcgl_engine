@@ -11,6 +11,10 @@ namespace world {
 //}
 
 void World::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh_ptr&& mesh ) {
+	if( meshes_.find( position ) != meshes_.end() ) {
+		removeMesh( position );
+	}
+
 	meshes_.insert( { position, std::move( mesh ) } );
 }
 
@@ -20,7 +24,6 @@ void World::removeMesh( const coordinates::WorldCoordinates& position ) {
 
 void World::draw( Renderer& renderer ) {
 	for ( auto& meshData : meshes_ ) {
-
 		glm::mat4 model = glm::mat4( 1.0f );
 		model = glm::translate( model, meshData.first.toVec3() );
 

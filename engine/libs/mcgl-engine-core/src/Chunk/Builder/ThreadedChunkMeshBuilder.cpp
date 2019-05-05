@@ -26,6 +26,45 @@ void ThreadedChunkMeshBuilder::build( const coordinates::ChunkCoordinates& posit
 			callback_( position, mesh );
 		}
 	} );
+
+	NUM32 x = position.x_;
+	NUM32 z = position.z_;
+
+	threadPool_.push( [this, x, z, &chunks]( int id ) {
+		auto pos = coordinates::ChunkCoordinates( x + 1, z );
+		auto* mesh = ChunkMeshBuilder::build( pos, chunks );
+
+		if( callback_ ) {
+			callback_( pos, mesh );
+		}
+	} );
+
+	threadPool_.push( [this, x, z, &chunks]( int id ) {
+		auto pos = coordinates::ChunkCoordinates( x - 1, z );
+		auto* mesh = ChunkMeshBuilder::build( pos, chunks );
+
+		if( callback_ ) {
+			callback_( pos, mesh );
+		}
+	} );
+
+	threadPool_.push( [this, x, z, &chunks]( int id ) {
+		auto pos = coordinates::ChunkCoordinates( x, z + 1 );
+		auto* mesh = ChunkMeshBuilder::build( pos, chunks );
+
+		if( callback_ ) {
+			callback_( pos, mesh );
+		}
+	} );
+
+	threadPool_.push( [this, x, z, &chunks]( int id ) {
+		auto pos = coordinates::ChunkCoordinates( x, z - 1 );
+		auto* mesh = ChunkMeshBuilder::build( pos, chunks );
+
+		if( callback_ ) {
+			callback_( pos, mesh );
+		}
+	} );
 }
 
 void ThreadedChunkMeshBuilder::setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary ) {

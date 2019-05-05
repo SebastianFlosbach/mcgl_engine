@@ -9,7 +9,7 @@ namespace conversion {
 
 
 chunk::block::Block block( JNIEnv* env, jobject jblock ) {
-
+	jclass clazz = env->GetObjectClass( jblock );
 }
 
 
