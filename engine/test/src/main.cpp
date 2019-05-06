@@ -136,6 +136,13 @@ int main() {
 		}
 	}
 
+	//for ( int x = 0; x < 2; x++ ) {
+	//	for ( int z = 0; z < 2; z++ ) {
+	//		myChunk.setPosition( { x, z } );
+	//		AddChunk( myChunk );
+	//	}
+	//}
+
 	Run();
 
 	futureStop.wait();

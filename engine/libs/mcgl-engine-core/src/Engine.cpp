@@ -59,7 +59,7 @@ void Engine::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh*
 }
 
 void Engine::doAddMesh( action::AddMeshAction* data ) {
-	data->pMesh_->setupMesh();
+	data->pMesh_->setup();
 	pWorld_->addMesh( data->position_, std::move( data->pMesh_ ) );
 }
 

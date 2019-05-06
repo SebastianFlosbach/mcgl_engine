@@ -4,18 +4,16 @@
 namespace world {
 
 
-//World::World( World&& other ) noexcept : meshes_( std::move( other.meshes_ ) ) {}
-//
-//World& World::operator=( World&& other ) noexcept {
-//	return std::move( other );
-//}
-
 void World::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh_ptr&& mesh ) {
-	if( meshes_.find( position ) != meshes_.end() ) {
-		removeMesh( position );
+	auto it = meshes_.find( position );
+	
+	if( it != meshes_.end() ) {
+		it->second->update( std::move( mesh ) );
+	}
+	else {
+		meshes_.insert( { position, std::move( mesh ) } );
 	}
 
-	meshes_.insert( { position, std::move( mesh ) } );
 }
 
 void World::removeMesh( const coordinates::WorldCoordinates& position ) {

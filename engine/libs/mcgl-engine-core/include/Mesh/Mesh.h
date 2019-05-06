@@ -9,6 +9,9 @@
 
 namespace mesh {
 
+class Mesh;
+
+typedef std::unique_ptr<Mesh> Mesh_ptr;
 
 class Mesh {
 public:
@@ -23,7 +26,9 @@ public:
 
 	~Mesh();
 
-	void setupMesh();
+	void setup();
+	void update( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices );
+	void update( Mesh_ptr&& mesh );
 	
 	void draw( Renderer& renderer );
 
@@ -39,6 +44,5 @@ private:
 };
 
 
-typedef std::unique_ptr<Mesh> Mesh_ptr;
 
 }
