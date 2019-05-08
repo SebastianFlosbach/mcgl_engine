@@ -29,6 +29,10 @@ struct ChunkCoordinates {
 		}
 	}
 
+	bool operator!=( const ChunkCoordinates& right ) const {
+		return !(*this == right);
+	}
+
 };
 
 

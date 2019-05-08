@@ -15,15 +15,17 @@ static std::future<void> futureStop;
 
 chunk::Chunk myChunk;
 
-std::vector<coordinates::ChunkCoordinates> loadedChunks;
+coordinates::ChunkCoordinates loadedChunk{ 0, 0 };
 
 void checkLoadedChunks() {
 	coordinates::WorldCoordinates position = GetCameraPosition( 1 );
 
 	coordinates::ChunkCoordinates chunkPos = position.toChunkCoordinates();
 
-	if( std::find( loadedChunks.begin(), loadedChunks.end(), chunkPos ) == loadedChunks.end() ) {
-		loadedChunks.push_back( chunkPos );
+	if( chunkPos != loadedChunk ) {
+		RemoveChunk( loadedChunk.x_, loadedChunk.z_ );
+
+		loadedChunk = chunkPos;
 		myChunk.setPosition( chunkPos );
 		AddChunk( myChunk );
 	}
@@ -115,7 +117,7 @@ int main() {
 	CreateEngine();
 	CreateWindow( 800, 600, "MCGL" );
 
-	CreateCamera();
+	CreateCamera( 15, 10, 15 );
 
 	RegisterKeyEventCallback( keyEventCallback );
 	RegisterMouseEventCallback( mouseEventCallback );
@@ -136,12 +138,8 @@ int main() {
 		}
 	}
 
-	//for ( int x = 0; x < 2; x++ ) {
-	//	for ( int z = 0; z < 2; z++ ) {
-	//		myChunk.setPosition( { x, z } );
-	//		AddChunk( myChunk );
-	//	}
-	//}
+	myChunk.setPosition( { 0, 0 } );
+	AddChunk( myChunk );
 
 	Run();
 

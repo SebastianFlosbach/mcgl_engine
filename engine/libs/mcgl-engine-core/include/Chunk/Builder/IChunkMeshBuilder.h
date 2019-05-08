@@ -2,8 +2,17 @@
 
 #include <functional>
 
+namespace coordinates {
+struct ChunkCoordinates;
+}
 
-namespace world {
+namespace mesh {
+class Mesh;
+}
+
+class ChunkCollection;
+
+
 namespace chunk {
 namespace builder {
 
@@ -11,10 +20,11 @@ typedef std::function<void( const coordinates::ChunkCoordinates& position, mesh:
 
 class IChunkMeshBuilder {
 public:
-	IChunkMeshBuilder() = delete;
+	IChunkMeshBuilder() = default;
 
 	virtual void build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) = 0;
 	virtual void registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback ) = 0;
+	virtual void deregisterCallback() = 0;
 
 
 };
@@ -22,5 +32,3 @@ public:
 
 }
 }
-}
-

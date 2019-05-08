@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Chunk/Builder/IChunkMeshBuilder.h"
+
 #include <vector>
 #include <memory>
 
@@ -21,7 +23,7 @@ namespace builder {
 /**
 	Class to create meshes from chunks
 */
-class ChunkMeshBuilder {
+class ChunkMeshBuilder : public IChunkMeshBuilder {
 public:
 
 	ChunkMeshBuilder() = default;
@@ -49,7 +51,10 @@ public:
 		\param world World the chunk is in
 		\return Mesh pointer or nullptr if chunk does not exist
 	*/
-	mesh::Mesh* build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks );
+	virtual void build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) override;
+
+	virtual void registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback ) override;
+	virtual void deregisterCallback() override;
 
 private:
 	block::BlockLibrary_sptr pBlockLibrary_;
