@@ -171,9 +171,9 @@ void ChunkMeshBuilder::back		( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 	}
 }
 
-mesh::Mesh* ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) {
+void ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) {
 	if( !pBlockLibrary_ || !pTextureAtlas_ ) {
-		return nullptr;
+		return;
 	}
 
 	std::vector<Vertex> vertices;
@@ -207,9 +207,18 @@ mesh::Mesh* ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& positi
 		}
 	}
 
-	return new mesh::Mesh( std::move( vertices ), std::move( indices ) );
+	if( callback_ ) {
+		callback_( position, new mesh::Mesh( std::move( vertices ), std::move( indices ) ) );
+	}
 }
 
+void ChunkMeshBuilder::registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback ) {
+	callback_ = callback;
+}
+
+void ChunkMeshBuilder::deregisterCallback() {
+	callback_ = NULL;
+}
 
 }
 }

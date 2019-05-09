@@ -20,11 +20,7 @@ ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const block::BlockLibrary_sp
 
 void ThreadedChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) {
 	threadPool_.push( [this, position, &chunks]( int id ) {
-		auto* mesh = ChunkMeshBuilder::build( position, chunks );
-
-		if ( callback_ ) {
-			callback_( position, mesh );
-		}
+		ChunkMeshBuilder::build( position, chunks );
 	} );
 
 	NUM32 x = position.x_;
@@ -32,38 +28,22 @@ void ThreadedChunkMeshBuilder::build( const coordinates::ChunkCoordinates& posit
 
 	threadPool_.push( [this, x, z, &chunks]( int id ) {
 		auto pos = coordinates::ChunkCoordinates( x + 1, z );
-		auto* mesh = ChunkMeshBuilder::build( pos, chunks );
-
-		if( callback_ ) {
-			callback_( pos, mesh );
-		}
+		ChunkMeshBuilder::build( pos, chunks );
 	} );
 
 	threadPool_.push( [this, x, z, &chunks]( int id ) {
 		auto pos = coordinates::ChunkCoordinates( x - 1, z );
-		auto* mesh = ChunkMeshBuilder::build( pos, chunks );
-
-		if( callback_ ) {
-			callback_( pos, mesh );
-		}
+		ChunkMeshBuilder::build( pos, chunks );
 	} );
 
 	threadPool_.push( [this, x, z, &chunks]( int id ) {
 		auto pos = coordinates::ChunkCoordinates( x, z + 1 );
-		auto* mesh = ChunkMeshBuilder::build( pos, chunks );
-
-		if( callback_ ) {
-			callback_( pos, mesh );
-		}
+		ChunkMeshBuilder::build( pos, chunks );
 	} );
 
 	threadPool_.push( [this, x, z, &chunks]( int id ) {
 		auto pos = coordinates::ChunkCoordinates( x, z - 1 );
-		auto* mesh = ChunkMeshBuilder::build( pos, chunks );
-
-		if( callback_ ) {
-			callback_( pos, mesh );
-		}
+		ChunkMeshBuilder::build( pos, chunks );
 	} );
 }
 
@@ -76,11 +56,11 @@ void ThreadedChunkMeshBuilder::setTextureAtlas( const texture::TextureAtlas_sptr
 }
 
 void ThreadedChunkMeshBuilder::registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback ) {
-	callback_ = callback;
+	ChunkMeshBuilder::registerCallback( callback );
 }
 
 void ThreadedChunkMeshBuilder::deregisterCallback() {
-	callback_ = NULL;
+	ChunkMeshBuilder::deregisterCallback();
 }
 
 

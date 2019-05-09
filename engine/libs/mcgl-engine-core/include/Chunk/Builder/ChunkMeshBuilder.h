@@ -6,10 +6,7 @@
 #include <memory>
 
 #include "Chunk/Chunk.h"
-#include "Chunk/Block/BlockLibrary.h"
-#include "Texture/TextureAtlas.h"
 #include "Mesh/Mesh.h"
-#include "Chunk/ChunkCollection.h"
 
 
 namespace world {
@@ -38,12 +35,12 @@ public:
 	/**
 
 	*/
-	void setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary );
+	virtual void setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary ) override;
 
 	/**
 
 	*/
-	void setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas );
+	virtual void setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas ) override;
 
 	/**
 		Create the mesh for chunk at a position in the world
@@ -51,18 +48,19 @@ public:
 		\param world World the chunk is in
 		\return Mesh pointer or nullptr if chunk does not exist
 	*/
-	virtual void build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) override;
+	virtual void build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks  ) override;
 
 	virtual void registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback ) override;
 	virtual void deregisterCallback() override;
 
 private:
 	block::BlockLibrary_sptr pBlockLibrary_;
-	texture::TextureAtlas_sptr pTextureAtlas_; 
+	texture::TextureAtlas_sptr pTextureAtlas_;
+
+	CHUNK_MESH_BUILDER_CALLBACK callback_;
 
 	inline void addIndices( std::vector<UNUM32>& indices, UNUM32& indexBase );
 
-	// current block position, current chunk position, chunks, current chunk, id of current block
 	inline void left	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<Vertex>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
 	inline void right	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<Vertex>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
 	inline void top		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<Vertex>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );

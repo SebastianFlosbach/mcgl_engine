@@ -13,17 +13,10 @@ namespace builder {
 
 
 /**
-	Callback to return created meshes
-	\param position Position of the chunk the mesh was build from
-	\param mesh Pointer to the generated mesh
-*/
-typedef std::function<void( const coordinates::ChunkCoordinates& position, mesh::Mesh* mesh )> CHUNK_MESH_BUILDER_CALLBACK;
-
-/**
 	Class to create meshes from chunks asynchronously
 	\see ChunkMeshBuilder
 */
-class ThreadedChunkMeshBuilder : private ChunkMeshBuilder {
+class ThreadedChunkMeshBuilder : public ChunkMeshBuilder {
 public:
 
 	ThreadedChunkMeshBuilder( UNUM32 threadCount );
@@ -54,24 +47,22 @@ public:
 		\param callback Callback that returns the generated mesh. \see CHUNK_MESH_BUILDER_CALLBACK
 		\return Mesh pointer or nullptr if chunk does not exist
 	*/
-	void build( const coordinates::ChunkCoordinates& position, const ChunkCollection& world );
+	void build( const coordinates::ChunkCoordinates& position, const ChunkCollection& world ) override;
 
 	/**
 		Register callback that is called whenever a mesh is build
 		\param callback Callback to register
 	*/
-	void registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback );
+	void registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback ) override;
 
 	/**
 		Deregister the mesh callback.
 		All further meshes are lost.
 	*/
-	void deregisterCallback();
+	void deregisterCallback() override;
 
 private:
 	ctpl::thread_pool threadPool_;
-
-	CHUNK_MESH_BUILDER_CALLBACK callback_;
 
 };
 

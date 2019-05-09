@@ -90,10 +90,10 @@ private:
 
 	Renderer_ptr pRenderer_;
 
-	chunk::block::BlockLibrary_sptr					pBlockLibrary_;	
-	chunk::ChunkCollection_ptr						pChunks_;
-	world::World_ptr								pWorld_;
-	chunk::builder::ThreadedChunkMeshBuilder_ptr	pChunkMeshBuilder_;
+	chunk::block::BlockLibrary_sptr			pBlockLibrary_;
+	chunk::ChunkCollection_ptr				pChunks_;
+	world::World_ptr						pWorld_;
+	chunk::builder::IChunkMeshBuilder_ptr	pChunkMeshBuilder_;
 
 	Camera camera_;
 
