@@ -1,7 +1,7 @@
 #include "mcgl-engine.h"
 
 #include <Engine.h>
-#include <Logging/SpdFileLogger.h>
+#include <Logging/ConsoleLogger.h>
 #include <ActionHandling/ThreadedWorkerQueue.h>
 #include <ActionHandling/actions.h>
 #include <future>
@@ -11,7 +11,7 @@
 const std::string loggerName { "mcgl_file_logger" };
 const std::string loggerPath { "logs/mcgllog.log" };
 
-std::unique_ptr<SpdFileLogger> logger;
+std::unique_ptr<ConsoleLogger> logger;
 std::unique_ptr<Engine> engine;
 
 
@@ -25,8 +25,8 @@ inline bool checkEngine() {
 }
 
 void CreateEngine() {
-	logger = std::make_unique<SpdFileLogger>( loggerName, loggerPath );
-	info( *logger, "[MCGL-ENGINE] CreateEngine" );
+	logger = std::make_unique<ConsoleLogger>( /*loggerName, loggerPath*/ );
+	trace( *logger, "[MCGL-ENGINE] CreateEngine" );
 
 	engine = std::make_unique<Engine>( *logger );
 }
@@ -34,14 +34,14 @@ void CreateEngine() {
 void DestroyEngine() {
 	if ( !checkEngine() ) return;
 
-	info( *logger, "[MCGL-ENGINE] DestroyEngine" );
+	trace( *logger, "[MCGL-ENGINE] DestroyEngine" );
 	engine.reset();
 }
 
 void CreateWindow( NUM32 width, NUM32 height, const std::string& title ) {
 	if ( !checkEngine() ) return;
 
-	info( *logger, "[MCGL-ENGINE] CreateWindow" );
+	trace( *logger, "[MCGL-ENGINE] CreateWindow" );
 	
 	engine->createWindow( width, height, title );
 }
@@ -49,35 +49,35 @@ void CreateWindow( NUM32 width, NUM32 height, const std::string& title ) {
 void CloseWindow() {
 	if ( !checkEngine() ) return;
 
-	info(*logger, "[MCGL-ENGINE] CloseWindow");
+	trace(*logger, "[MCGL-ENGINE] CloseWindow");
 	engine->closeWindow();
 }
 
 void Run() {
 	if ( !checkEngine() ) return;
 
-	info( *logger, "[MCGL-ENGINE] Run" );
+	trace( *logger, "[MCGL-ENGINE] Run" );
 	engine->run();
 }
 
 void Stop() {
 	if ( !checkEngine() ) return;
 
-	info( *logger, "[MCGL-ENGINE] Stop" );
+	trace( *logger, "[MCGL-ENGINE] Stop" );
 	engine->stop();
 }
 
 void RegisterBlockType( const chunk::block::Block& block ) {
 	if ( !checkEngine() ) return;
 
-	info( *logger, "[MCGL-ENGINE] RegisterBockType" );
+	trace( *logger, "[MCGL-ENGINE] RegisterBockType" );
 	engine->registerBlockType( block );
 }
 
 void SetTextures( const std::string& path, UNUM32 textureSize, UNUM32 textureCount ) {
 	if ( !checkEngine() ) return;
 
-	info(*logger, "[MCGL-ENGINE] SetTextures");
+	trace(*logger, "[MCGL-ENGINE] SetTextures");
 
 	engine->setTextures( path, textureSize, textureCount );
 }
@@ -85,7 +85,7 @@ void SetTextures( const std::string& path, UNUM32 textureSize, UNUM32 textureCou
 void SetShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
 	if ( !checkEngine() ) return;
 
-	info(*logger, "[MCGL-ENGINE] SetShader");
+	trace(*logger, "[MCGL-ENGINE] SetShader");
 
 	engine->setShader( vertexShaderPath, fragmentShaderPath );
 }
@@ -93,21 +93,21 @@ void SetShader( const std::string& vertexShaderPath, const std::string& fragment
 void AddChunk( const chunk::Chunk& chunk ) {
 	if ( !checkEngine() ) return;
 
-	info( *logger, "[MCGL-ENGINE] AddChunk" );
+	trace( *logger, "[MCGL-ENGINE] AddChunk" );
 	engine->addChunk( chunk );
 }
 
 void RemoveChunk( NUM32 x, NUM32 z) {
 	if (!checkEngine()) return;
 
-	info(*logger, "[MCGL-ENGINE] RemoveChunk");
+	trace(*logger, "[MCGL-ENGINE] RemoveChunk");
 	engine->removeChunk( x, z );
 }
 
 UNUM32 CreateCamera( double x, double y, double z, double pitch, double yaw, double roll ) {
 	if ( !checkEngine() ) return 0;
 
-	info( *logger, "[MCGL-ENGINE] CreateCamera" );
+	trace( *logger, "[MCGL-ENGINE] CreateCamera" );
 	
 	return engine->createCamera( x, y, z, pitch, yaw, roll );
 }
@@ -115,28 +115,28 @@ UNUM32 CreateCamera( double x, double y, double z, double pitch, double yaw, dou
 void MoveCamera( UNUM32 cameraId, double dx, double dy, double dz ) {
 	if ( !checkEngine() ) return;
 
-	info( *logger, "[MCGL-ENGINE] MoveCamera" );
+	trace( *logger, "[MCGL-ENGINE] MoveCamera" );
 	engine->moveCamera( cameraId, dx, dy, dz );
 }
 
 void RotateCamera( UNUM32 cameraId, double pitch, double yaw, double roll ) {
 	if ( !checkEngine() ) return;
 
-	info( *logger, "[MCGL-ENGINE] RotateCamera" );
+	trace( *logger, "[MCGL-ENGINE] RotateCamera" );
 	engine->rotateCamera( cameraId, pitch, yaw, roll );
 }
 
 void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
 	if ( !checkEngine() ) return;
 
-	info( *logger, "[MCGL-ENGINE] RegisterKeyEventCallback" );
+	trace( *logger, "[MCGL-ENGINE] RegisterKeyEventCallback" );
 	engine->registerKeyEventCallback( callback );
 }
 
 void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
 	if ( !checkEngine() ) return;
 
-	info( *logger, "[MCGL-ENGINE] RegisterMouseEventCallback" );
+	trace( *logger, "[MCGL-ENGINE] RegisterMouseEventCallback" );
 	engine->registerMouseEventCallback( callback );
 }
 

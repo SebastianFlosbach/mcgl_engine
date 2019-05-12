@@ -20,8 +20,8 @@ Engine::Engine( const ILogger& logger ) :
 	logger_( logger ),
 	pBlockLibrary_( new chunk::block::BlockLibrary() ),
 	pChunks_( new chunk::ChunkCollection() ),
-	pWorld_( new world::World() ),
-	pChunkMeshBuilder_( new chunk::builder::ThreadedChunkMeshBuilder( 4 ) ) { 
+	pWorld_( new world::World( logger ) ),
+	pChunkMeshBuilder_( new chunk::builder::ThreadedChunkMeshBuilder( 1 ) ) { 
 	
 	if( isRunning_.exchange( true ) ) {
 		return;
@@ -59,7 +59,6 @@ void Engine::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh*
 }
 
 void Engine::doAddMesh( action::AddMeshAction* data ) {
-	data->pMesh_->setup();
 	pWorld_->addMesh( data->position_, std::move( data->pMesh_ ) );
 }
 
@@ -201,7 +200,7 @@ void Engine::doEngine() {
 	if( !glfwInit() ) {
 		throw std::runtime_error( "Could not initialize GLFW!" );
 	}
-	glfwSetErrorCallback( errorCallback );
+
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
 	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );

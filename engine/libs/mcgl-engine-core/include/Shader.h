@@ -1,5 +1,7 @@
 #pragma once
+
 #include <fstream>
+#include <map>
 #include <string>
 
 #include <glad/glad.h>
@@ -22,7 +24,6 @@ public:
 	Shader( Shader&& other ) noexcept;
 	Shader& operator=( Shader&& other ) noexcept;
 
-	// Destructor
 	~Shader();
 
 	unsigned int id() const {
@@ -38,11 +39,21 @@ public:
 		glUseProgram( hShaderProgramm_ );
 	}
 
-	inline int getUniform( const char* uniform ) {
-		return glGetUniformLocation( hShaderProgramm_, uniform );
+	inline NUM32 getUniform( const char* uniform ) {
+		
+		auto it = uniforms_.find( uniform );
+
+		if( it != uniforms_.end() ) {
+			return it->second;
+		}
+
+		NUM32 uniformLocation = glGetUniformLocation( hShaderProgramm_, uniform );
+		uniforms_.emplace( std::string( uniform ), uniformLocation );
+
+		return uniformLocation;
 	}
 
-	void setUniformInt( const char* uniform, int value ) {
+	void setUniformInt( const char* uniform, NUM32 value ) {
 		glUniform1i( getUniform( uniform ), value );
 	}
 
@@ -51,7 +62,9 @@ public:
 	}
 
 private:
-	unsigned int hShaderProgramm_;
+	UNUM32 hShaderProgramm_;
+
+	std::map<std::string, NUM32> uniforms_;
 
 	inline void addShader( const std::string& path, GLenum type );
 

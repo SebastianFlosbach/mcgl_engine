@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Logging/ILogger.h"
 #include "Mesh/Mesh.h"
 #include "Renderer/Renderer.h"
 #include "Coordinates/WorldCoordinates.h"
@@ -16,7 +17,7 @@ namespace world {
 	*/
 	class World {
 	public:
-		World() = default;
+		World( const ILogger& logger ) : logger_( logger ) {}
 
 		World( const World& other ) = delete;
 		World& operator=( const World& other ) = delete;
@@ -44,6 +45,8 @@ namespace world {
 		void draw( Renderer& renderer );
 		
 	private:
+		const ILogger& logger_;
+
 		std::unordered_map<coordinates::WorldCoordinates, mesh::Mesh_ptr> meshes_;
 		
 	};

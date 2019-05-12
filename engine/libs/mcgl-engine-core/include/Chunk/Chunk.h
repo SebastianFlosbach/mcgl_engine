@@ -74,4 +74,5 @@ namespace chunk {
 	};
 
 	typedef std::unique_ptr<Chunk> Chunk_ptr;
+	typedef std::shared_ptr<Chunk> Chunk_sptr;
 }

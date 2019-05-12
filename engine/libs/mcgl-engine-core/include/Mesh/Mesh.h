@@ -1,5 +1,6 @@
 #pragma once
 
+#include <mutex>
 #include <vector>
 
 #include "Definition/mcgl_engine_def.h"
@@ -15,8 +16,10 @@ typedef std::unique_ptr<Mesh> Mesh_ptr;
 
 class Mesh {
 public:
-	Mesh( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices );
-	Mesh( std::vector<Vertex>&& vertices, std::vector<UNUM32>&& indices );
+	//Mesh( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices );
+	//Mesh( std::vector<Vertex>&& vertices, std::vector<UNUM32>&& indices );
+
+	Mesh() = default;
 
 	Mesh( const Mesh& other ) = delete;
 	Mesh& operator=( const Mesh& other ) = delete;
@@ -26,13 +29,18 @@ public:
 
 	~Mesh();
 
-	void setup();
-	void update( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices );
-	void update( Mesh_ptr&& mesh );
+	//void setup();
+	//void update( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices );
+	//void update( Mesh_ptr&& mesh );
+
+	void update();
 	
 	void draw( Renderer& renderer );
 
 private:
+	std::mutex mMesh_;
+	bool isValid_{ false };
+
 	UNUM32 hVertexBuffer_{ 0 };
 	UNUM32 hVertexArray_{ 0 };
 	UNUM32 hElementBuffer_{ 0 };

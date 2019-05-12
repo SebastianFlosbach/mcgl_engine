@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <unordered_map>
+#include <mutex>
 
 #include "Coordinates/ChunkCoordinates.h"
 #include "Chunk/Chunk.h"
@@ -48,7 +49,7 @@ public:
 		\param position Position of the chunk
 		\return Chunk at position or nullptr
 	*/
-	const chunk::Chunk* getChunk( const coordinates::ChunkCoordinates& position ) const;
+	const chunk::Chunk_sptr getChunk( const coordinates::ChunkCoordinates& position ) const;
 
 	/**
 		Get chunk from this collection.
@@ -57,7 +58,7 @@ public:
 		\param z Z coordinate of the chunk
 		\return Chunk at position or nullptr
 	*/
-	const chunk::Chunk* getChunk( NUM32 x, NUM32 z ) const;
+	const chunk::Chunk_sptr getChunk( NUM32 x, NUM32 z ) const;
 
 	/**
 		Register a callback that is called whenever a chunk is added or removed.
@@ -72,7 +73,9 @@ public:
 	void deregisterCollectionChangedCallback();
 
 private:
-	std::unordered_map<coordinates::ChunkCoordinates, chunk::Chunk_ptr> chunks_;
+	mutable std::mutex mChunks_;
+
+	std::unordered_map<coordinates::ChunkCoordinates, chunk::Chunk_sptr> chunks_;
 
 	CHUNK_COLLECTION_CHANGED_CALLBACK collectionChangedCallback_;
 

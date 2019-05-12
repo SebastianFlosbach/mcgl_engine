@@ -26,7 +26,7 @@ void ThreadedChunkMeshBuilder::build( const coordinates::ChunkCoordinates& posit
 	NUM32 x = position.x_;
 	NUM32 z = position.z_;
 
-	threadPool_.push( [this, x, z, &chunks]( int id ) {
+	/*threadPool_.push( [this, x, z, &chunks]( int id ) {
 		auto pos = coordinates::ChunkCoordinates( x + 1, z );
 		ChunkMeshBuilder::build( pos, chunks );
 	} );
@@ -44,7 +44,7 @@ void ThreadedChunkMeshBuilder::build( const coordinates::ChunkCoordinates& posit
 	threadPool_.push( [this, x, z, &chunks]( int id ) {
 		auto pos = coordinates::ChunkCoordinates( x, z - 1 );
 		ChunkMeshBuilder::build( pos, chunks );
-	} );
+	} );*/
 }
 
 void ThreadedChunkMeshBuilder::setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary ) {

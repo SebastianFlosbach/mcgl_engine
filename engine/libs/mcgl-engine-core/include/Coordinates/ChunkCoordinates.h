@@ -1,6 +1,7 @@
 #pragma once
 
 #include <functional>
+#include <string>
 
 #include "Definition/mcgl_engine_def.h"
 
@@ -31,6 +32,10 @@ struct ChunkCoordinates {
 
 	bool operator!=( const ChunkCoordinates& right ) const {
 		return !(*this == right);
+	}
+
+	std::string to_string() const {
+		return std::string( "( " ) + std::to_string( x_ ) + std::string( ", " ) + std::to_string( z_ ) + std::string( " )" );
 	}
 
 };

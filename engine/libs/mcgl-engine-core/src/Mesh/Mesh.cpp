@@ -1,18 +1,20 @@
 #include "Mesh/Mesh.h"
 
+#include "Helper/OpenGLDebug.h"
+
 
 namespace mesh {
 
 
-Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) : 
-	vertices_( vertices ), indices_( indices ) {
-	//setupMesh();
-}
-
-Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices ) :
-	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ) {
-	//setupMesh();
-}
+//Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) : 
+//	vertices_( vertices ), indices_( indices ) {
+//	//setupMesh();
+//}
+//
+//Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices ) :
+//	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ) {
+//	//setupMesh();
+//}
 
 Mesh::Mesh( Mesh&& other ) noexcept :
 	hVertexArray_( other.hVertexArray_ ),
@@ -28,6 +30,8 @@ Mesh::Mesh( Mesh&& other ) noexcept :
 	other.hVertexArray_ = 0;
 	other.hVertexBuffer_ = 0;
 	other.hElementBuffer_ = 0;
+
+	update();
 }
 
 Mesh& Mesh::operator=( Mesh&& other ) noexcept {
@@ -35,40 +39,16 @@ Mesh& Mesh::operator=( Mesh&& other ) noexcept {
 }
 
 Mesh::~Mesh() {
+	std::lock_guard<std::mutex> lock( mMesh_ );
+	isValid_ = false;
+
 	glDeleteBuffers( 1, &hVertexBuffer_ );
 	glDeleteBuffers( 1, &hElementBuffer_ );
 	glDeleteVertexArrays( 1, &hVertexArray_ );
 }
 
-void Mesh::setup() {
-	glGenVertexArrays( 1, &hVertexBuffer_ );
-	glGenBuffers( 1, &hVertexArray_ );
-	glGenBuffers( 1, &hElementBuffer_ );
-
-	glBindVertexArray( hVertexBuffer_ );
-	glBindBuffer( GL_ARRAY_BUFFER, hVertexArray_ );
-
-	glBufferData( GL_ARRAY_BUFFER, vertices_.size() * sizeof( Vertex ), &vertices_[0], GL_STATIC_DRAW );
-
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
-	glBufferData( GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof( unsigned int ), &indices_[0], GL_STATIC_DRAW );
-
-	// vertex positions
-	glEnableVertexAttribArray( 0 );
-	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*) 0 );
-	// vertex normals
-	//glEnableVertexAttribArray( 1 );
-	//glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*) offsetof( Vertex, normal_ ) );
-	// vertex texture coords
-	glEnableVertexAttribArray( 1 );
-	glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*) offsetof( Vertex, texCoords_ ) );
-
-	glBindVertexArray( 0 );
-}
-
-void Mesh::update( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices ) {
-	vertices_ = vertices;
-	indices_ = indices;
+void Mesh::update() {
+	std::lock_guard<std::mutex> lock( mMesh_ );
 
 	glBindVertexArray(hVertexBuffer_);
 	glBindBuffer(GL_ARRAY_BUFFER, hVertexArray_);
@@ -91,18 +71,18 @@ void Mesh::update( const std::vector<Vertex>& vertices, const std::vector<UNUM32
 	glBindVertexArray(0);
 }
 
-void Mesh::update( Mesh_ptr&& mesh ) {
-	update( mesh->vertices_, mesh->indices_ );
-}
-
 void Mesh::draw( Renderer& renderer ) {
 	renderer.use();
 
-	glBindVertexArray( hVertexBuffer_ );
-	glBindBuffer( GL_ARRAY_BUFFER, hVertexArray_ );
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
-	glDrawElements( GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0 );
-	glBindVertexArray( 0 );
+	std::lock_guard<std::mutex> lock( mMesh_ );
+
+	if( isValid_ ) {
+		glBindVertexArray( hVertexBuffer_ );
+		glBindBuffer( GL_ARRAY_BUFFER, hVertexArray_ );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
+		glDrawElements( GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0 );
+		glBindVertexArray( 0 );
+	}
 }
 
 

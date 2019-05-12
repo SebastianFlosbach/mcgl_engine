@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <string>
 
 
 namespace coordinates {
@@ -17,6 +18,10 @@ public:
 	ChunkCoordinates toChunkCoordinates() const;
 
 	float x_, y_, z_;
+
+	std::string to_string() const {
+		return std::string( "( " ) + std::to_string( x_ ) + std::string( ", " ) + std::to_string( y_ ) + std::string( ", " ) + std::to_string( z_ ) + std::string( " )" );
+	}
 
 };
 

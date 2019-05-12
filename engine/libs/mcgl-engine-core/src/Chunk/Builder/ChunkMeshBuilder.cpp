@@ -37,7 +37,7 @@ void ChunkMeshBuilder::left		( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 	
 	// Check neighbouring chunk
 	if( x == 0 ) {
-		auto* neighbourChunk = chunks.getChunk( position.x_ - 1, position.z_ );
+		auto neighbourChunk = chunks.getChunk( position.x_ - 1, position.z_ );
 		if( neighbourChunk != nullptr ) {
 			neighbourId = neighbourChunk->getBlockId( CHUNK_WIDTH - 1, y, z );
 		}
@@ -63,7 +63,7 @@ void ChunkMeshBuilder::right	( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	if( x == CHUNK_WIDTH - 1 ) {
-		auto* neighbourChunk = chunks.getChunk( position.x_ + 1, position.z_ );
+		auto neighbourChunk = chunks.getChunk( position.x_ + 1, position.z_ );
 		if( neighbourChunk != nullptr ) {
 			neighbourId = neighbourChunk->getBlockId( 0, y, z );
 		}
@@ -123,7 +123,7 @@ void ChunkMeshBuilder::front	( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	if( z == 0 ) {
-		auto* neighbourChunk = chunks.getChunk( position.x_, position.z_ - 1 );
+		auto neighbourChunk = chunks.getChunk( position.x_, position.z_ - 1 );
 		if( neighbourChunk != nullptr ) {
 			neighbourId = neighbourChunk->getBlockId( x, y, CHUNK_LENGTH - 1 );
 		}
@@ -149,7 +149,7 @@ void ChunkMeshBuilder::back		( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	if( z == CHUNK_LENGTH - 1 ) {
-		auto* neighbourChunk = chunks.getChunk( position.x_, position.z_ + 1 );
+		auto neighbourChunk = chunks.getChunk( position.x_, position.z_ + 1 );
 		if( neighbourChunk != nullptr ) {
 			neighbourId = neighbourChunk->getBlockId( x, y, 0 );
 		}
@@ -180,9 +180,10 @@ void ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, con
 	std::vector<UNUM32> indices;
 	UNUM32 indexBase = 0;
 
-	auto* chunk_ptr = chunks.getChunk( position );
+	auto chunk_ptr = chunks.getChunk( position );
 	if( chunk_ptr == nullptr ) {
-		throw std::runtime_error( "Could not create mesh. Chunk does not exist" );
+		//throw std::runtime_error( "Could not create mesh. Chunk does not exist" );
+		return;
 	}
 
 	auto& chunk = *chunk_ptr;

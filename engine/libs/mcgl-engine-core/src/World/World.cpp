@@ -1,5 +1,6 @@
 #include "World/World.h"
 
+#include <sstream>
 
 namespace world {
 
@@ -8,9 +9,17 @@ void World::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh_p
 	auto it = meshes_.find( position );
 	
 	if( it != meshes_.end() ) {
+		std::stringstream newPointerString;
+		newPointerString << static_cast<const void*>(mesh.get());
+		std::stringstream oldPointerString;
+		oldPointerString << static_cast<const void*>(it->second.get());
+		debug( logger_, std::string( __FUNCTION__ ) + std::string( ": Updating existing mesh " ) + oldPointerString.str() + std::string( " with new mesh " ) + newPointerString.str() + std::string( " at position " ) + position.to_string() );
 		it->second->update( std::move( mesh ) );
 	}
 	else {
+		std::stringstream ss;
+		ss << static_cast<const void*>(mesh.get());
+		debug( logger_, std::string( __FUNCTION__ ) + std::string( ": Adding new mesh " ) + ss.str() + std::string( " at position " ) + position.to_string() );
 		meshes_.insert( { position, std::move( mesh ) } );
 	}
 

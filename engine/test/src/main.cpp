@@ -15,19 +15,22 @@ static std::future<void> futureStop;
 
 chunk::Chunk myChunk;
 
-coordinates::ChunkCoordinates loadedChunk{ 0, 0 };
+coordinates::ChunkCoordinates lastChunkPosition{ 0, 0 };
+
+constexpr int RENDER_DISTANCE = 1;
 
 void checkLoadedChunks() {
 	coordinates::WorldCoordinates position = GetCameraPosition( 1 );
 
 	coordinates::ChunkCoordinates chunkPos = position.toChunkCoordinates();
 
-	if( chunkPos != loadedChunk ) {
-		RemoveChunk( loadedChunk.x_, loadedChunk.z_ );
+	if( chunkPos != lastChunkPosition ) {		
+		for( int i = -RENDER_DISTANCE; i < RENDER_DISTANCE; i++ ) {
+			myChunk.setPosition( { chunkPos.x_ + RENDER_DISTANCE, chunkPos.z_ + i } );
+			AddChunk( myChunk );
+			RemoveChunk( chunkPos.x_ - RENDER_DISTANCE, chunkPos.z_ + i );
+		}
 
-		loadedChunk = chunkPos;
-		myChunk.setPosition( chunkPos );
-		AddChunk( myChunk );
 	}
 
 }
@@ -115,9 +118,9 @@ int main() {
 	futureStop = promiseStop.get_future();
 
 	CreateEngine();
-	CreateWindow( 800, 600, "MCGL" );
+	CreateWindow( 1600, 1200, "MCGL" );
 
-	CreateCamera( 15, 10, 15 );
+	CreateCamera( 8, 10, 8 );
 
 	RegisterKeyEventCallback( keyEventCallback );
 	RegisterMouseEventCallback( mouseEventCallback );
@@ -135,6 +138,12 @@ int main() {
 			for ( int y = 0; y < 5; y++ ) {
 				myChunk.setBlock( x, y, z, 1 );
 			}
+		}
+	}
+	for( int x = -RENDER_DISTANCE; x < RENDER_DISTANCE; x++ ) {
+		for( int y = -RENDER_DISTANCE; y < RENDER_DISTANCE; y++ ) {
+			myChunk.setPosition( { x, y } );
+			AddChunk( myChunk );
 		}
 	}
 
