@@ -14,7 +14,7 @@ void World::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh_p
 		std::stringstream oldPointerString;
 		oldPointerString << static_cast<const void*>(it->second.get());
 		debug( logger_, std::string( __FUNCTION__ ) + std::string( ": Updating existing mesh " ) + oldPointerString.str() + std::string( " with new mesh " ) + newPointerString.str() + std::string( " at position " ) + position.to_string() );
-		it->second->update( std::move( mesh ) );
+		it->second = std::move( mesh );
 	}
 	else {
 		std::stringstream ss;
@@ -30,6 +30,7 @@ void World::removeMesh( const coordinates::WorldCoordinates& position ) {
 }
 
 void World::draw( Renderer& renderer ) {
+	auto size = meshes_.size();
 	for ( auto& meshData : meshes_ ) {
 		glm::mat4 model = glm::mat4( 1.0f );
 		model = glm::translate( model, meshData.first.toVec3() );

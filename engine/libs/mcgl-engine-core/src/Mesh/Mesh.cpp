@@ -6,32 +6,33 @@
 namespace mesh {
 
 
-//Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) : 
-//	vertices_( vertices ), indices_( indices ) {
-//	//setupMesh();
-//}
-//
-//Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices ) :
-//	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ) {
-//	//setupMesh();
-//}
+Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) :
+	vertices_( vertices ), indices_( indices ) {
+}
 
-Mesh::Mesh( Mesh&& other ) noexcept :
-	hVertexArray_( other.hVertexArray_ ),
-	hVertexBuffer_( other.hVertexBuffer_ ),
-	hElementBuffer_( other.hElementBuffer_ ),
-	vertices_( std::move( other.vertices_ ) ),
-	indices_( std::move( other.indices_ ) )
-{
+Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices ) :
+	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ) {
+}
+
+Mesh::Mesh( Mesh&& other ) noexcept {
 	if( this == &other ) {
 		return;
 	}
+
+	vertices_ = std::move( other.vertices_ );
+	indices_ = std::move( other.indices_ );
+
+	std::lock_guard<std::mutex> lock( mMesh_ );
+
+	hVertexArray_ = other.hVertexArray_;
+	hVertexBuffer_ = other.hVertexBuffer_;
+	hElementBuffer_ = other.hElementBuffer_;
 
 	other.hVertexArray_ = 0;
 	other.hVertexBuffer_ = 0;
 	other.hElementBuffer_ = 0;
 
-	update();
+	isValid_ = false;
 }
 
 Mesh& Mesh::operator=( Mesh&& other ) noexcept {
@@ -39,36 +40,42 @@ Mesh& Mesh::operator=( Mesh&& other ) noexcept {
 }
 
 Mesh::~Mesh() {
-	std::lock_guard<std::mutex> lock( mMesh_ );
-	isValid_ = false;
-
 	glDeleteBuffers( 1, &hVertexBuffer_ );
 	glDeleteBuffers( 1, &hElementBuffer_ );
 	glDeleteVertexArrays( 1, &hVertexArray_ );
 }
 
-void Mesh::update() {
-	std::lock_guard<std::mutex> lock( mMesh_ );
+void Mesh::generateGLData() {
 
-	glBindVertexArray(hVertexBuffer_);
-	glBindBuffer(GL_ARRAY_BUFFER, hVertexArray_);
+	if( !isBufferGenerated_ ) {
+		glGenBuffers( 1, &hVertexBuffer_ );
+		glGenBuffers( 1, &hElementBuffer_ );
+		glGenVertexArrays( 1, &hVertexArray_ );
 
-	glBufferData(GL_ARRAY_BUFFER, vertices_.size() * sizeof(Vertex), &vertices_[0], GL_STATIC_DRAW);
+		isBufferGenerated_ = true;
+	}
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(unsigned int), &indices_[0], GL_STATIC_DRAW);
+	glBindVertexArray( hVertexArray_ );
+	glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
+
+	glBufferData( GL_ARRAY_BUFFER, vertices_.size() * sizeof( Vertex ), &vertices_[0], GL_DYNAMIC_DRAW );
+
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
+	glBufferData( GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof( unsigned int ), &indices_[0], GL_DYNAMIC_DRAW );
 
 	// vertex positions
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-	// vertex normals
-	//glEnableVertexAttribArray( 1 );
-	//glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*) offsetof( Vertex, normal_ ) );
-	// vertex texture coords
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords_));
+	glEnableVertexAttribArray( 0 );
+	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*)0 );
 
-	glBindVertexArray(0);
+	// vertex texture coords
+	glEnableVertexAttribArray( 1 );
+	glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*)offsetof( Vertex, texCoords_ ) );
+
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	glBindVertexArray( 0 );
+
+	isValid_ = true;
 }
 
 void Mesh::draw( Renderer& renderer ) {
@@ -76,13 +83,17 @@ void Mesh::draw( Renderer& renderer ) {
 
 	std::lock_guard<std::mutex> lock( mMesh_ );
 
-	if( isValid_ ) {
-		glBindVertexArray( hVertexBuffer_ );
-		glBindBuffer( GL_ARRAY_BUFFER, hVertexArray_ );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
-		glDrawElements( GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0 );
-		glBindVertexArray( 0 );
+	if( !isValid_ ) {
+		generateGLData();
 	}
+
+	glBindVertexArray( hVertexArray_ );
+	glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
+	glDrawElements( GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0 );
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	glBindVertexArray( 0 );
 }
 
 

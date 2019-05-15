@@ -7,6 +7,7 @@
 #include "Chunk/Builder/ChunkMeshBuilder.h"
 #include "Chunk/ChunkCollection.h"
 #include "Coordinates/ChunkCoordinates.h"
+#include "Logging/ILogger.h"
 
 namespace chunk {
 namespace builder {
@@ -19,7 +20,7 @@ namespace builder {
 class ThreadedChunkMeshBuilder : public ChunkMeshBuilder {
 public:
 
-	ThreadedChunkMeshBuilder( UNUM32 threadCount );
+	ThreadedChunkMeshBuilder( const ILogger& logger, UNUM32 threadCount );
 
 	/**
 		Create ThreadedChunkMeshBuilder.
@@ -27,7 +28,7 @@ public:
 		\param textureAtlas TextureAtlas to use for the mesh
 		\param threadCount Number of threads the builder is allowed to use
 	*/
-	ThreadedChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount );
+	ThreadedChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount );
 
 	/**
 		
@@ -62,6 +63,8 @@ public:
 	void deregisterCallback() override;
 
 private:
+	const ILogger& logger_;
+
 	ctpl::thread_pool threadPool_;
 
 };

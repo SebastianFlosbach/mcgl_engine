@@ -21,7 +21,7 @@ Engine::Engine( const ILogger& logger ) :
 	pBlockLibrary_( new chunk::block::BlockLibrary() ),
 	pChunks_( new chunk::ChunkCollection() ),
 	pWorld_( new world::World( logger ) ),
-	pChunkMeshBuilder_( new chunk::builder::ThreadedChunkMeshBuilder( 1 ) ) { 
+	pChunkMeshBuilder_( new chunk::builder::ThreadedChunkMeshBuilder( logger, 4 ) ) { 
 	
 	if( isRunning_.exchange( true ) ) {
 		return;

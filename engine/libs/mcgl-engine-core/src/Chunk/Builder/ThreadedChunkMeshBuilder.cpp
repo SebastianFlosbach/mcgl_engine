@@ -10,21 +10,24 @@ namespace chunk {
 namespace builder{
 
 
-ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( UNUM32 threadCount ) : threadPool_( threadCount ) {
+ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const ILogger& logger, UNUM32 threadCount ) : logger_( logger ), threadPool_( threadCount ) {
 }
 
-ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount ) :
+ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount ) :
 	ChunkMeshBuilder( blockLibrary, textureAtlas ),
+	logger_( logger ),
 	threadPool_( threadCount ) {
 }
 
 void ThreadedChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) {
+	debug( logger_, std::string( "Building mesh at position " ) + position.to_string() );
+	
 	threadPool_.push( [this, position, &chunks]( int id ) {
 		ChunkMeshBuilder::build( position, chunks );
 	} );
 
-	NUM32 x = position.x_;
-	NUM32 z = position.z_;
+	//NUM32 x = position.x_;
+	//NUM32 z = position.z_;
 
 	/*threadPool_.push( [this, x, z, &chunks]( int id ) {
 		auto pos = coordinates::ChunkCoordinates( x + 1, z );

@@ -10,6 +10,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Definition/mcgl_engine_def.h"
+
 
 class Shader {
 public:

@@ -16,10 +16,8 @@ typedef std::unique_ptr<Mesh> Mesh_ptr;
 
 class Mesh {
 public:
-	//Mesh( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices );
-	//Mesh( std::vector<Vertex>&& vertices, std::vector<UNUM32>&& indices );
-
-	Mesh() = default;
+	Mesh( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices );
+	Mesh( std::vector<Vertex>&& vertices, std::vector<UNUM32>&& indices );
 
 	Mesh( const Mesh& other ) = delete;
 	Mesh& operator=( const Mesh& other ) = delete;
@@ -28,18 +26,14 @@ public:
 	Mesh& operator=( Mesh&& other ) noexcept;
 
 	~Mesh();
-
-	//void setup();
-	//void update( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices );
-	//void update( Mesh_ptr&& mesh );
-
-	void update();
 	
 	void draw( Renderer& renderer );
 
 private:
 	std::mutex mMesh_;
 	bool isValid_{ false };
+	bool isDeleted_{ false };
+	bool isBufferGenerated_{ false };
 
 	UNUM32 hVertexBuffer_{ 0 };
 	UNUM32 hVertexArray_{ 0 };
@@ -48,6 +42,7 @@ private:
 	std::vector<Vertex> vertices_;
 	std::vector<UNUM32> indices_;
 
+	void generateGLData();
 
 };
 

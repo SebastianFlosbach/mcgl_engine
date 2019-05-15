@@ -17,21 +17,44 @@ chunk::Chunk myChunk;
 
 coordinates::ChunkCoordinates lastChunkPosition{ 0, 0 };
 
-constexpr int RENDER_DISTANCE = 1;
+constexpr int RENDER_DISTANCE = 5;
 
 void checkLoadedChunks() {
 	coordinates::WorldCoordinates position = GetCameraPosition( 1 );
 
 	coordinates::ChunkCoordinates chunkPos = position.toChunkCoordinates();
 
-	if( chunkPos != lastChunkPosition ) {		
-		for( int i = -RENDER_DISTANCE; i < RENDER_DISTANCE; i++ ) {
-			myChunk.setPosition( { chunkPos.x_ + RENDER_DISTANCE, chunkPos.z_ + i } );
-			AddChunk( myChunk );
-			RemoveChunk( chunkPos.x_ - RENDER_DISTANCE, chunkPos.z_ + i );
+	if( chunkPos != lastChunkPosition ) {
+		if( chunkPos.x_ - lastChunkPosition.x_ > 0 ) {
+			for( int i = -RENDER_DISTANCE; i <= RENDER_DISTANCE; i++ ) {
+				myChunk.setPosition( { chunkPos.x_ + RENDER_DISTANCE, chunkPos.z_ + i } );
+				AddChunk( myChunk );
+				RemoveChunk( lastChunkPosition.x_ - RENDER_DISTANCE, lastChunkPosition.z_ + i );
+			}
+		} else if( chunkPos.x_ - lastChunkPosition.x_ < 0 ) {
+			for( int i = -RENDER_DISTANCE; i <= RENDER_DISTANCE; i++ ) {
+				myChunk.setPosition( { chunkPos.x_ - RENDER_DISTANCE, chunkPos.z_ + i } );
+				AddChunk( myChunk );
+				RemoveChunk( lastChunkPosition.x_ + RENDER_DISTANCE, lastChunkPosition.z_ + i );
+			}
 		}
 
+		if( chunkPos.z_ - lastChunkPosition.z_ > 0 ) {
+			for( int i = -RENDER_DISTANCE; i <= RENDER_DISTANCE; i++ ) {
+				myChunk.setPosition( { chunkPos.x_ + i, chunkPos.z_ + RENDER_DISTANCE } );
+				AddChunk( myChunk );
+				RemoveChunk( lastChunkPosition.x_ + i, lastChunkPosition.z_ -RENDER_DISTANCE );
+			}
+		} else if( chunkPos.z_ - lastChunkPosition.z_ < 0 ) {
+			for( int i = -RENDER_DISTANCE; i <= RENDER_DISTANCE; i++ ) {
+				myChunk.setPosition( { chunkPos.x_ + i, chunkPos.z_ - RENDER_DISTANCE } );
+				AddChunk( myChunk );
+				RemoveChunk( lastChunkPosition.x_ + i, lastChunkPosition.z_ + RENDER_DISTANCE );
+			}
+		}
 	}
+
+	lastChunkPosition = chunkPos;
 
 }
 
@@ -118,7 +141,7 @@ int main() {
 	futureStop = promiseStop.get_future();
 
 	CreateEngine();
-	CreateWindow( 1600, 1200, "MCGL" );
+	CreateWindow( 800, 600, "MCGL" );
 
 	CreateCamera( 8, 10, 8 );
 
@@ -140,15 +163,13 @@ int main() {
 			}
 		}
 	}
-	for( int x = -RENDER_DISTANCE; x < RENDER_DISTANCE; x++ ) {
-		for( int y = -RENDER_DISTANCE; y < RENDER_DISTANCE; y++ ) {
+
+	for( int x = -RENDER_DISTANCE; x <= RENDER_DISTANCE; x++ ) {
+		for( int y = -RENDER_DISTANCE; y <= RENDER_DISTANCE; y++ ) {
 			myChunk.setPosition( { x, y } );
 			AddChunk( myChunk );
 		}
 	}
-
-	myChunk.setPosition( { 0, 0 } );
-	AddChunk( myChunk );
 
 	Run();
 
