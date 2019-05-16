@@ -15,33 +15,27 @@ std::unique_ptr<ConsoleLogger> logger;
 std::unique_ptr<Engine> engine;
 
 
-inline bool checkEngine() {
-	if ( !engine ) {
-		error( *logger, "Engine was not created!" );
-		return false;
-	}
-
-	return true;
-}
-
 void CreateEngine() {
 	logger = std::make_unique<ConsoleLogger>( /*loggerName, loggerPath*/ );
-	trace( *logger, "[MCGL-ENGINE] CreateEngine" );
+	info( *logger, "[MCGL-ENGINE] CreateEngine" );
 
 	engine = std::make_unique<Engine>( *logger );
 }
 
 void DestroyEngine() {
-	if ( !checkEngine() ) return;
+	if( !engine ) {
+		error( *logger, "[MCGL-ENGINE] DestroyEngine: Engine not created!" );
+		return;
+	}
 
-	trace( *logger, "[MCGL-ENGINE] DestroyEngine" );
+	info( *logger, "[MCGL-ENGINE] DestroyEngine" );
 	engine.reset();
 }
 
 void CreateWindow( NUM32 width, NUM32 height, const std::string& title ) {
 	if ( !checkEngine() ) return;
 
-	trace( *logger, "[MCGL-ENGINE] CreateWindow" );
+	info( *logger, "[MCGL-ENGINE] CreateWindow" );
 	
 	engine->createWindow( width, height, title );
 }
@@ -49,7 +43,7 @@ void CreateWindow( NUM32 width, NUM32 height, const std::string& title ) {
 void CloseWindow() {
 	if ( !checkEngine() ) return;
 
-	trace(*logger, "[MCGL-ENGINE] CloseWindow");
+	info(*logger, "[MCGL-ENGINE] CloseWindow");
 	engine->closeWindow();
 }
 
