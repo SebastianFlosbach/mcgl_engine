@@ -5,7 +5,7 @@
 
 #include "Definition/mcgl_engine_def.h"
 #include "Mesh/Vertex.h"
-#include "Renderer/Renderer.h"
+#include "Rendering/Renderer.h"
 #include "Texture/TextureAtlas.h"
 
 namespace mesh {

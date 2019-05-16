@@ -1,7 +1,9 @@
-#include "Window.h"
+#include "Rendering/Window.h"
 
 #include <iostream>
 
+
+Window_sptr Window::pInstance_;
 
 Window::~Window() {
 	if( pWindow_ ) {
@@ -9,15 +11,15 @@ Window::~Window() {
 	}
 }
 
-GLFWwindow* Window::pWindow_{ nullptr };
-bool Window::isOpen_{ false };
+Window_sptr Window::create() {
+	if( !pInstance_ ) {
+		pInstance_ = std::shared_ptr<Window>( new Window() );
+	}
 
-NUM32 Window::width_{ 800 };
-NUM32 Window::height_{ 600 };
+	return pInstance_;
+}
 
-MCGL_WINDOW_RESIZE_CALLBACK Window::callback_{ NULL };
-
-GLFWwindow* Window::get() {
+GLFWwindow* Window::get() const {
 	return pWindow_;
 }
 
@@ -52,11 +54,11 @@ void Window::close() {
 
 }
 
-NUM32 Window::width() {
+NUM32 Window::width() const {
 	return width_;
 }
 
-NUM32 Window::height() {
+NUM32 Window::height() const {
 	return height_;
 }
 
@@ -69,11 +71,11 @@ void Window::deregisterResizeCallback() {
 }
 
 void Window::framebufferSizeCallback( GLFWwindow* window, int width, int height ) {
-	width_ = width;
-	height_ = height;
+	pInstance_->width_ = width;
+	pInstance_->height_ = height;
 	glViewport( 0, 0, width, height );
 
-	if( callback_ ) {
-		callback_( width, height );
+	if( pInstance_->callback_ ) {
+		pInstance_->callback_( width, height );
 	}
 }

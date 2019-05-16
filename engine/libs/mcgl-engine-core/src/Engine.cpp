@@ -21,7 +21,8 @@ Engine::Engine( const ILogger& logger ) :
 	pBlockLibrary_( new chunk::block::BlockLibrary() ),
 	pChunks_( new chunk::ChunkCollection() ),
 	pWorld_( new world::World( logger ) ),
-	pChunkMeshBuilder_( new chunk::builder::ThreadedChunkMeshBuilder( logger, 4 ) ) { 
+	pChunkMeshBuilder_( new chunk::builder::ThreadedChunkMeshBuilder( logger, 4 ) ),
+	pWindow_( Window::create() ) { 
 	
 	if( isRunning_.exchange( true ) ) {
 		return;
@@ -211,8 +212,8 @@ void Engine::doEngine() {
 void Engine::doCreateWindow( action::CreateWindowAction* data ) {
 	info( logger_, "createWindow()" );
 
-	Window::open( data->width_, data->height_, data->title_ );
-	Window::registerResizeCallback( MCGL_WINDOW_RESIZE_CALLBACK( [this]( NUM32 width, NUM32 height ) {
+	pWindow_->open( data->width_, data->height_, data->title_ );
+	pWindow_->registerResizeCallback( MCGL_WINDOW_RESIZE_CALLBACK( [this]( NUM32 width, NUM32 height ) {
 		pRenderer_->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)width / (float)height, 0.1f, 500.0f ) );
 	} ) );
 
@@ -221,13 +222,13 @@ void Engine::doCreateWindow( action::CreateWindowAction* data ) {
 		return;
 	}
 
-	glfwSetInputMode( Window::get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
+	glfwSetInputMode( pWindow_->get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
 
 	glEnable( GL_DEPTH_TEST );
 }
 
 void Engine::doCloseWindow() {
-	Window::close();
+	pWindow_->close();
 }
 
 void Engine::doRegisterBlockType( action::RegisterBlockTypeAction* data ) {
@@ -239,13 +240,13 @@ void Engine::doRegisterBlockType( action::RegisterBlockTypeAction* data ) {
 void Engine::doRegisterKeyEventCallback( action::RegisterKeyEventCallbackAction* data ) {
 	info( logger_, "registerKeyEventCallback" );
 
-	KeyEventHandler::registerCallback( Window::get(), data->callback_ );
+	KeyEventHandler::registerCallback( pWindow_->get(), data->callback_ );
 }
 
 void Engine::doRegisterMouseEventCallback( action::RegisterMouseEventCallbackAction* data ) {
 	info( logger_, "registerMouseEventCallback" );
 
-	MouseEventHandler::registerCallback( Window::get(), data->callback_ );
+	MouseEventHandler::registerCallback( pWindow_->get(), data->callback_ );
 }
 
 void Engine::doRegisterStatusEventCallback( action::RegisterStatusEventCallbackAction* data ) {
@@ -306,7 +307,7 @@ void Engine::doDraw() {
 
 	pWorld_->draw( *pRenderer_ );
 
-	glfwSwapBuffers( Window::get() );
+	glfwSwapBuffers( pWindow_->get() );
 	glfwPollEvents();
 	KeyEventHandler::pollEvents();
 

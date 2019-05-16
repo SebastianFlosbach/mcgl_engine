@@ -15,6 +15,14 @@ std::unique_ptr<ConsoleLogger> logger;
 std::unique_ptr<Engine> engine;
 
 
+bool checkEngine() {
+	if( !engine ) {
+		return false;
+	}
+
+	return true;
+}
+
 void CreateEngine() {
 	logger = std::make_unique<ConsoleLogger>( /*loggerName, loggerPath*/ );
 	info( *logger, "[MCGL-ENGINE] CreateEngine" );
@@ -98,22 +106,22 @@ void RemoveChunk( NUM32 x, NUM32 z) {
 	engine->removeChunk( x, z );
 }
 
-UNUM32 CreateCamera( double x, double y, double z, double pitch, double yaw, double roll ) {
-	if ( !checkEngine() ) return 0;
+void CreateCamera( float x, float y, float z, float pitch, float yaw, float roll ) {
+	if ( !checkEngine() ) return;
 
 	trace( *logger, "[MCGL-ENGINE] CreateCamera" );
 	
-	return engine->createCamera( x, y, z, pitch, yaw, roll );
+	engine->createCamera( x, y, z, pitch, yaw, roll );
 }
 
-void MoveCamera( UNUM32 cameraId, double dx, double dy, double dz ) {
+void MoveCamera( UNUM32 cameraId, float dx, float dy, float dz ) {
 	if ( !checkEngine() ) return;
 
 	trace( *logger, "[MCGL-ENGINE] MoveCamera" );
 	engine->moveCamera( cameraId, dx, dy, dz );
 }
 
-void RotateCamera( UNUM32 cameraId, double pitch, double yaw, double roll ) {
+void RotateCamera( UNUM32 cameraId, float pitch, float yaw, float roll ) {
 	if ( !checkEngine() ) return;
 
 	trace( *logger, "[MCGL-ENGINE] RotateCamera" );

@@ -2,11 +2,11 @@
 
 #include "Definition/mcgl_engine_def.h"
 #include "Logging/ILogger.h"
-#include "Window.h"
+#include "Rendering/Window.h"
 #include "Chunk/Block/BlockLibrary.h"
 #include "Chunk/Chunk.h"
 #include "World/World.h"
-#include "Renderer/Renderer.h"
+#include "Rendering/Renderer.h"
 #include "Camera.h"
 #include "ActionHandling/ThreadedWorkerQueue.h"
 #include "ActionHandling/actions.h"
@@ -88,13 +88,15 @@ private:
 
 	ThreadedWorkerQueue<action::Action_ptr> workerQueue_{};
 
+
+	IWindow_sptr pWindow_;
 	Renderer_ptr pRenderer_;
 
 	chunk::block::BlockLibrary_sptr			pBlockLibrary_;
 	chunk::ChunkCollection_ptr				pChunks_;
 	world::World_ptr						pWorld_;
 	chunk::builder::IChunkMeshBuilder_ptr	pChunkMeshBuilder_;
-
+	
 	Camera camera_;
 
 	MCGL_STATUS_EVENT_CALLBACK statusCallback_;

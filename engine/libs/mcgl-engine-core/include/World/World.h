@@ -6,7 +6,7 @@
 
 #include "Logging/ILogger.h"
 #include "Mesh/Mesh.h"
-#include "Renderer/Renderer.h"
+#include "Rendering/Renderer.h"
 #include "Coordinates/WorldCoordinates.h"
 
 

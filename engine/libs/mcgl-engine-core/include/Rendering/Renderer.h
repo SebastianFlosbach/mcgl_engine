@@ -61,7 +61,7 @@ private:
 
 	glm::mat4 model_ = glm::mat4( 1.0f );
 	glm::mat4 view_ = glm::mat4( 1.0f );
-	glm::mat4 projection_ = glm::perspective( glm::radians( 45.0f ), (float)Window::width() / (float)Window::height(), 0.1f, 500.0f );
+	glm::mat4 projection_ = glm::perspective( glm::radians( 45.0f ), 800.f / 600.f, 0.1f, 500.0f );
 };
 
 typedef std::unique_ptr<Renderer> Renderer_ptr;
