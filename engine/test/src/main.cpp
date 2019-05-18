@@ -20,7 +20,7 @@ coordinates::ChunkCoordinates lastChunkPosition{ 0, 0 };
 constexpr int RENDER_DISTANCE = 5;
 
 void checkLoadedChunks() {
-	coordinates::WorldCoordinates position = GetCameraPosition( 1 );
+	coordinates::WorldCoordinates position = GetCameraPosition();
 
 	coordinates::ChunkCoordinates chunkPos = position.toChunkCoordinates();
 

@@ -98,26 +98,26 @@ JNIEXPORT void JNICALL Java_MCGLEngine_RemoveChunk
 /*
  * Class:     MCGLEngine
  * Method:    CreateCamera
- * Signature: (DDDDDD)I
+ * Signature: (FFFFFF)V
  */
-JNIEXPORT jint JNICALL Java_MCGLEngine_CreateCamera
-  (JNIEnv *, jobject, jdouble, jdouble, jdouble, jdouble, jdouble, jdouble);
+JNIEXPORT void JNICALL Java_MCGLEngine_CreateCamera
+  (JNIEnv *, jobject, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat);
 
 /*
  * Class:     MCGLEngine
  * Method:    MoveCamera
- * Signature: (IDDD)V
+ * Signature: (IFFF)V
  */
 JNIEXPORT void JNICALL Java_MCGLEngine_MoveCamera
-  (JNIEnv *, jobject, jint, jdouble, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jfloat, jfloat, jfloat);
 
 /*
  * Class:     MCGLEngine
  * Method:    RotateCamera
- * Signature: (IDDD)V
+ * Signature: (IFFF)V
  */
 JNIEXPORT void JNICALL Java_MCGLEngine_RotateCamera
-  (JNIEnv *, jobject, jint, jdouble, jdouble, jdouble);
+  (JNIEnv *, jobject, jint, jfloat, jfloat, jfloat);
 
 /*
  * Class:     MCGLEngine
@@ -154,10 +154,10 @@ JNIEXPORT jfloat JNICALL Java_MCGLEngine_GetDeltaTime
 /*
  * Class:     MCGLEngine
  * Method:    GetCameraPosition
- * Signature: (I)LWorldCoordinates;
+ * Signature: ()LWorldCoordinates;
  */
 JNIEXPORT jobject JNICALL Java_MCGLEngine_GetCameraPosition
-  (JNIEnv *, jobject, jint);
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

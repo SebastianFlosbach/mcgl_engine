@@ -196,12 +196,12 @@ float GetDeltaTime() {
 	return engine->getDeltaTime();
 }
 
-coordinates::WorldCoordinates GetCameraPosition( UNUM32 cameraId ) {
+coordinates::WorldCoordinates GetCameraPosition() {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] GetCameraPosition: Engine not created!" );
 		return { 0, 0, 0 };
 	}
 
 	trace( *logger, "[MCGL-ENGINE] GetCameraPosition" );
-	return engine->getCameraPosition( cameraId );
+	return engine->getCameraPosition();
 }

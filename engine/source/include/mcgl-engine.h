@@ -31,4 +31,4 @@ MCGL_ENGINE_EXTERN void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK ca
 MCGL_ENGINE_EXTERN void RegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
 
 MCGL_ENGINE_EXTERN float GetDeltaTime();
-MCGL_ENGINE_EXTERN coordinates::WorldCoordinates GetCameraPosition( UNUM32 cameraId );
+MCGL_ENGINE_EXTERN coordinates::WorldCoordinates GetCameraPosition();

@@ -33,7 +33,7 @@ public:
 		return deltaTime_;
 	}
 
-	coordinates::WorldCoordinates getCameraPosition( UNUM32 cameraId ) const {
+	coordinates::WorldCoordinates getCameraPosition() const {
 		return camera_.getPosition();
 	}
 
