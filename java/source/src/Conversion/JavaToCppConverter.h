@@ -3,7 +3,7 @@
 #include <jni.h>
 #include <Chunk/Block/Block.h>
 
-#include "JavaDefinitions.h"
+#include "FieldIDCache.h"
 
 
 
@@ -12,20 +12,18 @@ namespace conversion {
 
 class JavaToCppConverter {
 public:
-	JavaToCppConverter() = default;
+	JavaToCppConverter( FieldIDCache& fieldIDCache ) : fieldIDCache_( fieldIDCache ) {}
 	~JavaToCppConverter() = default;
 
 	chunk::block::Block toBlock( JNIEnv* env, jobject jBlock ) {
-		jclass clazz = env->FindClass( JAVA_CLASS_BLOCK );
-
-		jfieldID idFieldId =				env->GetFieldID( clazz, JAVA_BLOCK_FIELD_ID,				JAVA_BLOCK_SIGNATURE_ID );
-		jfieldID isTransparentFieldId =		env->GetFieldID( clazz, JAVA_BLOCK_FIELD_IS_TRANSPARENT,	JAVA_BLOCK_SIGNATURE_IS_TRANSPARENT );
-		jfieldID leftTextureIdFieldId =		env->GetFieldID( clazz, JAVA_BLOCK_FIELD_LEFT_TEXTURE_ID,	JAVA_BLOCK_SIGNATURE_LEFT_TEXTURE_ID );
-		jfieldID rightTextureIdFieldId =	env->GetFieldID( clazz, JAVA_BLOCK_FIELD_RIGHT_TEXTURE_ID,	JAVA_BLOCK_SIGNATURE_RIGHT_TEXTURE_ID );
-		jfieldID frontTextureIdFieldId =	env->GetFieldID( clazz, JAVA_BLOCK_FIELD_FRONT_TEXTURE_ID,	JAVA_BLOCK_SIGNATURE_FRONT_TEXTURE_ID );
-		jfieldID backTextureIdFieldId =		env->GetFieldID( clazz, JAVA_BLOCK_FIELD_BACK_TEXTURE_ID,	JAVA_BLOCK_SIGNATURE_BACK_TEXTURE_ID );
-		jfieldID topTextureIdFieldId =		env->GetFieldID( clazz, JAVA_BLOCK_FIELD_TOP_TEXTURE_ID,	JAVA_BLOCK_SIGNATURE_TOP_TEXTURE_ID );
-		jfieldID bottomTextureIdFieldId =	env->GetFieldID( clazz, JAVA_BLOCK_FIELD_BOTTOM_TEXTURE_ID, JAVA_BLOCK_SIGNATURE_BOTTOM_TEXTURE_ID );
+		jfieldID idFieldId =				fieldIDCache_.GetBlockId( env );
+		jfieldID isTransparentFieldId =		fieldIDCache_.GetIsTransparent( env );
+		jfieldID leftTextureIdFieldId =		fieldIDCache_.GetRightTextureId( env );
+		jfieldID rightTextureIdFieldId =	fieldIDCache_.GetLeftTextureId( env );
+		jfieldID frontTextureIdFieldId =	fieldIDCache_.GetFrontTextureId( env );
+		jfieldID backTextureIdFieldId =		fieldIDCache_.GetBackTextureId( env );
+		jfieldID topTextureIdFieldId =		fieldIDCache_.GetTopTextureId( env );
+		jfieldID bottomTextureIdFieldId =	fieldIDCache_.GetBottomTextureId( env );
 
 		jint jId =					env->GetIntField(		jBlock, idFieldId );
 		jboolean jIsTransparent =	env->GetBooleanField(	jBlock, isTransparentFieldId );
@@ -49,7 +47,7 @@ public:
 	}
 
 private:
-
+	FieldIDCache& fieldIDCache_;
 
 };
 

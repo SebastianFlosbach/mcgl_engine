@@ -122,7 +122,7 @@ JNIEXPORT void JNICALL Java_MCGLEngine_RotateCamera
 /*
  * Class:     MCGLEngine
  * Method:    RegisterKeyEventCallback
- * Signature: (LIKeyEventCallback;)V
+ * Signature: (LEventing/IKeyEventCallback;)V
  */
 JNIEXPORT void JNICALL Java_MCGLEngine_RegisterKeyEventCallback
   (JNIEnv *, jobject, jobject);
@@ -130,7 +130,7 @@ JNIEXPORT void JNICALL Java_MCGLEngine_RegisterKeyEventCallback
 /*
  * Class:     MCGLEngine
  * Method:    RegisterMouseEventCallback
- * Signature: (LIMouseEventCallback;)V
+ * Signature: (LEventing/IMouseEventCallback;)V
  */
 JNIEXPORT void JNICALL Java_MCGLEngine_RegisterMouseEventCallback
   (JNIEnv *, jobject, jobject);
@@ -138,7 +138,7 @@ JNIEXPORT void JNICALL Java_MCGLEngine_RegisterMouseEventCallback
 /*
  * Class:     MCGLEngine
  * Method:    RegisterStatusEventCallback
- * Signature: (LIStatusEventCallback;)V
+ * Signature: (LEventing/IStatusEventCallback;)V
  */
 JNIEXPORT void JNICALL Java_MCGLEngine_RegisterStatusEventCallback
   (JNIEnv *, jobject, jobject);

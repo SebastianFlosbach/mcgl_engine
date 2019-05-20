@@ -68,13 +68,11 @@ JNIEXPORT void JNICALL Java_MCGLEngine_CreateCamera( JNIEnv*, jobject, jfloat x,
 
 JNIEXPORT void JNICALL Java_MCGLEngine_MoveCamera( JNIEnv*, jobject, jint, jfloat, jfloat, jfloat );
 
-JNIEXPORT void JNICALL Java_MCGLEngine_RotateCamera( JNIEnv*, jobject, jint, jfloat, jfloat, jfloat );
-
-JNIEXPORT void JNICALL Java_MCGLEngine_RegisterKeyEventCallback( JNIEnv*, jobject, jobject );
+JNIEXPORT void JNICALL Java_MCGLEngine_RotateCamera( JNIEnv*, jobject, jint, jfloat, jfloat, jfloat );/*
 
 JNIEXPORT void JNICALL Java_MCGLEngine_RegisterMouseEventCallback( JNIEnv*, jobject, jobject );
 
-JNIEXPORT void JNICALL Java_MCGLEngine_RegisterStatusEventCallback( JNIEnv*, jobject, jobject );
+JNIEXPORT void JNICALL Java_MCGLEngine_RegisterStatusEventCallback( JNIEnv*, jobject, jobject );*/
 
 JNIEXPORT jfloat JNICALL Java_MCGLEngine_GetDeltaTime( JNIEnv*, jobject );
 
@@ -109,17 +107,29 @@ void keyEventCallback( const KeyEvent& event ) {
 	jvm->DetachCurrentThread();
 }
 
-JNIEXPORT void JNICALL Java_MCGLEngineInterface_registerKeyEventCallback( JNIEnv* env, jobject caller, jobject callback ) {
+JNIEXPORT void JNICALL Java_MCGLEngine_RegisterKeyEventCallback( JNIEnv* env, jobject caller, jobject callback ) {
 	env->GetJavaVM(&jvm);
 	jKeyEventCallbackObject = env->NewGlobalRef( callback );
+	if( jKeyEventCallbackObject == NULL ) {
+		std::cout << "__FUNCTION__" << ": Could not get global ref to callback!" << std::endl;
+		return;
+	}
 
-	jclass clazz = env->GetObjectClass( callback );
+	jclass callbackClass = env->GetObjectClass( callback );
+	if( callbackClass == NULL ) {
+		std::cout << "__FUNCTION__" << ": Could not get callback jclass!" << std::endl;
+		return;
+	}
 
-	jKeyEventCallbackMethod = env->GetMethodID( clazz, conversion::JAVA_KEY_EVENT_CALLBACK_METHOD_INVOKE, conversion::JAVA_KEY_EVENT_CALLBACK_SIGNATURE_INVOKE );
+	jKeyEventCallbackMethod = env->GetMethodID( callbackClass, conversion::JAVA_KEY_EVENT_CALLBACK_METHOD_INVOKE, conversion::JAVA_KEY_EVENT_CALLBACK_SIGNATURE_INVOKE );
+	if( jKeyEventCallbackMethod == NULL ) {
+		std::cout << "__FUNCTION__" << ": Could not get callback jmethodID!" << std::endl;
+		return;
+	}
 
 	RegisterKeyEventCallback( keyEventCallback );
 }
 
-JNIEXPORT void JNICALL Java_MCGLEngineInterface_registerMouseEventCallback( JNIEnv *, jobject, jstring ) {
+JNIEXPORT void JNICALL Java_MCGLEngine_RegisterMouseEventCallback( JNIEnv *, jobject, jstring ) {
 
 }
