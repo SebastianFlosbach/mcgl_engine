@@ -5,6 +5,21 @@
 
 template<>
 ThreadedWorkerQueue<action::Action_ptr>::ThreadedWorkerQueue() {
+}
+
+template<>
+ThreadedWorkerQueue<action::Action_ptr>::~ThreadedWorkerQueue() {
+	if( isRunning_.exchange( false ) ) {
+		workerThread_.join();
+	}
+}
+
+template<>
+void ThreadedWorkerQueue<action::Action_ptr>::start() {
+	if( isRunning_.exchange( true ) ) {
+		return;
+	}
+
 	workerThread_ = std::thread( [this]() {
 		while( isRunning_ ) {
 
@@ -13,9 +28,21 @@ ThreadedWorkerQueue<action::Action_ptr>::ThreadedWorkerQueue() {
 				cvQueue_.wait( lock );
 			}
 
+			if( !isRunning_ ) {
+				break;
+			}
+
 			invokeCallback( dequeue().get() );
 		}
 	} );
+}
+
+template<>
+void ThreadedWorkerQueue<action::Action_ptr>::stop() {
+	if( isRunning_.exchange( false ) ) {
+		cvQueue_.notify_one();
+		workerThread_.join();
+	}
 }
 
 template<>

@@ -25,7 +25,8 @@ public:
 	Engine& operator=( Engine&& other ) = delete;
 
 	~Engine() {
-		info( logger_, "Destroyed engine" );
+		info( logger_, " Destroyed engine" );
+		workerQueue_.stop();
 		glfwTerminate();
 	}
 

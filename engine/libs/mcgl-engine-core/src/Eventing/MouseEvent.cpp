@@ -8,8 +8,8 @@ const char* to_string( MouseEventType type ) {
 			return "ButtonRelease";
 		case MouseEventType::Scroll:
 			return "Scroll";
-		case MouseEventType::MouseMove:
-			return "MouseMove";
+		case MouseEventType::Move:
+			return "Move";
 		default:
 			return "<undefined>";
 	}

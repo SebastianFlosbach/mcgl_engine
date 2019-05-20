@@ -97,7 +97,7 @@ void mouseEventCallback( const MouseEvent& mouseEvent ) {
 			break;
 		case MouseEventType::Scroll:
 			break;
-		case MouseEventType::MouseMove:
+		case MouseEventType::Move:
 		{
 			auto newPosition = mouseEvent.data_.position_;
 			auto newX = newPosition.x_;
@@ -141,11 +141,11 @@ int main() {
 	futureStop = promiseStop.get_future();
 
 	CreateEngine();
-	CreateWindow( 800, 600, "MCGL" );
+	//CreateWindow( 800, 600, "MCGL" );
 
 	CreateCamera( 8, 10, 8 );
 
-	RegisterKeyEventCallback( keyEventCallback );
+	/*RegisterKeyEventCallback( keyEventCallback );
 	RegisterMouseEventCallback( mouseEventCallback );
 	RegisterStatusEventCallback( statusEventCallback );
 
@@ -171,9 +171,11 @@ int main() {
 		}
 	}
 
-	Run();
+	Run();*/
 
-	futureStop.wait();
+	//futureStop.wait();
+
+	DestroyEngine();
 
 	return 0;
 }

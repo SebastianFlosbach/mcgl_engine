@@ -22,7 +22,10 @@ public:
 	ThreadedWorkerQueue(ThreadedWorkerQueue&& other) = delete;
 	ThreadedWorkerQueue& operator=(ThreadedWorkerQueue&& other) = delete;
 
-	~ThreadedWorkerQueue() = default;
+	~ThreadedWorkerQueue();
+
+	void start();
+	void stop();
 
 	void enqueue(T&& action);
 
@@ -39,7 +42,7 @@ private:
 
 	MCGL_WORKER_QUEUE_CALLBACK callback_;
 
-	std::atomic_bool isRunning_;
+	std::atomic_bool isRunning_{ false };
 
 	std::deque<T> workerQueue_;
 

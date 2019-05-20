@@ -55,6 +55,10 @@ public:
 
 	jobject toKeyEventType( JNIEnv* env, KeyEventType type ) {
 		jclass clazz = env->FindClass( "KeyEventType" );
+		if( clazz == NULL ) {
+			std::cout << "__FUNCTION__" << ": Could not find java class 'KeyEventType'" << std::endl;
+		}
+
 		jfieldID fieldId = env->GetStaticFieldID( clazz, to_string( type ), "LKeyEventType;" );
 		jobject javaType = env->GetStaticObjectField( clazz, fieldId );
 

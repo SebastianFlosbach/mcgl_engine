@@ -6,6 +6,7 @@
 
 #include "Conversion/CppToJavaConverter.h"
 #include "Conversion/JavaToCppConverter.h"
+#include "Conversion/JavaDefinitions.h"
 
 
 static conversion::JavaToCppConverter cppConverter;
@@ -86,11 +87,11 @@ JNIEXPORT jobject JNICALL Java_MCGLEngine_GetCameraPosition( JNIEnv* env, jobjec
 
 
 JavaVM* jvm;
-jobject jEventCallbackObject;
-jmethodID jEventCallbackMethod;
+jobject jKeyEventCallbackObject;
+jmethodID jKeyEventCallbackMethod;
 
 void keyEventCallback( const KeyEvent& event ) {
-	/*JNIEnv* env;
+	JNIEnv* env;
 	int envStat = jvm->GetEnv( (void**)&env, JNI_VERSION_1_8 );
 	if ( envStat == JNI_EDETACHED ) {
 		std::cout << "GetEnv: not attached" << std::endl;
@@ -101,45 +102,20 @@ void keyEventCallback( const KeyEvent& event ) {
 		std::cout << "GetEnv: version not supported" << std::endl;
 	}
 
-	auto jKeyEvent = keyEvent( env, event );
-	if ( jKeyEvent == nullptr ) {
-		std::cout << "Java key event is nullptr" << std::endl;
-		return;
-	}
+	auto jKeyEvent = javaConverter.toKeyEvent( env, event );
 
-	env->CallVoidMethod( jEventCallbackObject, jEventCallbackMethod, jKeyEvent );
+	env->CallVoidMethod( jKeyEventCallbackObject, jKeyEventCallbackMethod, jKeyEvent );
 
-	if ( env->ExceptionCheck() ) {
-		env->ExceptionDescribe();
-		env->ExceptionClear();
-	}
-
-	jvm->DetachCurrentThread();*/
+	jvm->DetachCurrentThread();
 }
 
-JNIEXPORT void JNICALL Java_MCGLEngineInterface_registerKeyEventCallback( JNIEnv* env, jobject obj, jstring callbackName ) {
+JNIEXPORT void JNICALL Java_MCGLEngineInterface_registerKeyEventCallback( JNIEnv* env, jobject caller, jobject callback ) {
 	env->GetJavaVM(&jvm);
-	jEventCallbackObject = env->NewGlobalRef( obj );
+	jKeyEventCallbackObject = env->NewGlobalRef( callback );
 
-	jclass currentObjectClass = env->GetObjectClass( obj );
-	if ( currentObjectClass == NULL ) {
-		std::cout << "Failed to find class" << std::endl;
-		return;
-	}
+	jclass clazz = env->GetObjectClass( callback );
 
-	const char* cCallbackName = env->GetStringUTFChars( callbackName, NULL );
-	jEventCallbackMethod = env->GetMethodID( currentObjectClass, cCallbackName, "(LKeyEvent;)V" );
-	env->ReleaseStringUTFChars( callbackName, cCallbackName );
-
-	if ( env->ExceptionCheck() ) {
-		env->ExceptionDescribe();
-		env->ExceptionClear();
-	}
-
-	if ( !jEventCallbackMethod ) {
-		std::cout << "Could not find java callback method" << std::endl;
-		return;
-	}
+	jKeyEventCallbackMethod = env->GetMethodID( clazz, conversion::JAVA_KEY_EVENT_CALLBACK_METHOD_INVOKE, conversion::JAVA_KEY_EVENT_CALLBACK_SIGNATURE_INVOKE );
 
 	RegisterKeyEventCallback( keyEventCallback );
 }

@@ -18,7 +18,7 @@ enum class MouseEventType {
 	ButtonPess,
 	ButtonRelease,
 	Scroll,
-	MouseMove
+	Move
 };
 
 struct MouseEvent {

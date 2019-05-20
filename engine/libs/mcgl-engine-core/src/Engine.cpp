@@ -51,6 +51,8 @@ Engine::Engine( const ILogger& logger ) :
 	workerQueue_.registerCallback( std::bind( &Engine::doAction, this, std::placeholders::_1 ) );
 
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::EngineInitAction() ) );
+
+	workerQueue_.start();
 }
 
 void Engine::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh* mesh ) {

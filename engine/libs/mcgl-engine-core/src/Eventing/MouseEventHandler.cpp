@@ -20,7 +20,7 @@ void MouseEventHandler::registerCallback( GLFWwindow* window, MCGL_MOUSE_EVENT_C
 }
 
 void MouseEventHandler::positionCallback( GLFWwindow* window, double xPos, double yPos ) {
-	invokeCallback( { MouseEventType::MouseMove, xPos, yPos } );
+	invokeCallback( { MouseEventType::Move, xPos, yPos } );
 }
 
 void MouseEventHandler::buttonCallback( GLFWwindow* window, int button, int action, int mods ) {
