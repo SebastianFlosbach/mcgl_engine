@@ -56,7 +56,7 @@ public:
 			return NULL;
 		}
 
-		jfieldID fieldID = env->GetStaticFieldID( clazz, to_string( type ), JAVA_KEY_EVENT_TYPE_SIGNATURE );
+		jfieldID fieldID = env->GetStaticFieldID( clazz, to_string( type ), KEYEVENTTYPE_SIGNATURE );
 		if( fieldID == NULL ) {
 			std::cout << __FUNCTION__ << ": Could not get static field id for KeyEventType!" << std::endl;
 			return NULL;

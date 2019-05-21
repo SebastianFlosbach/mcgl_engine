@@ -17,7 +17,7 @@ jmethodID MethodIDCache::GetKeyEventConstructor( JNIEnv* env ) {
 		if( !keyEventConstructor_ ) {
 			std::stringstream errorMsg;
 			errorMsg << __FUNCTION__ << ": Could not find constructor '" << KEYEVENT_CONSTRUCTOR_SIGNATURE << "' for class '" << CLASS_KEYEVENT << "'!";
-			throw std::exception( errorMsg.str() );
+			throw std::runtime_error( errorMsg.str() );
 		}
 	}
 
@@ -32,7 +32,7 @@ jmethodID MethodIDCache::GetKeyEventCallbackInvoke( JNIEnv* env ) {
 		if( !keyEventCallbackInvoke_ ) {
 			std::stringstream errorMsg;
 			errorMsg << __FUNCTION__ << ": Could not find method '" << KEYEVENTCALLBACK_INVOKE_METHOD << KEYEVENTCALLBACK_INVOKE_SIGNATURE << "' for class '" << CLASS_WORLDCOORDINATES << "'!";
-			throw std::exception( errorMsg.str() );
+			throw std::runtime_error( errorMsg.str() );
 		}
 	}
 
@@ -47,7 +47,7 @@ jmethodID MethodIDCache::GetWorldCoordinatesConstructor( JNIEnv* env ) {
 		if( !worldCoordinatesConstructor_ ) {
 			std::stringstream errorMsg;
 			errorMsg << __FUNCTION__ << ": Could not find constructor '" << WORLDCOORDINATES_SIGNATURE_CONSTRUCTOR << "' for class '" << CLASS_WORLDCOORDINATES << "'!";
-			throw std::exception( errorMsg.str() );
+			throw std::runtime_error( errorMsg.str() );
 		}
 	}
 

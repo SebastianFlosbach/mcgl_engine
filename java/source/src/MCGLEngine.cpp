@@ -4,13 +4,18 @@
 #include <iostream>
 #include <Eventing/KeyEvent.h>
 
+#include "Conversion/ClassDefinitions.h"
 #include "Conversion/CppToJavaConverter.h"
+#include "Conversion/FieldIDCache.h"
+#include "Conversion/MethodIDCache.h"
 #include "Conversion/JavaToCppConverter.h"
-#include "Conversion/JavaDefinitions.h"
 
 
-static conversion::JavaToCppConverter cppConverter;
-static conversion::CppToJavaConverter javaConverter;
+static conversion::FieldIDCache fieldIDCache;
+static conversion::MethodIDCache methodIDCache;
+
+static conversion::JavaToCppConverter cppConverter{ fieldIDCache };
+static conversion::CppToJavaConverter javaConverter{ fieldIDCache, methodIDCache };
 
 
 JNIEXPORT void JNICALL Java_MCGLEngine_CreateEngine( JNIEnv*, jobject ) {
@@ -115,17 +120,7 @@ JNIEXPORT void JNICALL Java_MCGLEngine_RegisterKeyEventCallback( JNIEnv* env, jo
 		return;
 	}
 
-	jclass callbackClass = env->GetObjectClass( callback );
-	if( callbackClass == NULL ) {
-		std::cout << "__FUNCTION__" << ": Could not get callback jclass!" << std::endl;
-		return;
-	}
-
-	jKeyEventCallbackMethod = env->GetMethodID( callbackClass, conversion::JAVA_KEY_EVENT_CALLBACK_METHOD_INVOKE, conversion::JAVA_KEY_EVENT_CALLBACK_SIGNATURE_INVOKE );
-	if( jKeyEventCallbackMethod == NULL ) {
-		std::cout << "__FUNCTION__" << ": Could not get callback jmethodID!" << std::endl;
-		return;
-	}
+	jKeyEventCallbackMethod = methodIDCache.GetKeyEventCallbackInvoke( env );
 
 	RegisterKeyEventCallback( keyEventCallback );
 }
