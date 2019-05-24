@@ -1,5 +1,9 @@
 #pragma once
 
+
+namespace eventing {
+
+
 struct PositionData {
 	PositionData( const double x, const double y ) : x_( x ), y_( y ) {};
 
@@ -38,3 +42,6 @@ struct MouseEvent {
 };
 
 const char* to_string( MouseEventType type );
+
+
+}

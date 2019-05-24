@@ -9,6 +9,7 @@
 #include "Conversion/FieldIDCache.h"
 #include "Conversion/MethodIDCache.h"
 #include "Conversion/JavaToCppConverter.h"
+#include "Conversion/MouseEventCallback.h"
 
 
 static conversion::FieldIDCache fieldIDCache;
@@ -45,18 +46,7 @@ JNIEXPORT void JNICALL Java_MCGLEngine_Stop( JNIEnv*, jobject ) {
 }
 
 JNIEXPORT void JNICALL Java_MCGLEngine_RegisterBlockType( JNIEnv* env, jobject obj, jobject jBlock ) {
-	std::cout << "RegisterBlockType" << std::endl;
-
 	auto block = cppConverter.toBlock( env, jBlock );
-
-	std::cout << "Id: " << block.id_ << std::endl;
-	std::cout << "IsTransparent: " << std::boolalpha << block.isTransparent_ << std::endl;
-	std::cout << "LeftTextureId: " << block.leftTextureId_ << std::endl;
-	std::cout << "RightTextureId: " << block.rightTextureId_ << std::endl;
-	std::cout << "FrontTextureId: " << block.frontTextureId_ << std::endl;
-	std::cout << "BackTextureId: " << block.backTextureId_ << std::endl;
-	std::cout << "TopTextureId: " << block.topTextureId_ << std::endl;
-	std::cout << "BottomTextureId: " << block.bottomTextureId_ << std::endl;
 }
 
 JNIEXPORT void JNICALL Java_MCGLEngine_SetTextures( JNIEnv*, jobject, jstring, jint, jint );
@@ -73,31 +63,21 @@ JNIEXPORT void JNICALL Java_MCGLEngine_CreateCamera( JNIEnv*, jobject, jfloat x,
 
 JNIEXPORT void JNICALL Java_MCGLEngine_MoveCamera( JNIEnv*, jobject, jint, jfloat, jfloat, jfloat );
 
-JNIEXPORT void JNICALL Java_MCGLEngine_RotateCamera( JNIEnv*, jobject, jint, jfloat, jfloat, jfloat );/*
-
-JNIEXPORT void JNICALL Java_MCGLEngine_RegisterMouseEventCallback( JNIEnv*, jobject, jobject );
-
-JNIEXPORT void JNICALL Java_MCGLEngine_RegisterStatusEventCallback( JNIEnv*, jobject, jobject );*/
+JNIEXPORT void JNICALL Java_MCGLEngine_RotateCamera( JNIEnv*, jobject, jint, jfloat, jfloat, jfloat );
 
 JNIEXPORT jfloat JNICALL Java_MCGLEngine_GetDeltaTime( JNIEnv*, jobject );
 
 JNIEXPORT jobject JNICALL Java_MCGLEngine_GetCameraPosition( JNIEnv* env, jobject caller ) {
-	std::cout << "GetCameraPosition" << std::endl;
-
 	return javaConverter.toWorldCoordinates( env, GetCameraPosition() );
 }
 
-
-
 JavaVM* jvm;
 jobject jKeyEventCallbackObject;
-jmethodID jKeyEventCallbackMethod;
 
 void keyEventCallback( const KeyEvent& event ) {
 	JNIEnv* env;
 	int envStat = jvm->GetEnv( (void**)&env, JNI_VERSION_1_8 );
 	if ( envStat == JNI_EDETACHED ) {
-		std::cout << "GetEnv: not attached" << std::endl;
 		if ( jvm->AttachCurrentThread( (void**)&env, NULL ) ) {
 			std::cout << "Failed to attach jvm" << std::endl;
 		}
@@ -107,24 +87,28 @@ void keyEventCallback( const KeyEvent& event ) {
 
 	auto jKeyEvent = javaConverter.toKeyEvent( env, event );
 
-	env->CallVoidMethod( jKeyEventCallbackObject, jKeyEventCallbackMethod, jKeyEvent );
+	env->CallVoidMethod( jKeyEventCallbackObject, methodIDCache.GetKeyEventCallbackInvoke( env ), jKeyEvent );
 
 	jvm->DetachCurrentThread();
 }
 
 JNIEXPORT void JNICALL Java_MCGLEngine_RegisterKeyEventCallback( JNIEnv* env, jobject caller, jobject callback ) {
-	env->GetJavaVM(&jvm);
-	jKeyEventCallbackObject = env->NewGlobalRef( callback );
-	if( jKeyEventCallbackObject == NULL ) {
-		std::cout << "__FUNCTION__" << ": Could not get global ref to callback!" << std::endl;
+
+}
+
+
+jobject jMouseEventCallbackObject;
+
+JNIEXPORT void JNICALL Java_MCGLEngine_RegisterMouseEventCallback( JNIEnv* env, jobject caller, jobject callback ) {
+	if( !jvm ) {
+		env->GetJavaVM( &jvm );
+	}
+
+	jMouseEventCallbackObject = env->NewGlobalRef( callback );
+	if( jMouseEventCallbackObject == NULL ) {
+		std::cout << __FUNCTION__ << ": Could not get global ref to callback!" << std::endl;
 		return;
 	}
 
-	jKeyEventCallbackMethod = methodIDCache.GetKeyEventCallbackInvoke( env );
-
-	RegisterKeyEventCallback( keyEventCallback );
-}
-
-JNIEXPORT void JNICALL Java_MCGLEngine_RegisterMouseEventCallback( JNIEnv *, jobject, jstring ) {
-
+	RegisterMouseEventCallback( conversion::MouseEventCallback::callback );
 }
