@@ -46,7 +46,25 @@ jmethodID JNIHelper::findMethod( JNIEnv* env, jclass clazz, const char* name, co
 }
 
 jfieldID JNIHelper::findStaticField( JNIEnv* env, jclass clazz, const char* name, const char* signature ) {
-	return env->GetStaticFieldID( clazz, name, signature );
+	auto fieldID = env->GetStaticFieldID( clazz, name, signature );
+	if( !fieldID ) {
+		std::stringstream errorMsg;
+		errorMsg << __FUNCTION__ << ": Could not find static field '" << name << "'!";
+		throw std::runtime_error( errorMsg.str() );
+	}
+
+	return fieldID;
+}
+
+jobject JNIHelper::getStaticObjectField( JNIEnv* env, jclass clazz, jfieldID field ) {
+	auto jObject = env->GetStaticObjectField( clazz, field );
+	if( !jObject ) {
+		std::stringstream errorMsg;
+		errorMsg << __FUNCTION__ << ": Could not get static object!";
+		throw std::runtime_error( errorMsg.str() );
+	}
+
+	return jObject;
 }
 
 

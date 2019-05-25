@@ -19,6 +19,10 @@ public:
 
 private:
 	static jclass clazz_;
+	static jfieldID buttonPressID_;
+	static jfieldID buttonReleaseID_;
+	static jfieldID scrollID_;
+	static jfieldID moveID_;
 
 };
 
