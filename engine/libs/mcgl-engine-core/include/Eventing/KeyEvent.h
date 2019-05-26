@@ -1,5 +1,9 @@
 #pragma once
 
+
+namespace eventing {
+
+
 enum class KeyEventType {
 	Pressed,
 	Down,
@@ -13,3 +17,6 @@ struct KeyEvent {
 };
 
 const char* to_string( KeyEventType type );
+
+
+}

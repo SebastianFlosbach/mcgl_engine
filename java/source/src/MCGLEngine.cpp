@@ -4,27 +4,19 @@
 #include <iostream>
 #include <Eventing/KeyEvent.h>
 
-#include "Conversion/ClassDefinitions.h"
-#include "Conversion/CppToJavaConverter.h"
-#include "Conversion/FieldIDCache.h"
-#include "Conversion/MethodIDCache.h"
-#include "Conversion/JavaToCppConverter.h"
-#include "Conversion/MouseEventCallback.h"
+#include "Conversion/jni_conversion.h"
 
 
-static conversion::FieldIDCache fieldIDCache;
-static conversion::MethodIDCache methodIDCache;
-
-static conversion::JavaToCppConverter cppConverter{ fieldIDCache };
-static conversion::CppToJavaConverter javaConverter{ fieldIDCache, methodIDCache };
-
-
-JNIEXPORT void JNICALL Java_MCGLEngine_CreateEngine( JNIEnv*, jobject ) {
+JNIEXPORT void JNICALL Java_MCGLEngine_CreateEngine( JNIEnv* env, jobject ) {
+	conversion::construct( env );
+	
 	CreateEngine();
 }
 
-JNIEXPORT void JNICALL Java_MCGLEngine_DestroyEngine( JNIEnv*, jobject ) {
+JNIEXPORT void JNICALL Java_MCGLEngine_DestroyEngine( JNIEnv* env, jobject ) {
 	DestroyEngine();
+
+	conversion::destruct( env );
 }
 
 JNIEXPORT void JNICALL Java_MCGLEngine_CreateWindow( JNIEnv* env, jobject, jint width, jint height, jstring title ) {
@@ -46,7 +38,7 @@ JNIEXPORT void JNICALL Java_MCGLEngine_Stop( JNIEnv*, jobject ) {
 }
 
 JNIEXPORT void JNICALL Java_MCGLEngine_RegisterBlockType( JNIEnv* env, jobject obj, jobject jBlock ) {
-	auto block = cppConverter.toBlock( env, jBlock );
+	auto block = conversion::Block::cpp_Block( env, jBlock );
 }
 
 JNIEXPORT void JNICALL Java_MCGLEngine_SetTextures( JNIEnv*, jobject, jstring, jint, jint );
@@ -68,47 +60,13 @@ JNIEXPORT void JNICALL Java_MCGLEngine_RotateCamera( JNIEnv*, jobject, jint, jfl
 JNIEXPORT jfloat JNICALL Java_MCGLEngine_GetDeltaTime( JNIEnv*, jobject );
 
 JNIEXPORT jobject JNICALL Java_MCGLEngine_GetCameraPosition( JNIEnv* env, jobject caller ) {
-	return javaConverter.toWorldCoordinates( env, GetCameraPosition() );
-}
 
-JavaVM* jvm;
-jobject jKeyEventCallbackObject;
-
-void keyEventCallback( const KeyEvent& event ) {
-	JNIEnv* env;
-	int envStat = jvm->GetEnv( (void**)&env, JNI_VERSION_1_8 );
-	if ( envStat == JNI_EDETACHED ) {
-		if ( jvm->AttachCurrentThread( (void**)&env, NULL ) ) {
-			std::cout << "Failed to attach jvm" << std::endl;
-		}
-	} else if ( envStat == JNI_EVERSION ) {
-		std::cout << "GetEnv: version not supported" << std::endl;
-	}
-
-	auto jKeyEvent = javaConverter.toKeyEvent( env, event );
-
-	env->CallVoidMethod( jKeyEventCallbackObject, methodIDCache.GetKeyEventCallbackInvoke( env ), jKeyEvent );
-
-	jvm->DetachCurrentThread();
 }
 
 JNIEXPORT void JNICALL Java_MCGLEngine_RegisterKeyEventCallback( JNIEnv* env, jobject caller, jobject callback ) {
-
+	conversion::KeyEventCallback::registerCallback( env, callback );
 }
 
-
-jobject jMouseEventCallbackObject;
-
 JNIEXPORT void JNICALL Java_MCGLEngine_RegisterMouseEventCallback( JNIEnv* env, jobject caller, jobject callback ) {
-	if( !jvm ) {
-		env->GetJavaVM( &jvm );
-	}
-
-	jMouseEventCallbackObject = env->NewGlobalRef( callback );
-	if( jMouseEventCallbackObject == NULL ) {
-		std::cout << __FUNCTION__ << ": Could not get global ref to callback!" << std::endl;
-		return;
-	}
-
-	RegisterMouseEventCallback( conversion::MouseEventCallback::callback );
+	conversion::MouseEventCallback::registerCallback( env, callback );
 }

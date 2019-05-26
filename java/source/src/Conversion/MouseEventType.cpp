@@ -7,7 +7,7 @@
 
 
 static constexpr const char* CLASS_NAME = "Eventing/Mouse/EMouseEventType";
-static constexpr const char* CLASS_SIGNATURE = "LEventing/Mouse/EMouseEventType;"
+static constexpr const char* CLASS_SIGNATURE = "LEventing/Mouse/EMouseEventType;";
 static constexpr const char* BUTTONPRESS_FIELD = "ButtonPress";
 static constexpr const char* BUTTONRELEASE_FIELD = "ButtonRelease";
 static constexpr const char* SCROLL_FIELD = "Scroll";
@@ -17,7 +17,7 @@ static constexpr const char* MOVE_FIELD = "Move";
 namespace conversion {
 
 
-static void MouseEventType::construct( JNIEnv* env ) {
+void MouseEventType::construct( JNIEnv* env ) {
 	clazz_ = JNIHelper::createClass( env, CLASS_NAME );
 	buttonPressID_ = JNIHelper::findStaticField( env, clazz_, BUTTONPRESS_FIELD, CLASS_SIGNATURE );
 	buttonReleaseID_ = JNIHelper::findStaticField( env, clazz_, BUTTONRELEASE_FIELD, CLASS_SIGNATURE );
@@ -25,13 +25,13 @@ static void MouseEventType::construct( JNIEnv* env ) {
 	buttonPressID_ = JNIHelper::findStaticField( env, clazz_, MOVE_FIELD, CLASS_SIGNATURE );
 }
 
-static void MouseEventType::destruct( JNIEnv* env ) {
+void MouseEventType::destruct( JNIEnv* env ) {
 	if( clazz_ ) {
 		JNIHelper::destroyClass( env, clazz_ );
 	}
 }
 
-static jobject MouseEventType::j_MouseEventType( JNIEnv* env, const eventing::MouseEventType& type ) {
+jobject MouseEventType::j_MouseEventType( JNIEnv* env, const eventing::MouseEventType& type ) {
 	switch( type )
 	{
 	case eventing::MouseEventType::ButtonPess:

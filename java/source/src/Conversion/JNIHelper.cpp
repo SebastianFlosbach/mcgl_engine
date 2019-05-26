@@ -45,6 +45,17 @@ jmethodID JNIHelper::findMethod( JNIEnv* env, jclass clazz, const char* name, co
 	return methodID;
 }
 
+jfieldID findField( JNIEnv* env, jclass clazz, const char* name, const char* signature ) {
+	auto fieldID = env->GetFieldID( clazz, name, signature );
+	if( !fieldID ) {
+		std::stringstream errorMsg;
+		errorMsg << __FUNCTION__ << ": Could not find field '" << name << "'!";
+		throw std::runtime_error( errorMsg.str() );
+	}
+
+	return fieldID;
+}
+
 jfieldID JNIHelper::findStaticField( JNIEnv* env, jclass clazz, const char* name, const char* signature ) {
 	auto fieldID = env->GetStaticFieldID( clazz, name, signature );
 	if( !fieldID ) {

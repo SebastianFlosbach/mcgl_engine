@@ -1,5 +1,9 @@
 #pragma once
 
+
+namespace eventing {
+
+
 enum class StatusEventType {
 	Running,
 	Stopped
@@ -8,3 +12,6 @@ enum class StatusEventType {
 struct StatusEvent {
 	StatusEventType type_;
 };
+
+
+}

@@ -1,14 +1,13 @@
 #pragma once
 
-#include <Eventing/MouseEvent.h>
+#include <Eventing/KeyEvent.h>
 #include <jni.h>
-#include <sstream>
 
 
 namespace conversion {
 
 
-class MouseEventCallback {
+class KeyEventCallback {
 public:
 	static void construct( JNIEnv* env );
 	static void destruct( JNIEnv* env );
@@ -16,14 +15,14 @@ public:
 	static void registerCallback( JNIEnv* env, jobject jCallback );
 
 private:
-	MouseEventCallback() = default;
-	~MouseEventCallback() = default;
+	KeyEventCallback() = default;
+	~KeyEventCallback() = default;
 
 	static JavaVM* jvm_;
 	static jobject jCallbackObject_;
 	static jmethodID jMethodID_;
 
-	static void callback( const eventing::MouseEvent& event );
+	static void callback( const eventing::KeyEvent& event );
 };
 
 
