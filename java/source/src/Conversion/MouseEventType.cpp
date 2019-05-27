@@ -17,6 +17,12 @@ static constexpr const char* MOVE_FIELD = "Move";
 namespace conversion {
 
 
+jclass MouseEventType::clazz_{ nullptr };
+jfieldID MouseEventType::buttonPressID_{ nullptr };
+jfieldID MouseEventType::buttonReleaseID_{ nullptr };
+jfieldID MouseEventType::scrollID_{ nullptr };
+jfieldID MouseEventType::moveID_{ nullptr };
+
 void MouseEventType::construct( JNIEnv* env ) {
 	clazz_ = JNIHelper::createClass( env, CLASS_NAME );
 	buttonPressID_ = JNIHelper::findStaticField( env, clazz_, BUTTONPRESS_FIELD, CLASS_SIGNATURE );
@@ -45,7 +51,7 @@ jobject MouseEventType::j_MouseEventType( JNIEnv* env, const eventing::MouseEven
 		break;
 	default: {
 		std::stringstream errorMsg;
-		errorMsg << __FUNCTION__ << ": Invalid MouseEventType 0x" << std::stringstream::hex << type << "!";
+		errorMsg << __FUNCTION__ << ": Invalid MouseEventType 0x" << std::stringstream::hex << (int)type << "!";
 		throw std::runtime_error( errorMsg.str() );
 	}
 		break;

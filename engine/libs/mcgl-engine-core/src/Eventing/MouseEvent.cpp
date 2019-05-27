@@ -1,5 +1,9 @@
 #include "Eventing/MouseEvent.h"
 
+
+namespace eventing {
+
+
 const char* to_string( MouseEventType type ) {
 	switch ( type ) {
 		case MouseEventType::ButtonPess:
@@ -13,4 +17,7 @@ const char* to_string( MouseEventType type ) {
 		default:
 			return "<undefined>";
 	}
+}
+
+
 }

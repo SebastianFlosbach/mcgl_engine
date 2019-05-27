@@ -11,6 +11,9 @@
 #include "../Definition/mcgl_engine_def.h"
 
 
+namespace eventing {
+
+
 class KeyEventHandler {
 public:
 	static void registerCallback( GLFWwindow* window, MCGL_KEY_EVENT_CALLBACK callback );
@@ -38,3 +41,6 @@ private:
 		}
 	}
 };
+
+
+}

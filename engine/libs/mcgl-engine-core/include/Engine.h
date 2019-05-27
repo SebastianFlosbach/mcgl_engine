@@ -53,8 +53,8 @@ public:
 	void setShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
 
 	UNUM32 createCamera( double x, double y, double z, double pitch, double yaw, double roll = 0.0 );
-	void moveCamera( UNUM32 cameraId, double dx, double dy, double dz );
-	void rotateCamera( UNUM32 cameraId, double pitch, double yaw, double roll = 0.0 );
+	void moveCamera( double dx, double dy, double dz );
+	void rotateCamera( double pitch, double yaw, double roll = 0.0 );
 
 	void run();
 	void stop();
@@ -101,7 +101,7 @@ private:
 	Camera camera_;
 
 	MCGL_STATUS_EVENT_CALLBACK statusCallback_;
-	inline void invokeStatusCallback( const StatusEvent& statusEvent ) {
+	inline void invokeStatusCallback( const eventing::StatusEvent& statusEvent ) {
 		if ( statusCallback_ ) {
 			statusCallback_( statusEvent );
 		}

@@ -18,14 +18,16 @@ public:
 	static chunk::block::Block cpp_Block( JNIEnv* env, jobject block );
 
 private:
-	jfieldID idField_;
-	jfieldID isTransparentField_;
-	jfieldID leftTextureIdField_;
-	jfieldID rightTextureIdField_;
-	jfieldID frontTextureIdField_;
-	jfieldID backTextureIdField_;
-	jfieldID topTextureIdField_;
-	jfieldID bottomTextureIdField_;
+	static jclass clazz_;
+
+	static jfieldID idField_;
+	static jfieldID isTransparentField_;
+	static jfieldID leftTextureIdField_;
+	static jfieldID rightTextureIdField_;
+	static jfieldID frontTextureIdField_;
+	static jfieldID backTextureIdField_;
+	static jfieldID topTextureIdField_;
+	static jfieldID bottomTextureIdField_;
 
 };
 

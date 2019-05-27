@@ -106,18 +106,18 @@ JNIEXPORT void JNICALL Java_MCGLEngine_CreateCamera
 /*
  * Class:     MCGLEngine
  * Method:    MoveCamera
- * Signature: (IFFF)V
+ * Signature: (FFF)V
  */
 JNIEXPORT void JNICALL Java_MCGLEngine_MoveCamera
-  (JNIEnv *, jobject, jint, jfloat, jfloat, jfloat);
+  (JNIEnv *, jobject, jfloat, jfloat, jfloat);
 
 /*
  * Class:     MCGLEngine
  * Method:    RotateCamera
- * Signature: (IFFF)V
+ * Signature: (FFF)V
  */
 JNIEXPORT void JNICALL Java_MCGLEngine_RotateCamera
-  (JNIEnv *, jobject, jint, jfloat, jfloat, jfloat);
+  (JNIEnv *, jobject, jfloat, jfloat, jfloat);
 
 /*
  * Class:     MCGLEngine

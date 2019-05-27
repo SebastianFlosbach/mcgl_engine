@@ -10,6 +10,9 @@
 #include "../Definition/mcgl_engine_def.h"
 
 
+namespace eventing {
+
+
 class MouseEventHandler {
 public:	
 	static void registerCallback( GLFWwindow* window, MCGL_MOUSE_EVENT_CALLBACK callback );
@@ -34,3 +37,6 @@ private:
 	}
 
 };
+
+
+}

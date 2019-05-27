@@ -3,11 +3,19 @@
 #include <sstream>
 
 
+static constexpr const char* CONSTRUCTOR_NAME = "<init>";
+
+
 namespace conversion {
 
 
-static constexpr const char* CONSTRUCTOR_NAME = "<init>";
+const char* JNIHelper::createString( JNIEnv* env, jstring string ) {
+	return env->GetStringUTFChars( string, nullptr );
+}
 
+void JNIHelper::destroyString( JNIEnv* env, jstring jString, const char* string ) {
+	env->ReleaseStringUTFChars( jString, string );
+}
 
 jclass JNIHelper::findClass( JNIEnv* env, const char* name ) {
 	return env->FindClass( name );
@@ -45,7 +53,7 @@ jmethodID JNIHelper::findMethod( JNIEnv* env, jclass clazz, const char* name, co
 	return methodID;
 }
 
-jfieldID findField( JNIEnv* env, jclass clazz, const char* name, const char* signature ) {
+jfieldID JNIHelper::findField( JNIEnv* env, jclass clazz, const char* name, const char* signature ) {
 	auto fieldID = env->GetFieldID( clazz, name, signature );
 	if( !fieldID ) {
 		std::stringstream errorMsg;

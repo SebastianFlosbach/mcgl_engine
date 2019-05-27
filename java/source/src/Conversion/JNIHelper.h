@@ -8,6 +8,8 @@ namespace conversion {
 
 class JNIHelper {
 public:
+	static const char* createString( JNIEnv* env, jstring string );
+	static void destroyString( JNIEnv* env, jstring jString, const char* string );
 	static jclass findClass( JNIEnv* env, const char* name );
 	static jclass createClass( JNIEnv* env, const char* name );
 	static void destroyClass( JNIEnv* env, jclass clazz );

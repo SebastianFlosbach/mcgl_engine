@@ -1,5 +1,9 @@
 #include "Eventing/MouseEventHandler.h"
 
+
+namespace eventing {
+
+
 GLFWwindow* MouseEventHandler::pWindow_{};
 MCGL_MOUSE_EVENT_CALLBACK MouseEventHandler::callback_{};
 std::map<int, double> MouseEventHandler::pressedButtons_{};
@@ -50,4 +54,7 @@ void MouseEventHandler::buttonCallback( GLFWwindow* window, int button, int acti
 
 void MouseEventHandler::scrollCallback( GLFWwindow* window, double xOffset, double yOffset ) {
 	invokeCallback( { MouseEventType::Scroll, xOffset, yOffset } );
+}
+
+
 }

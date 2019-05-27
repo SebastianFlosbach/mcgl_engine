@@ -14,8 +14,9 @@ static constexpr const char* CONSTRUCTOR_BUTTON_SIGNATURE = "(LEventing/EMouseEv
 namespace conversion {
 
 
-MouseEvent::clazz_{ nullptr };
-
+jclass MouseEvent::clazz_{ nullptr };
+jmethodID MouseEvent::constructorPositionID_{ nullptr };
+jmethodID MouseEvent::constructorButtonID_{ nullptr };
 
 void MouseEvent::construct( JNIEnv* env ) {
 	clazz_ = JNIHelper::createClass( env, CLASS_NAME );
@@ -31,20 +32,20 @@ void MouseEvent::destruct( JNIEnv* env ) {
 
 jobject MouseEvent::j_MouseEvent( JNIEnv* env, const eventing::MouseEvent& event ) {
 
-	if( event.type_ == eventing::MouseEventType::ButtonPess || eventing.type_ == eventing::MouseEventType::ButtonRelease ) {
-		return env->NewObject( clazz_, constructorButtonID_, MouseEventType::j_MouseEventType( event.type_ ), event.data_.button_.button_, event.data_.button_.timePressed_ );
+	if( event.type_ == eventing::MouseEventType::ButtonPess || event.type_ == eventing::MouseEventType::ButtonRelease ) {
+		return env->NewObject( clazz_, constructorButtonID_, MouseEventType::j_MouseEventType( env, event.type_ ), event.data_.button_.button_, event.data_.button_.timePressed_ );
 	}
 
 	if( event.type_ == eventing::MouseEventType::Scroll ) {
-		return env->NewObject( clazz_, constructorButtonID_, MouseEventType::j_MouseEventType( event.type_ ), event.data_.button_.button_, event.data_.button_.timePressed_ );
+		return env->NewObject( clazz_, constructorButtonID_, MouseEventType::j_MouseEventType( env, event.type_ ), event.data_.button_.button_, event.data_.button_.timePressed_ );
 	}
 
 	if( event.type_ == eventing::MouseEventType::Move ) {
-		return env->NewObject( clazz_, constructorButtonID_, MouseEventType::j_MouseEventType( event.type_ ), event.data_.position_.x_, event.data_.position_.y_ );
+		return env->NewObject( clazz_, constructorButtonID_, MouseEventType::j_MouseEventType( env, event.type_ ), event.data_.position_.x_, event.data_.position_.y_ );
 	}
 
 	std::stringstream errorMsg;
-	errorMsg << __FUNCTION__ << ": Invalid MouseEventType 0x" << std::stringstream::hex << type << "!";
+	errorMsg << __FUNCTION__ << ": Invalid MouseEventType 0x" << std::stringstream::hex << (int)event.type_ << "!";
 	throw std::runtime_error( errorMsg.str() );
 }
 

@@ -7,6 +7,8 @@
 #include "MouseEvent.h"
 #include "MouseEventCallback.h"
 #include "MouseEventType.h"
+#include "WorldCoordinates.h"
+#include "ChunkCoordinates.h"
 
 
 namespace conversion {
@@ -20,6 +22,8 @@ void construct( JNIEnv* env ) {
 	MouseEvent::construct( env );
 	MouseEventCallback::construct( env );
 	MouseEventType::construct( env );
+	WorldCoordinates::construct( env );
+	ChunkCoordinates::construct( env );
 }
 
 void destruct( JNIEnv* env ) {
@@ -30,6 +34,8 @@ void destruct( JNIEnv* env ) {
 	MouseEvent::destruct( env );
 	MouseEventCallback::destruct( env );
 	MouseEventType::destruct( env );
+	WorldCoordinates::destruct( env );
+	ChunkCoordinates::destruct( env );
 }
 
 

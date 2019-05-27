@@ -7,7 +7,7 @@
 
 
 static constexpr const char* CLASS_NAME = "Eventing/Key/EKeyEventType";
-static constexpr const char* CLASS_SIGNATURE = "LEventing/Key/EKeyEventType;"
+static constexpr const char* CLASS_SIGNATURE = "LEventing/Key/EKeyEventType;";
 static constexpr const char* PRESSED_FIELD = "Pressed";
 static constexpr const char* DOWN_FIELD = "Down";
 static constexpr const char* RELEASED_FIELD = "Released";
@@ -15,6 +15,11 @@ static constexpr const char* RELEASED_FIELD = "Released";
 
 namespace conversion {
 
+
+jclass KeyEventType::clazz_{ nullptr };
+jfieldID KeyEventType::pressedID_{ nullptr };
+jfieldID KeyEventType::downID_{ nullptr };
+jfieldID KeyEventType::releasedID_{ nullptr };
 
 void KeyEventType::construct( JNIEnv* env ) {
 	clazz_ = JNIHelper::createClass( env, CLASS_NAME );
@@ -40,7 +45,7 @@ jobject KeyEventType::j_KeyEventType( JNIEnv* env, const eventing::KeyEventType&
 		return env->GetStaticObjectField( clazz_, releasedID_ );
 	default: {
 		std::stringstream errorMsg;
-		errorMsg << __FUNCTION__ << ": Invalid KeyEventType 0x" << std::stringstream::hex << type << "!";
+		errorMsg << __FUNCTION__ << ": Invalid KeyEventType 0x" << std::stringstream::hex << (int)type << "!";
 		throw std::runtime_error( errorMsg.str() );
 	}
 		break;

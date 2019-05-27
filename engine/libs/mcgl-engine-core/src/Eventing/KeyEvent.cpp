@@ -1,5 +1,9 @@
 #include "Eventing/KeyEvent.h"
 
+
+namespace eventing {
+
+
 const char* to_string( KeyEventType type ) {
 	switch ( type ) {
 		case KeyEventType::Pressed:
@@ -11,4 +15,7 @@ const char* to_string( KeyEventType type ) {
 		default:
 			return "<undefined>";
 	}
+}
+
+
 }

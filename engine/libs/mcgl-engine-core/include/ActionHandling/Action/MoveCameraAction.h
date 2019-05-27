@@ -8,8 +8,7 @@ namespace action {
 
 	struct MoveCameraAction final : public Action {
 	public:
-		MoveCameraAction(unsigned int cameraId, double dx, double dy, double dz) : 
-			cameraId_( cameraId ),
+		MoveCameraAction( double dx, double dy, double dz) : 
 			dx_( dx ),
 			dy_( dy ),
 			dz_( dz ) {
@@ -17,7 +16,6 @@ namespace action {
 
 		ActionType type() const override { return ActionType::MoveCameraAction; }
 
-		unsigned int cameraId_;
 		double dx_;
 		double dy_;
 		double dz_;

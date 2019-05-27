@@ -1,5 +1,9 @@
 #include "Eventing/KeyEventHandler.h"
 
+
+namespace eventing {
+
+
 GLFWwindow* KeyEventHandler::pWindow_{};
 MCGL_KEY_EVENT_CALLBACK KeyEventHandler::callback_{};
 std::map<int, double> KeyEventHandler::pressedKeys_{};
@@ -78,4 +82,7 @@ void KeyEventHandler::keyCallback( GLFWwindow* window, int key, int scancode, in
 		default:
 			return;
 	}
+}
+
+
 }

@@ -1,5 +1,7 @@
 #include "KeyEventCallback.h"
 
+#include <iostream>
+
 #include "JNIHelper.h"
 #include "KeyEvent.h"
 
@@ -10,6 +12,10 @@ static constexpr const char* INVOKE_SIGNATURE = "(LEventing/KeyEvent;)V";
 
 namespace conversion {
 
+
+JavaVM* KeyEventCallback::jvm_{ nullptr };
+jobject KeyEventCallback::jCallbackObject_{ nullptr };
+jmethodID KeyEventCallback::jMethodID_{ nullptr };
 
 void KeyEventCallback::construct( JNIEnv* env ) {
 	env->GetJavaVM( &jvm_ );
@@ -35,7 +41,7 @@ void KeyEventCallback::callback( const eventing::KeyEvent& event ) {
 	JNIEnv* env;
 	int envStat = jvm_->GetEnv( (void**)& env, JNI_VERSION_1_8 );
 	if( envStat == JNI_EDETACHED ) {
-		if( jvm->AttachCurrentThread( (void**)& env, NULL ) ) {
+		if( jvm_->AttachCurrentThread( (void**)& env, NULL ) ) {
 			std::cout << "Failed to attach jvm" << std::endl;
 		}
 	}
@@ -47,7 +53,7 @@ void KeyEventCallback::callback( const eventing::KeyEvent& event ) {
 
 	env->CallVoidMethod( jCallbackObject_, jMethodID_, jKeyEvent );
 
-	jvm->DetachCurrentThread();
+	jvm_->DetachCurrentThread();
 }
 
 

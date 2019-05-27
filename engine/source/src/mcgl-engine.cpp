@@ -136,24 +136,24 @@ void CreateCamera( float x, float y, float z, float pitch, float yaw, float roll
 	engine->createCamera( x, y, z, pitch, yaw, roll );
 }
 
-void MoveCamera( UNUM32 cameraId, float dx, float dy, float dz ) {
+void MoveCamera( float dx, float dy, float dz ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] MoveCamera: Engine not created!" );
 		return;
 	}
 
 	trace( *logger, "[MCGL-ENGINE] MoveCamera" );
-	engine->moveCamera( cameraId, dx, dy, dz );
+	engine->moveCamera( dx, dy, dz );
 }
 
-void RotateCamera( UNUM32 cameraId, float pitch, float yaw, float roll ) {
+void RotateCamera( float pitch, float yaw, float roll ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] RotateCamera: Engine not created!" );
 		return;
 	}
 
 	trace( *logger, "[MCGL-ENGINE] RotateCamera" );
-	engine->rotateCamera( cameraId, pitch, yaw, roll );
+	engine->rotateCamera( pitch, yaw, roll );
 }
 
 void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {

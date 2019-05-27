@@ -23,8 +23,8 @@ MCGL_ENGINE_EXTERN void AddChunk( const chunk::Chunk& chunk );
 MCGL_ENGINE_EXTERN void RemoveChunk( NUM32 x, NUM32 z );
 
 MCGL_ENGINE_EXTERN void CreateCamera( float x = 0.0, float y = 0.0, float z = 0.0, float pitch = 1.0, float yaw = 0.0, float roll = 0.0 );
-MCGL_ENGINE_EXTERN void MoveCamera( UNUM32 cameraId, float dx, float dy, float dz );
-MCGL_ENGINE_EXTERN void RotateCamera( UNUM32 cameraId, float pitch, float yaw, float roll = 0.0 );
+MCGL_ENGINE_EXTERN void MoveCamera( float dx, float dy, float dz );
+MCGL_ENGINE_EXTERN void RotateCamera( float pitch, float yaw, float roll = 0.0 );
 
 MCGL_ENGINE_EXTERN void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
 MCGL_ENGINE_EXTERN void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );

@@ -13,6 +13,9 @@ static constexpr const char* CONSTRUCTOR_SIGNATURE = "(LEventing/EKeyEventType;I
 namespace conversion {
 
 
+jclass KeyEvent::clazz_{ nullptr };
+jmethodID KeyEvent::constructorID_{ nullptr };
+
 void KeyEvent::construct( JNIEnv* env ) {
 	clazz_ = JNIHelper::createClass( env, CLASS_NAME );
 	constructorID_ = JNIHelper::findConstructor( env, clazz_, CONSTRUCTOR_SIGNATURE );

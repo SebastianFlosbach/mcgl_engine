@@ -20,9 +20,9 @@ constexpr UNUM32 CHUNK_HEIGHT = 128; /** Chunk height in blocks in y direction *
 constexpr float BLOCK_SIZE = 1.0f;
 constexpr NUM32 BLOCK_DEFAULT_ID = 0;
 
-typedef void( *MCGL_KEY_EVENT_CALLBACK )(const KeyEvent&); 
-typedef void( *MCGL_MOUSE_EVENT_CALLBACK )(const MouseEvent&);
-typedef void( *MCGL_STATUS_EVENT_CALLBACK )(const StatusEvent&);
+typedef void( *MCGL_KEY_EVENT_CALLBACK )(const eventing::KeyEvent&); 
+typedef void( *MCGL_MOUSE_EVENT_CALLBACK )(const eventing::MouseEvent&);
+typedef void( *MCGL_STATUS_EVENT_CALLBACK )(const eventing::StatusEvent&);
 
 enum class MCGL_CONFIG {
 	BLOCK_SIZE,

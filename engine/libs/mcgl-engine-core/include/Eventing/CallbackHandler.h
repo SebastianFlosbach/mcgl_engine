@@ -5,6 +5,9 @@
 #include "Eventing/StatusEvent.h"
 
 
+namespace eventing {
+
+
 class CallbackHandler {
 public:
 	CallbackHandler() = default;
@@ -14,3 +17,6 @@ private:
 	KeyEventHandler
 
 };
+
+
+}

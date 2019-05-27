@@ -182,12 +182,12 @@ UNUM32 Engine::createCamera( double x, double y, double z, double pitch, double 
 	return cameraId_;
 }
 
-void Engine::moveCamera( UNUM32 cameraId, double dx, double dy, double dz ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::MoveCameraAction( cameraId, dx, dy, dz ) ) );
+void Engine::moveCamera( double dx, double dy, double dz ) {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::MoveCameraAction( dx, dy, dz ) ) );
 }
 
-void Engine::rotateCamera( UNUM32 cameraId, double pitch, double yaw, double roll ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RotateCameraAction( cameraId, pitch, yaw, roll ) ) );
+void Engine::rotateCamera( double pitch, double yaw, double roll ) {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RotateCameraAction( pitch, yaw, roll ) ) );
 }
 
 void Engine::run() {
@@ -242,13 +242,13 @@ void Engine::doRegisterBlockType( action::RegisterBlockTypeAction* data ) {
 void Engine::doRegisterKeyEventCallback( action::RegisterKeyEventCallbackAction* data ) {
 	info( logger_, "registerKeyEventCallback" );
 
-	KeyEventHandler::registerCallback( pWindow_->get(), data->callback_ );
+	eventing::KeyEventHandler::registerCallback( pWindow_->get(), data->callback_ );
 }
 
 void Engine::doRegisterMouseEventCallback( action::RegisterMouseEventCallbackAction* data ) {
 	info( logger_, "registerMouseEventCallback" );
 
-	MouseEventHandler::registerCallback( pWindow_->get(), data->callback_ );
+	eventing::MouseEventHandler::registerCallback( pWindow_->get(), data->callback_ );
 }
 
 void Engine::doRegisterStatusEventCallback( action::RegisterStatusEventCallbackAction* data ) {
@@ -311,14 +311,14 @@ void Engine::doDraw() {
 
 	glfwSwapBuffers( pWindow_->get() );
 	glfwPollEvents();
-	KeyEventHandler::pollEvents();
+	eventing::KeyEventHandler::pollEvents();
 
 	if( isRunning_ ) {
 		workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::DrawAction() ) );
 	}
 	else {
 		if( statusCallback_ ) {
-			statusCallback_( { StatusEventType::Stopped } );
+			statusCallback_( { eventing::StatusEventType::Stopped } );
 		}
 	}
 }
