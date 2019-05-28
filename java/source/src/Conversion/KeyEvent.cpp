@@ -6,8 +6,8 @@
 #include "KeyEventType.h"
 
 
-static constexpr const char* CLASS_NAME = "Eventing/KeyEvent";
-static constexpr const char* CONSTRUCTOR_SIGNATURE = "(LEventing/EKeyEventType;ID)V";
+static constexpr const char* CLASS_NAME = "Eventing/Key/KeyEvent";
+static constexpr const char* CONSTRUCTOR_SIGNATURE = "(LEventing/Key/EKeyEventType;IF)V";
 
 
 namespace conversion {

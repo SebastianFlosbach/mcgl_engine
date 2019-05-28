@@ -1,14 +1,15 @@
 #include "MouseEvent.h"
 
+#include <iostream>
 #include <sstream>
 
 #include "JNIHelper.h"
 #include "MouseEventType.h"
 
 
-static constexpr const char* CLASS_NAME = "Eventing/MouseEvent";
-static constexpr const char* CONSTRUCTOR_POSITION_SIGNATURE = "(LEventing/EMouseEventType;DD)V";
-static constexpr const char* CONSTRUCTOR_BUTTON_SIGNATURE = "(LEventing/EMouseEventType;ID)V";
+static constexpr const char* CLASS_NAME = "Eventing/Mouse/MouseEvent";
+static constexpr const char* CONSTRUCTOR_POSITION_SIGNATURE = "(LEventing/Mouse/EMouseEventType;DD)V";
+static constexpr const char* CONSTRUCTOR_BUTTON_SIGNATURE = "(LEventing/Mouse/EMouseEventType;ID)V";
 
 
 namespace conversion {
@@ -46,6 +47,7 @@ jobject MouseEvent::j_MouseEvent( JNIEnv* env, const eventing::MouseEvent& event
 
 	std::stringstream errorMsg;
 	errorMsg << __FUNCTION__ << ": Invalid MouseEventType 0x" << std::stringstream::hex << (int)event.type_ << "!";
+	std::cout << errorMsg.str() << std::endl;
 	throw std::runtime_error( errorMsg.str() );
 }
 

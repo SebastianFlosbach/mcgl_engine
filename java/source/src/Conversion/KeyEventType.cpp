@@ -1,5 +1,6 @@
 #include "KeyEventType.h"
 
+#include <iostream>
 #include <jni.h>
 #include <sstream>
 
@@ -46,6 +47,7 @@ jobject KeyEventType::j_KeyEventType( JNIEnv* env, const eventing::KeyEventType&
 	default: {
 		std::stringstream errorMsg;
 		errorMsg << __FUNCTION__ << ": Invalid KeyEventType 0x" << std::stringstream::hex << (int)type << "!";
+		std::cout << errorMsg.str() << std::endl;
 		throw std::runtime_error( errorMsg.str() );
 	}
 		break;

@@ -1,5 +1,6 @@
 #include "MouseEventType.h"
 
+#include <iostream>
 #include <jni.h>
 #include <sstream>
 
@@ -52,6 +53,7 @@ jobject MouseEventType::j_MouseEventType( JNIEnv* env, const eventing::MouseEven
 	default: {
 		std::stringstream errorMsg;
 		errorMsg << __FUNCTION__ << ": Invalid MouseEventType 0x" << std::stringstream::hex << (int)type << "!";
+		std::cout << errorMsg.str() << std::endl;
 		throw std::runtime_error( errorMsg.str() );
 	}
 		break;

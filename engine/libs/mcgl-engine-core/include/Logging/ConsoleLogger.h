@@ -12,7 +12,7 @@ public:
 
 	void log( spdlog::level::level_enum level, const std::string& message ) const override {
 		if ( level >= logLevel_ ) {
-			std::cout << "[" << to_string( level ) << "]" << message << std::endl;
+			std::cout << "[" << to_string( level ) << "][" << std::this_thread::get_id() << "]"  << message << std::endl;
 		}
 	}
 

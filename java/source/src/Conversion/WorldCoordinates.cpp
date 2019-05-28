@@ -1,5 +1,6 @@
 #include "WorldCoordinates.h"
 
+#include <iostream>
 #include <sstream>
 
 #include "JNIHelper.h"
@@ -31,6 +32,7 @@ jobject WorldCoordinates::j_WorldCoordinates( JNIEnv* env, coordinates::WorldCoo
 	if( !jcoordinates ) {
 		std::stringstream errorMsg;
 		errorMsg << __FUNCTION__ << ": Could not create new object!";
+		std::cout << errorMsg.str() << std::endl;
 		throw std::runtime_error( errorMsg.str() );
 	}
 

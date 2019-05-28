@@ -1,5 +1,6 @@
 #include "JNIHelper.h"
 
+#include <iostream>
 #include <sstream>
 
 
@@ -23,6 +24,12 @@ jclass JNIHelper::findClass( JNIEnv* env, const char* name ) {
 
 jclass JNIHelper::createClass( JNIEnv* env, const char* name ) {
 	auto localClazz = env->FindClass( name );
+	if( !localClazz ) {
+		std::stringstream errorMsg;
+		errorMsg << __FUNCTION__ << ": Could not find class '" << name << "'!";
+		std::cout << errorMsg.str() << std::endl;
+		throw std::runtime_error( errorMsg.str() );
+	}
 
 	return static_cast<jclass>( env->NewGlobalRef( localClazz ) );
 }
@@ -36,6 +43,7 @@ jmethodID JNIHelper::findConstructor( JNIEnv* env, jclass clazz, const char* sig
 	if( !constructorID ) {
 		std::stringstream errorMsg;
 		errorMsg << __FUNCTION__ << ": Could not find constructor with signature '" << signature << "'!";
+		std::cout << errorMsg.str() << std::endl;
 		throw std::runtime_error( errorMsg.str() );
 	}
 
@@ -47,6 +55,7 @@ jmethodID JNIHelper::findMethod( JNIEnv* env, jclass clazz, const char* name, co
 	if( !methodID ) {
 		std::stringstream errorMsg;
 		errorMsg << __FUNCTION__ << ": Could not find method '" << name << signature;
+		std::cout << errorMsg.str() << std::endl;
 		throw std::runtime_error( errorMsg.str() );
 	}
 
@@ -58,6 +67,7 @@ jfieldID JNIHelper::findField( JNIEnv* env, jclass clazz, const char* name, cons
 	if( !fieldID ) {
 		std::stringstream errorMsg;
 		errorMsg << __FUNCTION__ << ": Could not find field '" << name << "'!";
+		std::cout << errorMsg.str() << std::endl;
 		throw std::runtime_error( errorMsg.str() );
 	}
 
@@ -69,6 +79,7 @@ jfieldID JNIHelper::findStaticField( JNIEnv* env, jclass clazz, const char* name
 	if( !fieldID ) {
 		std::stringstream errorMsg;
 		errorMsg << __FUNCTION__ << ": Could not find static field '" << name << "'!";
+		std::cout << errorMsg.str() << std::endl;
 		throw std::runtime_error( errorMsg.str() );
 	}
 
@@ -80,6 +91,7 @@ jobject JNIHelper::getStaticObjectField( JNIEnv* env, jclass clazz, jfieldID fie
 	if( !jObject ) {
 		std::stringstream errorMsg;
 		errorMsg << __FUNCTION__ << ": Could not get static object!";
+		std::cout << errorMsg.str() << std::endl;
 		throw std::runtime_error( errorMsg.str() );
 	}
 

@@ -7,7 +7,7 @@
 
 
 static constexpr const char* INVOKE_METHOD = "invoke";
-static constexpr const char* INVOKE_SIGNATURE = "(LEventing/KeyEvent;)V";
+static constexpr const char* INVOKE_SIGNATURE = "(LEventing/Key/KeyEvent;)V";
 
 
 namespace conversion {
@@ -34,7 +34,8 @@ void KeyEventCallback::registerCallback( JNIEnv* env, jobject jCallback ) {
 		std::cout << __FUNCTION__ << ": Could not get global ref to callback!" << std::endl;
 	}
 
-	jMethodID_ = JNIHelper::findMethod( env, (jclass)jCallbackObject_, INVOKE_METHOD, INVOKE_SIGNATURE );
+	auto clazz = env->GetObjectClass( jCallback );
+	jMethodID_ = JNIHelper::findMethod( env, clazz, INVOKE_METHOD, INVOKE_SIGNATURE );
 }
 
 void KeyEventCallback::callback( const eventing::KeyEvent& event ) {
