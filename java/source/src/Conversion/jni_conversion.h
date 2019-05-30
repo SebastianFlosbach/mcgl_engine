@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Block.h"
+#include "Chunk.h"
 #include "KeyEvent.h"
 #include "KeyEventCallback.h"
 #include "KeyEventType.h"
@@ -24,6 +25,7 @@ void construct( JNIEnv* env ) {
 	MouseEventType::construct( env );
 	WorldCoordinates::construct( env );
 	ChunkCoordinates::construct( env );
+	Chunk::construct( env );
 }
 
 void destruct( JNIEnv* env ) {
@@ -36,6 +38,7 @@ void destruct( JNIEnv* env ) {
 	MouseEventType::destruct( env );
 	WorldCoordinates::destruct( env );
 	ChunkCoordinates::destruct( env );
+	Chunk::destruct( env );
 }
 
 

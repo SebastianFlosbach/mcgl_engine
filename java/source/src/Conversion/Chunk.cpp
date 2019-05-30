@@ -1,5 +1,7 @@
 #include "Chunk.h"
 
+#include <iostream>
+
 #include "JNIHelper.h"
 #include "ChunkCoordinates.h"
 
@@ -35,6 +37,7 @@ chunk::Chunk_ptr Chunk::cpp_Chunk( JNIEnv* env, jobject jChunk ) {
 
 	auto jPosition = env->GetObjectField( jChunk, positionFieldId_ );
 	auto cppPosition = ChunkCoordinates::cpp_ChunkCoordinates( env, jPosition );
+
 	cppBlocks->setPosition( cppPosition );
 
 	auto d3Blocks = (jobjectArray)env->GetObjectField( jChunk, blocksFieldId_ );

@@ -12,10 +12,10 @@ public:
 	Chunk() = delete;
 	~Chunk() = default;
 
-	void construct( JNIEnv* env );
-	void destruct( JNIEnv* env );
+	static void construct( JNIEnv* env );
+	static void destruct( JNIEnv* env );
 
-	chunk::Chunk_ptr cpp_Chunk( JNIEnv* env, jobject jChunk );
+	static chunk::Chunk_ptr cpp_Chunk( JNIEnv* env, jobject jChunk );
 
 private:
 	static jclass clazz_;
