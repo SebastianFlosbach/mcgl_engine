@@ -9,6 +9,7 @@
 #include "Coordinates/ChunkCoordinates.h"
 #include "Coordinates/WorldCoordinates.h"
 
+
 static double movementSpeed = 15.0;
 static std::promise<void> promiseStop;
 static std::future<void> futureStop;
@@ -137,7 +138,10 @@ void statusEventCallback( const eventing::StatusEvent& statusEvent ) {
 static const float frameTime = 1.0f / 60.0f;
 
 int main() {
-	promiseStop = std::promise<void>();
+
+	std::cout << MCGLGetVersion() << std::endl;
+
+	/*promiseStop = std::promise<void>();
 	futureStop = promiseStop.get_future();
 
 	CreateEngine();
@@ -175,7 +179,7 @@ int main() {
 
 	futureStop.wait();
 
-	DestroyEngine();
+	DestroyEngine();*/
 
 	return 0;
 }

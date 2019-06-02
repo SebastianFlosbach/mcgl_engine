@@ -8,9 +8,11 @@
 namespace chunk {
 namespace builder {
 
+ChunkMeshBuilder::ChunkMeshBuilder( const ILogger& logger ) : logger_( logger ) {
+}
 
-ChunkMeshBuilder::ChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas ) :
-	pBlockLibrary_( blockLibrary ), pTextureAtlas_( textureAtlas ) {
+ChunkMeshBuilder::ChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas ) :
+	logger_( logger ), pBlockLibrary_( blockLibrary ), pTextureAtlas_( textureAtlas ) {
 }
 
 void ChunkMeshBuilder::setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary ) {
@@ -172,7 +174,13 @@ void ChunkMeshBuilder::back		( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 }
 
 void ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) {
-	if( !pBlockLibrary_ || !pTextureAtlas_ ) {
+	if( !pBlockLibrary_ ) {
+		error( logger_, std::string( __FUNCTION__ ) + ": Could not create mesh, block library is missing!" );
+		return;
+	}
+
+	if( !pTextureAtlas_ ) {
+		error( logger_, std::string( __FUNCTION__ ) + ": Could not create mesh, texture atlas is missing!" );
 		return;
 	}
 
@@ -183,6 +191,7 @@ void ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, con
 	auto chunk_ptr = chunks.getChunk( position );
 	if( chunk_ptr == nullptr ) {
 		//throw std::runtime_error( "Could not create mesh. Chunk does not exist" );
+		error( logger_, std::string( __FUNCTION__ ) + ": Could not create mesh, chunk does not exist!" );
 		return;
 	}
 

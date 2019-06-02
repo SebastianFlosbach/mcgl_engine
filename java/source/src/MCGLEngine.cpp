@@ -54,6 +54,7 @@ JNIEXPORT void JNICALL Java_MCGLEngine_RegisterBlockType( JNIEnv* env, jobject o
 	std::cout << "[JNI] " << __FUNCTION__ << std::endl;
 
 	auto block = conversion::Block::cpp_Block( env, jBlock );
+	RegisterBlockType( block );
 }
 
 JNIEXPORT void JNICALL Java_MCGLEngine_SetTextures( JNIEnv* env, jobject, jstring path, jint textureSize, jint textureCount ) {

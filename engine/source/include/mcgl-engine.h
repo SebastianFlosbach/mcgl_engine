@@ -32,3 +32,5 @@ MCGL_ENGINE_EXTERN void RegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK 
 
 MCGL_ENGINE_EXTERN float GetDeltaTime();
 MCGL_ENGINE_EXTERN coordinates::WorldCoordinates GetCameraPosition();
+
+MCGL_ENGINE_EXTERN std::string MCGLGetVersion();

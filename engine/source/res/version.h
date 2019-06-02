@@ -1,0 +1,9 @@
+#pragma once
+
+#define VERSION_MAJOR 0
+#define VERSION_MINOR 0
+#define VERSION_REVISION 0
+
+#define VERSION_DATE "2019.5.31"
+
+#define VERSION_STR  "MCGL VERSION 0.0.0 " VERSION_DATE

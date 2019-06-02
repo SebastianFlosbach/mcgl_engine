@@ -7,6 +7,7 @@
 
 #include "Chunk/Chunk.h"
 #include "Mesh/Mesh.h"
+#include "Logging/ILogger.h"
 
 
 namespace world {
@@ -22,15 +23,14 @@ namespace builder {
 */
 class ChunkMeshBuilder : public IChunkMeshBuilder {
 public:
-
-	ChunkMeshBuilder() = default;
+	ChunkMeshBuilder( const ILogger& logger );
 
 	/**
 		Create a ChunkMeshBuilder that uses a specific block library and texture atlas
 		\param blockLibrary BlockLibrary for interpreting chunk data
 		\param textureAtlas TextureAtlas to use for the mesh
 	*/
-	ChunkMeshBuilder( const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
+	ChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
 
 	/**
 
@@ -52,6 +52,9 @@ public:
 
 	virtual void registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback ) override;
 	virtual void deregisterCallback() override;
+
+protected:
+	const ILogger& logger_;
 
 private:
 	block::BlockLibrary_sptr pBlockLibrary_;

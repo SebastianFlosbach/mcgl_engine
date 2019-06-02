@@ -6,6 +6,8 @@
 #include <ActionHandling/actions.h>
 #include <future>
 
+#include "../res/version.h"
+
 #undef CreateWindow
 
 const std::string loggerName { "mcgl_file_logger" };
@@ -204,4 +206,8 @@ coordinates::WorldCoordinates GetCameraPosition() {
 
 	trace( *logger, "[MCGL-ENGINE] GetCameraPosition" );
 	return engine->getCameraPosition();
+}
+
+std::string MCGLGetVersion() {
+	return VERSION_STR;
 }

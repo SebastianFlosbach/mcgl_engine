@@ -63,8 +63,6 @@ public:
 	void deregisterCallback() override;
 
 private:
-	const ILogger& logger_;
-
 	ctpl::thread_pool threadPool_;
 
 };
