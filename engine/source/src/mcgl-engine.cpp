@@ -8,7 +8,6 @@
 
 #include "../res/version.h"
 
-#undef CreateWindow
 
 const std::string loggerName { "mcgl_file_logger" };
 const std::string loggerPath { "logs/mcgllog.log" };
@@ -17,14 +16,14 @@ std::unique_ptr<ConsoleLogger> logger;
 std::unique_ptr<Engine> engine;
 
 
-void CreateEngine() {
+void MCGLCreateEngine() {
 	logger = std::make_unique<ConsoleLogger>( /*loggerName, loggerPath*/ );
 	info( *logger, "[MCGL-ENGINE] CreateEngine" );
 
 	engine = std::make_unique<Engine>( *logger );
 }
 
-void DestroyEngine() {
+void MCGLDestroyEngine() {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] DestroyEngine: Engine not created!" );
 		return;
@@ -34,7 +33,7 @@ void DestroyEngine() {
 	engine.reset();
 }
 
-void CreateWindow( NUM32 width, NUM32 height, const std::string& title ) {
+void MCGLCreateWindow( NUM32 width, NUM32 height, const std::string& title ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] CreateEngine: Engine not created!" );
 		return;
@@ -45,7 +44,7 @@ void CreateWindow( NUM32 width, NUM32 height, const std::string& title ) {
 	engine->createWindow( width, height, title );
 }
 
-void CloseWindow() {
+void MCGLCloseWindow() {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] CloseWindow: Engine not created!" );
 		return;
@@ -55,7 +54,7 @@ void CloseWindow() {
 	engine->closeWindow();
 }
 
-void Run() {
+void MCGLRun() {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] Run: Engine not created!" );
 		return;
@@ -65,7 +64,7 @@ void Run() {
 	engine->run();
 }
 
-void Stop() {
+void MCGLStop() {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] Stop: Engine not created!" );
 		return;
@@ -75,7 +74,7 @@ void Stop() {
 	engine->stop();
 }
 
-void RegisterBlockType( const chunk::block::Block& block ) {
+void MCGLRegisterBlockType( const chunk::block::Block& block ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] RegisterBlockType: Engine not created!" );
 		return;
@@ -85,7 +84,7 @@ void RegisterBlockType( const chunk::block::Block& block ) {
 	engine->registerBlockType( block );
 }
 
-void SetTextures( const std::string& path, UNUM32 textureSize, UNUM32 textureCount ) {
+void MCGLSetTextures( const std::string& path, UNUM32 textureSize, UNUM32 textureCount ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] SetTextures: Engine not created!" );
 		return;
@@ -96,7 +95,7 @@ void SetTextures( const std::string& path, UNUM32 textureSize, UNUM32 textureCou
 	engine->setTextures( path, textureSize, textureCount );
 }
 
-void SetShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
+void MCGLSetShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] SetShader: Engine not created!" );
 		return;
@@ -107,7 +106,7 @@ void SetShader( const std::string& vertexShaderPath, const std::string& fragment
 	engine->setShader( vertexShaderPath, fragmentShaderPath );
 }
 
-void AddChunk( const chunk::Chunk& chunk ) {
+void MCGLAddChunk( const chunk::Chunk& chunk ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] AddChunk: Engine not created!" );
 		return;
@@ -117,7 +116,7 @@ void AddChunk( const chunk::Chunk& chunk ) {
 	engine->addChunk( chunk );
 }
 
-void RemoveChunk( NUM32 x, NUM32 z) {
+void MCGLRemoveChunk( NUM32 x, NUM32 z) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] RemoveChunk: Engine not created!" );
 		return;
@@ -127,7 +126,7 @@ void RemoveChunk( NUM32 x, NUM32 z) {
 	engine->removeChunk( x, z );
 }
 
-void CreateCamera( float x, float y, float z, float pitch, float yaw, float roll ) {
+void MCGLCreateCamera( float x, float y, float z, float pitch, float yaw, float roll ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] CreateCamera: Engine not created!" );
 		return;
@@ -138,7 +137,7 @@ void CreateCamera( float x, float y, float z, float pitch, float yaw, float roll
 	engine->createCamera( x, y, z, pitch, yaw, roll );
 }
 
-void MoveCamera( float dx, float dy, float dz ) {
+void MCGLMoveCamera( float dx, float dy, float dz ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] MoveCamera: Engine not created!" );
 		return;
@@ -148,7 +147,7 @@ void MoveCamera( float dx, float dy, float dz ) {
 	engine->moveCamera( dx, dy, dz );
 }
 
-void RotateCamera( float pitch, float yaw, float roll ) {
+void MCGLRotateCamera( float pitch, float yaw, float roll ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] RotateCamera: Engine not created!" );
 		return;
@@ -158,7 +157,7 @@ void RotateCamera( float pitch, float yaw, float roll ) {
 	engine->rotateCamera( pitch, yaw, roll );
 }
 
-void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
+void MCGLRegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] RegisterKeyEventCallback: Engine not created!" );
 		return;
@@ -168,7 +167,7 @@ void RegisterKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
 	engine->registerKeyEventCallback( callback );
 }
 
-void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
+void MCGLRegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] RegisterMouseEventCallback: Engine not created!" );
 		return;
@@ -178,7 +177,7 @@ void RegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
 	engine->registerMouseEventCallback( callback );
 }
 
-void RegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) {
+void MCGLRegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] RegisterStatusEventCallback: Engine not created!" );
 		return;
@@ -188,17 +187,7 @@ void RegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) {
 	engine->registerStatusEventCallback( callback );
 }
 
-float GetDeltaTime() {
-	if( !engine ) {
-		error( *logger, "[MCGL-ENGINE] GetDeltaTime: Engine not created!" );
-		return -1.f;
-	}
-
-	trace( *logger, "[MCGL-ENGINE] GetDeltaTime" );
-	return engine->getDeltaTime();
-}
-
-coordinates::WorldCoordinates GetCameraPosition() {
+coordinates::WorldCoordinates MCGLGetCameraPosition() {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] GetCameraPosition: Engine not created!" );
 		return { 0, 0, 0 };

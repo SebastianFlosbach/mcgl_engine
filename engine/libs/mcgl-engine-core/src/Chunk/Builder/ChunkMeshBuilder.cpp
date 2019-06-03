@@ -11,11 +11,11 @@ namespace builder {
 ChunkMeshBuilder::ChunkMeshBuilder( const ILogger& logger ) : logger_( logger ) {
 }
 
-ChunkMeshBuilder::ChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas ) :
+ChunkMeshBuilder::ChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas ) :
 	logger_( logger ), pBlockLibrary_( blockLibrary ), pTextureAtlas_( textureAtlas ) {
 }
 
-void ChunkMeshBuilder::setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary ) {
+void ChunkMeshBuilder::setBlockLibrary( const block::BlockLibrary* blockLibrary ) {
 	pBlockLibrary_ = blockLibrary;
 }
 

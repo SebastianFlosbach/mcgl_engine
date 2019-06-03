@@ -16,31 +16,30 @@
 #include "Coordinates/WorldCoordinates.h"
 
 
-Engine::Engine( const ILogger& logger ) : 
+Engine::Engine( const ILogger& logger ) :
 	logger_( logger ),
-	pBlockLibrary_( new chunk::block::BlockLibrary() ),
-	pChunks_( new chunk::ChunkCollection() ),
-	pWorld_( new world::World( logger ) ),
-	pChunkMeshBuilder_( new chunk::builder::ThreadedChunkMeshBuilder( logger, 4 ) ),
-	pWindow_( Window::create() ) { 
+	assetManager_( logger ),
+	pWindow_( Window::create() ) {
+
+	assetManager_.setChunkMeshBuilder( new chunk::builder::ThreadedChunkMeshBuilder( logger, 4 ) );
 	
 	if( isRunning_.exchange( true ) ) {
 		return;
 	}
 
-	pChunkMeshBuilder_->setBlockLibrary( pBlockLibrary_ );
-	pChunkMeshBuilder_->registerCallback( chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const coordinates::ChunkCoordinates& position, mesh::Mesh* mesh ) {
+	assetManager_.getChunkMeshBuilder()->setBlockLibrary( assetManager_.getBlockLibrary() );
+	assetManager_.getChunkMeshBuilder()->registerCallback( chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const coordinates::ChunkCoordinates& position, mesh::Mesh* mesh ) {
 		addMesh( position.toWorldCoordinates(), mesh );
 	} ) );
 
-	pChunks_->registerCollectionChangedCallback( chunk::CHUNK_COLLECTION_CHANGED_CALLBACK( 
+	assetManager_.getChunkCollection()->registerCollectionChangedCallback( chunk::CHUNK_COLLECTION_CHANGED_CALLBACK( 
 		[this]( const chunk::ChunkCollectionChangedEventType& type, const coordinates::ChunkCoordinates& position ) {
 			switch ( type ) {
 				case chunk::ChunkCollectionChangedEventType::ChunkAdded:
-					pChunkMeshBuilder_->build( position, *pChunks_ );
+					assetManager_.getChunkMeshBuilder()->build( position, *assetManager_.getChunkCollection() );
 					break;
 				case chunk::ChunkCollectionChangedEventType::ChunkRemoved:
-					pWorld_->removeMesh( position.toWorldCoordinates() );
+					assetManager_.getWorld()->removeMesh( position.toWorldCoordinates() );
 					break;
 				default:
 					break;
@@ -62,7 +61,7 @@ void Engine::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh*
 }
 
 void Engine::doAddMesh( action::AddMeshAction* data ) {
-	pWorld_->addMesh( data->position_, std::move( data->pMesh_ ) );
+	assetManager_.getWorld()->addMesh( data->position_, std::move( data->pMesh_ ) );
 }
 
 void Engine::doAction( action::Action* action ) {
@@ -236,7 +235,7 @@ void Engine::doCloseWindow() {
 void Engine::doRegisterBlockType( action::RegisterBlockTypeAction* data ) {
 	info( logger_, "addBlockType()" );
 
-	pBlockLibrary_->registerBlock( data->block_ );
+	assetManager_.getBlockLibrary()->registerBlock( data->block_ );
 }
 
 void Engine::doRegisterKeyEventCallback( action::RegisterKeyEventCallbackAction* data ) {
@@ -258,18 +257,18 @@ void Engine::doRegisterStatusEventCallback( action::RegisterStatusEventCallbackA
 }
 
 void Engine::doAddChunk( action::AddChunkAction* data ) {
-	pChunks_->addChunk( std::move( data->pChunk_ ) );
+	assetManager_.getChunkCollection()->addChunk( std::move( data->pChunk_ ) );
 }
 
 void Engine::doRemoveChunk( action::RemoveChunkAction* data ) {
-	pChunks_->removeChunk( { data->x_, data->z_ } );
+	assetManager_.getChunkCollection()->removeChunk( { data->x_, data->z_ } );
 }
 
 void Engine::doSetTextures( action::SetTexturesAction* data ) {
 	texture::TextureAtlas textureAtlas( data->texturePath_, data->size_, data->textureCount_ );
 
 	pRenderer_->setTextures( std::move( textureAtlas ) );
-	pChunkMeshBuilder_->setTextureAtlas( pRenderer_->getTextureAtlas() );
+	assetManager_.getChunkMeshBuilder()->setTextureAtlas( pRenderer_->getTextureAtlas() );
 }
 
 void Engine::doSetShader( action::SetShaderAction* data ) {
@@ -307,7 +306,7 @@ void Engine::doDraw() {
 
 	pRenderer_->setViewMatrix( camera_.getView() );
 
-	pWorld_->draw( *pRenderer_ );
+	assetManager_.getWorld()->draw( *pRenderer_ );
 
 	glfwSwapBuffers( pWindow_->get() );
 	glfwPollEvents();

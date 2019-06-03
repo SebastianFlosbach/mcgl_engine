@@ -3,15 +3,13 @@
 #include "Definition/mcgl_engine_def.h"
 #include "Logging/ILogger.h"
 #include "Rendering/Window.h"
-#include "Chunk/Block/BlockLibrary.h"
 #include "Chunk/Chunk.h"
-#include "World/World.h"
 #include "Rendering/Renderer.h"
 #include "Camera.h"
 #include "ActionHandling/ThreadedWorkerQueue.h"
 #include "ActionHandling/actions.h"
-#include "Chunk/ChunkCollection.h"
 #include "Chunk/Builder/ThreadedChunkMeshBuilder.h"
+#include "AssetManager.h"
 
 
 class Engine {
@@ -93,10 +91,7 @@ private:
 	IWindow_sptr pWindow_;
 	Renderer_ptr pRenderer_;
 
-	chunk::block::BlockLibrary_sptr			pBlockLibrary_;
-	chunk::ChunkCollection_ptr				pChunks_;
-	world::World_ptr						pWorld_;
-	chunk::builder::IChunkMeshBuilder_ptr	pChunkMeshBuilder_;
+	AssetManager assetManager_;
 	
 	Camera camera_;
 

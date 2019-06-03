@@ -21,7 +21,7 @@ coordinates::ChunkCoordinates lastChunkPosition{ 0, 0 };
 constexpr int RENDER_DISTANCE = 5;
 
 void checkLoadedChunks() {
-	coordinates::WorldCoordinates position = GetCameraPosition();
+	coordinates::WorldCoordinates position = MCGLGetCameraPosition();
 
 	coordinates::ChunkCoordinates chunkPos = position.toChunkCoordinates();
 
@@ -29,28 +29,28 @@ void checkLoadedChunks() {
 		if( chunkPos.x_ - lastChunkPosition.x_ > 0 ) {
 			for( int i = -RENDER_DISTANCE; i <= RENDER_DISTANCE; i++ ) {
 				myChunk.setPosition( { chunkPos.x_ + RENDER_DISTANCE, chunkPos.z_ + i } );
-				AddChunk( myChunk );
-				RemoveChunk( lastChunkPosition.x_ - RENDER_DISTANCE, lastChunkPosition.z_ + i );
+				MCGLAddChunk( myChunk );
+				MCGLRemoveChunk( lastChunkPosition.x_ - RENDER_DISTANCE, lastChunkPosition.z_ + i );
 			}
 		} else if( chunkPos.x_ - lastChunkPosition.x_ < 0 ) {
 			for( int i = -RENDER_DISTANCE; i <= RENDER_DISTANCE; i++ ) {
 				myChunk.setPosition( { chunkPos.x_ - RENDER_DISTANCE, chunkPos.z_ + i } );
-				AddChunk( myChunk );
-				RemoveChunk( lastChunkPosition.x_ + RENDER_DISTANCE, lastChunkPosition.z_ + i );
+				MCGLAddChunk( myChunk );
+				MCGLRemoveChunk( lastChunkPosition.x_ + RENDER_DISTANCE, lastChunkPosition.z_ + i );
 			}
 		}
 
 		if( chunkPos.z_ - lastChunkPosition.z_ > 0 ) {
 			for( int i = -RENDER_DISTANCE; i <= RENDER_DISTANCE; i++ ) {
 				myChunk.setPosition( { chunkPos.x_ + i, chunkPos.z_ + RENDER_DISTANCE } );
-				AddChunk( myChunk );
-				RemoveChunk( lastChunkPosition.x_ + i, lastChunkPosition.z_ -RENDER_DISTANCE );
+				MCGLAddChunk( myChunk );
+				MCGLRemoveChunk( lastChunkPosition.x_ + i, lastChunkPosition.z_ -RENDER_DISTANCE );
 			}
 		} else if( chunkPos.z_ - lastChunkPosition.z_ < 0 ) {
 			for( int i = -RENDER_DISTANCE; i <= RENDER_DISTANCE; i++ ) {
 				myChunk.setPosition( { chunkPos.x_ + i, chunkPos.z_ - RENDER_DISTANCE } );
-				AddChunk( myChunk );
-				RemoveChunk( lastChunkPosition.x_ + i, lastChunkPosition.z_ + RENDER_DISTANCE );
+				MCGLAddChunk( myChunk );
+				MCGLRemoveChunk( lastChunkPosition.x_ + i, lastChunkPosition.z_ + RENDER_DISTANCE );
 			}
 		}
 	}
@@ -63,23 +63,23 @@ void keyEventCallback( const eventing::KeyEvent& keyEvent ) {
 	if ( keyEvent.type_ == eventing::KeyEventType::Pressed || keyEvent.type_ == eventing::KeyEventType::Down ) {
 		switch ( keyEvent.key_ ) {
 			case GLFW_KEY_W:
-				MoveCamera( 0.0, 0.0, movementSpeed * GetDeltaTime() );
+				MCGLMoveCamera( 0.0, 0.0, movementSpeed );
 				checkLoadedChunks();
 				break;
 			case GLFW_KEY_S:
-				MoveCamera( 0.0, 0.0, -movementSpeed * GetDeltaTime() );
+				MCGLMoveCamera( 0.0, 0.0, -movementSpeed );
 				checkLoadedChunks();
 				break;
 			case GLFW_KEY_A:
-				MoveCamera( -movementSpeed * GetDeltaTime(), 0.0, 0.0 );
+				MCGLMoveCamera( -movementSpeed, 0.0, 0.0 );
 				checkLoadedChunks();
 				break;
 			case GLFW_KEY_D:
-				MoveCamera( movementSpeed * GetDeltaTime(), 0.0, 0.0 );
+				MCGLMoveCamera( movementSpeed, 0.0, 0.0 );
 				checkLoadedChunks();
 				break;
 			case GLFW_KEY_ESCAPE:
-				Stop();
+				MCGLStop();
 			default:
 				break;
 		}
@@ -121,7 +121,7 @@ void mouseEventCallback( const eventing::MouseEvent& mouseEvent ) {
 			dx *= sensitivity;
 			dy *= sensitivity;
 
-			RotateCamera( 1, dy, dx );
+			MCGLRotateCamera( 1, dy, dx );
 		}
 			break;
 		default:
@@ -139,25 +139,23 @@ static const float frameTime = 1.0f / 60.0f;
 
 int main() {
 
-	std::cout << MCGLGetVersion() << std::endl;
-
-	/*promiseStop = std::promise<void>();
+	promiseStop = std::promise<void>();
 	futureStop = promiseStop.get_future();
 
-	CreateEngine();
-	CreateWindow( 800, 600, "MCGL" );
+	MCGLCreateEngine();
+	MCGLCreateWindow( 800, 600, "MCGL" );
 
-	CreateCamera( 8, 10, 8 );
+	MCGLCreateCamera( 8, 10, 8 );
 
-	RegisterKeyEventCallback( keyEventCallback );
-	RegisterMouseEventCallback( mouseEventCallback );
-	RegisterStatusEventCallback( statusEventCallback );
+	MCGLRegisterKeyEventCallback( keyEventCallback );
+	MCGLRegisterMouseEventCallback( mouseEventCallback );
+	MCGLRegisterStatusEventCallback( statusEventCallback );
 
-	SetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
-	SetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
+	MCGLSetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
+	MCGLSetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
 
-	RegisterBlockType( { 0, true } );
-	RegisterBlockType( { 1, false, 2, 2, 2, 2, 0, 1 } );
+	MCGLRegisterBlockType( { 0, true } );
+	MCGLRegisterBlockType( { 1, false, 2, 2, 2, 2, 0, 1 } );
 
 	myChunk = chunk::Chunk();
 	for ( int x = 0; x < CHUNK_WIDTH; x++ ) {
@@ -171,15 +169,15 @@ int main() {
 	for( int x = -RENDER_DISTANCE; x <= RENDER_DISTANCE; x++ ) {
 		for( int y = -RENDER_DISTANCE; y <= RENDER_DISTANCE; y++ ) {
 			myChunk.setPosition( { x, y } );
-			AddChunk( myChunk );
+			MCGLAddChunk( myChunk );
 		}
 	}
 
-	Run();
+	MCGLRun();
 
 	futureStop.wait();
 
-	DestroyEngine();*/
+	MCGLDestroyEngine();
 
 	return 0;
 }

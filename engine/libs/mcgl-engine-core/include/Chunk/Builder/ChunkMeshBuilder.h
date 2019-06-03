@@ -30,12 +30,12 @@ public:
 		\param blockLibrary BlockLibrary for interpreting chunk data
 		\param textureAtlas TextureAtlas to use for the mesh
 	*/
-	ChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary_sptr& blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
+	ChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
 
 	/**
 
 	*/
-	virtual void setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary ) override;
+	virtual void setBlockLibrary( const block::BlockLibrary* blockLibrary ) override;
 
 	/**
 
@@ -57,7 +57,7 @@ protected:
 	const ILogger& logger_;
 
 private:
-	block::BlockLibrary_sptr pBlockLibrary_;
+	const block::BlockLibrary* pBlockLibrary_;
 	texture::TextureAtlas_sptr pTextureAtlas_;
 
 	CHUNK_MESH_BUILDER_CALLBACK callback_;

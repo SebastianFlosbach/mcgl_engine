@@ -145,14 +145,6 @@ JNIEXPORT void JNICALL Java_MCGLEngine_RegisterStatusEventCallback
 
 /*
  * Class:     MCGLEngine
- * Method:    GetDeltaTime
- * Signature: ()F
- */
-JNIEXPORT jfloat JNICALL Java_MCGLEngine_GetDeltaTime
-  (JNIEnv *, jobject);
-
-/*
- * Class:     MCGLEngine
  * Method:    GetCameraPosition
  * Signature: ()LWorldCoordinates;
  */

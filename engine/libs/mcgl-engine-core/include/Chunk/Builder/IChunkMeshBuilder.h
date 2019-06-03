@@ -25,7 +25,7 @@ public:
 	IChunkMeshBuilder() = default;
 	virtual ~IChunkMeshBuilder() = default;
 
-	virtual void setBlockLibrary( const block::BlockLibrary_sptr& blockLibrary ) = 0;
+	virtual void setBlockLibrary( const block::BlockLibrary* blockLibrary ) = 0;
 	virtual void setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas ) = 0;
 
 	virtual void build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) = 0;
