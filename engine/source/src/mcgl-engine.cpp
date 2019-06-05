@@ -30,6 +30,7 @@ void MCGLDestroyEngine() {
 	}
 
 	info( *logger, "[MCGL-ENGINE] DestroyEngine" );
+	engine->destroy();
 	engine.reset();
 }
 
@@ -198,5 +199,5 @@ coordinates::WorldCoordinates MCGLGetCameraPosition() {
 }
 
 std::string MCGLGetVersion() {
-	return VERSION_STR;
+	return "";
 }

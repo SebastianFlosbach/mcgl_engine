@@ -12,6 +12,7 @@ namespace action {
 		CloseWindowAction,
 		CreateCameraAction,
 		CreateWindowAction,
+		DestroyAction,
 		DrawAction,
 		EngineInitAction,
 		GetDeltaTimeAction,

@@ -11,10 +11,11 @@
 
 
 static double movementSpeed = 15.0;
-static std::promise<void> promiseStop;
-static std::future<void> futureStop;
 
 chunk::Chunk myChunk;
+
+static bool isRunning = true;
+static double deltaTime = 1.0;
 
 coordinates::ChunkCoordinates lastChunkPosition{ 0, 0 };
 
@@ -63,19 +64,19 @@ void keyEventCallback( const eventing::KeyEvent& keyEvent ) {
 	if ( keyEvent.type_ == eventing::KeyEventType::Pressed || keyEvent.type_ == eventing::KeyEventType::Down ) {
 		switch ( keyEvent.key_ ) {
 			case GLFW_KEY_W:
-				MCGLMoveCamera( 0.0, 0.0, movementSpeed );
+				MCGLMoveCamera( 0.0, 0.0, movementSpeed * deltaTime );
 				checkLoadedChunks();
 				break;
 			case GLFW_KEY_S:
-				MCGLMoveCamera( 0.0, 0.0, -movementSpeed );
+				MCGLMoveCamera( 0.0, 0.0, -movementSpeed * deltaTime );
 				checkLoadedChunks();
 				break;
 			case GLFW_KEY_A:
-				MCGLMoveCamera( -movementSpeed, 0.0, 0.0 );
+				MCGLMoveCamera( -movementSpeed * deltaTime, 0.0, 0.0 );
 				checkLoadedChunks();
 				break;
 			case GLFW_KEY_D:
-				MCGLMoveCamera( movementSpeed, 0.0, 0.0 );
+				MCGLMoveCamera( movementSpeed * deltaTime, 0.0, 0.0 );
 				checkLoadedChunks();
 				break;
 			case GLFW_KEY_ESCAPE:
@@ -91,7 +92,7 @@ static int oldY;
 static bool firstMouse = true;
 
 void mouseEventCallback( const eventing::MouseEvent& mouseEvent ) {
-	switch ( mouseEvent.type_ ) {
+	/*switch ( mouseEvent.type_ ) {
 		case eventing::MouseEventType::ButtonPess:
 			break;
 		case eventing::MouseEventType::ButtonRelease:
@@ -126,21 +127,18 @@ void mouseEventCallback( const eventing::MouseEvent& mouseEvent ) {
 			break;
 		default:
 			break;
-	}
+	}*/
 }
 
 void statusEventCallback( const eventing::StatusEvent& statusEvent ) {
 	if ( statusEvent.type_ == eventing::StatusEventType::Stopped ) {
-		promiseStop.set_value();
+		isRunning = false;
 	}
 }
 
 static const float frameTime = 1.0f / 60.0f;
 
 int main() {
-
-	promiseStop = std::promise<void>();
-	futureStop = promiseStop.get_future();
 
 	MCGLCreateEngine();
 	MCGLCreateWindow( 800, 600, "MCGL" );
@@ -175,7 +173,20 @@ int main() {
 
 	MCGLRun();
 
-	futureStop.wait();
+	auto last = std::chrono::steady_clock::now();
+
+	while( isRunning ) {
+		auto now = std::chrono::steady_clock::now();
+		auto leastDeltaTime = (double)std::chrono::duration_cast<std::chrono::microseconds>(now - last).count() / (double)1000000;
+		if( leastDeltaTime < 0.017 ) {
+			deltaTime = 0.017;
+			std::this_thread::sleep_for( std::chrono::microseconds( (long)(0.017 - deltaTime) * 1000000 ) );
+		}
+		else {
+			deltaTime = leastDeltaTime;
+		}
+		last = now;
+	}
 
 	MCGLDestroyEngine();
 

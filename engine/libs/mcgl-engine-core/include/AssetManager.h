@@ -5,6 +5,7 @@
 #include "Chunk/ChunkCollection.h"
 #include "Chunk/Builder/IChunkMeshBuilder.h"
 #include "World/World.h"
+#include "Rendering/Renderer.h"
 
 
 class AssetManager {
@@ -13,6 +14,7 @@ public:
 		pBlockLibrary_ = std::make_unique<chunk::block::BlockLibrary>();
 		pChunkCollection_ = std::make_unique<chunk::ChunkCollection>();
 		pWorld_ = std::make_unique<world::World>( logger );
+		pRenderer_ = std::make_unique<Renderer>();
 	}
 
 	~AssetManager() = default;
@@ -37,7 +39,12 @@ public:
 		return pChunkMeshBuilder_.get();
 	}
 
+	Renderer* getRenderer() {
+		return pRenderer_.get();
+	}
+
 private:
+	Renderer_ptr							pRenderer_;
 	chunk::block::BlockLibrary_ptr			pBlockLibrary_;
 	chunk::ChunkCollection_ptr				pChunkCollection_;
 	world::World_ptr						pWorld_;
@@ -45,3 +52,5 @@ private:
 
 
 };
+
+typedef std::unique_ptr<AssetManager> AssetManager_ptr;

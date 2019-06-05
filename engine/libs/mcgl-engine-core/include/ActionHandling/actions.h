@@ -9,6 +9,7 @@
 #include "Action/CloseWindowAction.h"
 #include "Action/CreateCameraAction.h"
 #include "Action/CreateWindowAction.h"
+#include "Action/DestroyAction.h"
 #include "Action/DrawAction.h"
 #include "Action/EngineInitAction.h"
 #include "Action/GetDeltaTimeAction.h"

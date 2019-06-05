@@ -19,6 +19,10 @@ namespace world {
 	public:
 		World( const ILogger& logger ) : logger_( logger ) {}
 
+		~World() {
+
+		}
+
 		World( const World& other ) = delete;
 		World& operator=( const World& other ) = delete;
 

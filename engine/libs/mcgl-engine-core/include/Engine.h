@@ -23,9 +23,9 @@ public:
 	Engine& operator=( Engine&& other ) = delete;
 
 	~Engine() {
-		info( logger_, " Destroyed engine" );
 		workerQueue_.stop();
 		glfwTerminate();
+		info( logger_, " Destroyed engine" );
 	}
 
 	inline float getDeltaTime() {
@@ -57,6 +57,8 @@ public:
 	void run();
 	void stop();
 
+	void destroy();
+
 private:
 	void addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh* mesh );
 	void doAddMesh( action::AddMeshAction* data );
@@ -83,15 +85,15 @@ private:
 	void doDraw();
 	void doStop();
 
+	void doDestroy();
+
 	const ILogger& logger_;
 
 	ThreadedWorkerQueue<action::Action_ptr> workerQueue_{};
 
-
 	IWindow_sptr pWindow_;
-	Renderer_ptr pRenderer_;
 
-	AssetManager assetManager_;
+	AssetManager_ptr pAssetManager_;
 	
 	Camera camera_;
 

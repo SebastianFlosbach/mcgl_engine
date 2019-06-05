@@ -18,34 +18,7 @@
 
 Engine::Engine( const ILogger& logger ) :
 	logger_( logger ),
-	assetManager_( logger ),
 	pWindow_( Window::create() ) {
-
-	assetManager_.setChunkMeshBuilder( new chunk::builder::ThreadedChunkMeshBuilder( logger, 4 ) );
-	
-	if( isRunning_.exchange( true ) ) {
-		return;
-	}
-
-	assetManager_.getChunkMeshBuilder()->setBlockLibrary( assetManager_.getBlockLibrary() );
-	assetManager_.getChunkMeshBuilder()->registerCallback( chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const coordinates::ChunkCoordinates& position, mesh::Mesh* mesh ) {
-		addMesh( position.toWorldCoordinates(), mesh );
-	} ) );
-
-	assetManager_.getChunkCollection()->registerCollectionChangedCallback( chunk::CHUNK_COLLECTION_CHANGED_CALLBACK( 
-		[this]( const chunk::ChunkCollectionChangedEventType& type, const coordinates::ChunkCoordinates& position ) {
-			switch ( type ) {
-				case chunk::ChunkCollectionChangedEventType::ChunkAdded:
-					assetManager_.getChunkMeshBuilder()->build( position, *assetManager_.getChunkCollection() );
-					break;
-				case chunk::ChunkCollectionChangedEventType::ChunkRemoved:
-					assetManager_.getWorld()->removeMesh( position.toWorldCoordinates() );
-					break;
-				default:
-					break;
-			}
-		} ) 
-	);
 
 	workerQueue_.registerCallback( std::bind( &Engine::doAction, this, std::placeholders::_1 ) );
 
@@ -61,7 +34,7 @@ void Engine::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh*
 }
 
 void Engine::doAddMesh( action::AddMeshAction* data ) {
-	assetManager_.getWorld()->addMesh( data->position_, std::move( data->pMesh_ ) );
+	pAssetManager_->getWorld()->addMesh( data->position_, std::move( data->pMesh_ ) );
 }
 
 void Engine::doAction( action::Action* action ) {
@@ -80,6 +53,9 @@ void Engine::doAction( action::Action* action ) {
 		break;
 	case action::ActionType::CreateWindowAction:
 		doCreateWindow( static_cast<action::CreateWindowAction*>( action ) );
+		break;
+	case action::ActionType::DestroyAction:
+		doDestroy();
 		break;
 	case action::ActionType::DrawAction:
 		doDraw();
@@ -197,6 +173,14 @@ void Engine::stop() {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::StopAction() ) );
 }
 
+void Engine::destroy() {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::DestroyAction() ) );
+}
+
+void Engine::doDestroy() {
+	pAssetManager_.reset();
+}
+
 void Engine::doEngine() {
 	info( logger_, "Initialize engine" );
 	if( !glfwInit() ) {
@@ -207,7 +191,33 @@ void Engine::doEngine() {
 	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
 	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 
-	pRenderer_ = std::make_unique<Renderer>();
+	pAssetManager_ = std::make_unique<AssetManager>( logger_ );
+
+	pAssetManager_->setChunkMeshBuilder( new chunk::builder::ThreadedChunkMeshBuilder( logger_, 4 ) );
+
+	if( isRunning_.exchange( true ) ) {
+		return;
+	}
+
+	pAssetManager_->getChunkMeshBuilder()->setBlockLibrary( pAssetManager_->getBlockLibrary() );
+	pAssetManager_->getChunkMeshBuilder()->registerCallback( chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const coordinates::ChunkCoordinates& position, mesh::Mesh* mesh ) {
+		addMesh( position.toWorldCoordinates(), mesh );
+	} ) );
+
+	pAssetManager_->getChunkCollection()->registerCollectionChangedCallback( chunk::CHUNK_COLLECTION_CHANGED_CALLBACK(
+		[this]( const chunk::ChunkCollectionChangedEventType& type, const coordinates::ChunkCoordinates& position ) {
+			switch( type ) {
+			case chunk::ChunkCollectionChangedEventType::ChunkAdded:
+				pAssetManager_->getChunkMeshBuilder()->build( position, *pAssetManager_->getChunkCollection() );
+				break;
+			case chunk::ChunkCollectionChangedEventType::ChunkRemoved:
+				pAssetManager_->getWorld()->removeMesh( position.toWorldCoordinates() );
+				break;
+			default:
+				break;
+			}
+		} )
+	);
 }
 
 void Engine::doCreateWindow( action::CreateWindowAction* data ) {
@@ -215,7 +225,7 @@ void Engine::doCreateWindow( action::CreateWindowAction* data ) {
 
 	pWindow_->open( data->width_, data->height_, data->title_ );
 	pWindow_->registerResizeCallback( MCGL_WINDOW_RESIZE_CALLBACK( [this]( NUM32 width, NUM32 height ) {
-		pRenderer_->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)width / (float)height, 0.1f, 500.0f ) );
+		pAssetManager_->getRenderer()->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)width / (float)height, 0.1f, 500.0f ) );
 	} ) );
 
 	if ( !gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress ) ) {
@@ -235,7 +245,7 @@ void Engine::doCloseWindow() {
 void Engine::doRegisterBlockType( action::RegisterBlockTypeAction* data ) {
 	info( logger_, "addBlockType()" );
 
-	assetManager_.getBlockLibrary()->registerBlock( data->block_ );
+	pAssetManager_->getBlockLibrary()->registerBlock( data->block_ );
 }
 
 void Engine::doRegisterKeyEventCallback( action::RegisterKeyEventCallbackAction* data ) {
@@ -257,18 +267,18 @@ void Engine::doRegisterStatusEventCallback( action::RegisterStatusEventCallbackA
 }
 
 void Engine::doAddChunk( action::AddChunkAction* data ) {
-	assetManager_.getChunkCollection()->addChunk( std::move( data->pChunk_ ) );
+	pAssetManager_->getChunkCollection()->addChunk( std::move( data->pChunk_ ) );
 }
 
 void Engine::doRemoveChunk( action::RemoveChunkAction* data ) {
-	assetManager_.getChunkCollection()->removeChunk( { data->x_, data->z_ } );
+	pAssetManager_->getChunkCollection()->removeChunk( { data->x_, data->z_ } );
 }
 
 void Engine::doSetTextures( action::SetTexturesAction* data ) {
 	texture::TextureAtlas textureAtlas( data->texturePath_, data->size_, data->textureCount_ );
 
-	pRenderer_->setTextures( std::move( textureAtlas ) );
-	assetManager_.getChunkMeshBuilder()->setTextureAtlas( pRenderer_->getTextureAtlas() );
+	pAssetManager_->getRenderer()->setTextures( std::move( textureAtlas ) );
+	pAssetManager_->getChunkMeshBuilder()->setTextureAtlas( pAssetManager_->getRenderer()->getTextureAtlas() );
 }
 
 void Engine::doSetShader( action::SetShaderAction* data ) {
@@ -277,7 +287,7 @@ void Engine::doSetShader( action::SetShaderAction* data ) {
 	shader.addFragmentShader( data->fragmentShaderPath_ );
 	shader.compile();
 
-	pRenderer_->setShader( std::move( shader ) );
+	pAssetManager_->getRenderer()->setShader( std::move( shader ) );
 }
 
 void Engine::doCreateCamera( action::CreateCameraAction* data ) {
@@ -304,9 +314,9 @@ void Engine::doDraw() {
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 
-	pRenderer_->setViewMatrix( camera_.getView() );
+	pAssetManager_->getRenderer()->setViewMatrix( camera_.getView() );
 
-	assetManager_.getWorld()->draw( *pRenderer_ );
+	pAssetManager_->getWorld()->draw( *pAssetManager_->getRenderer() );
 
 	glfwSwapBuffers( pWindow_->get() );
 	glfwPollEvents();
