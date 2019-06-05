@@ -92,7 +92,7 @@ static int oldY;
 static bool firstMouse = true;
 
 void mouseEventCallback( const eventing::MouseEvent& mouseEvent ) {
-	/*switch ( mouseEvent.type_ ) {
+	switch ( mouseEvent.type_ ) {
 		case eventing::MouseEventType::ButtonPess:
 			break;
 		case eventing::MouseEventType::ButtonRelease:
@@ -117,17 +117,17 @@ void mouseEventCallback( const eventing::MouseEvent& mouseEvent ) {
 			oldX = newX;
 			oldY = newY;
 
-			float sensitivity = 0.003f;
+			constexpr float sensitivity = 0.003f;
 
 			dx *= sensitivity;
 			dy *= sensitivity;
 
-			MCGLRotateCamera( 1, dy, dx );
+			MCGLRotateCamera( dy, dx );
 		}
 			break;
 		default:
 			break;
-	}*/
+	}
 }
 
 void statusEventCallback( const eventing::StatusEvent& statusEvent ) {

@@ -31,5 +31,3 @@ MCGL_ENGINE_EXTERN void MCGLRegisterMouseEventCallback( MCGL_MOUSE_EVENT_CALLBAC
 MCGL_ENGINE_EXTERN void MCGLRegisterStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
 
 MCGL_ENGINE_EXTERN coordinates::WorldCoordinates MCGLGetCameraPosition();
-
-MCGL_ENGINE_EXTERN std::string MCGLGetVersion();

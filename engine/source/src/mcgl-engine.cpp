@@ -1,23 +1,21 @@
 #include "mcgl-engine.h"
 
 #include <Engine.h>
-#include <Logging/ConsoleLogger.h>
+#include <Logging/SpdFileLogger.h>
 #include <ActionHandling/ThreadedWorkerQueue.h>
 #include <ActionHandling/actions.h>
 #include <future>
-
-#include "../res/version.h"
 
 
 const std::string loggerName { "mcgl_file_logger" };
 const std::string loggerPath { "logs/mcgllog.log" };
 
-std::unique_ptr<ConsoleLogger> logger;
+std::unique_ptr<SpdFileLogger> logger;
 std::unique_ptr<Engine> engine;
 
 
 void MCGLCreateEngine() {
-	logger = std::make_unique<ConsoleLogger>( /*loggerName, loggerPath*/ );
+	logger = std::make_unique<SpdFileLogger>( loggerName, loggerPath );
 	info( *logger, "[MCGL-ENGINE] CreateEngine" );
 
 	engine = std::make_unique<Engine>( *logger );
@@ -196,8 +194,4 @@ coordinates::WorldCoordinates MCGLGetCameraPosition() {
 
 	trace( *logger, "[MCGL-ENGINE] GetCameraPosition" );
 	return engine->getCameraPosition();
-}
-
-std::string MCGLGetVersion() {
-	return "";
 }
