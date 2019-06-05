@@ -46,10 +46,16 @@ void ThreadedWorkerQueue<action::Action_ptr>::stop() {
 }
 
 template<>
-void ThreadedWorkerQueue<action::Action_ptr>::enqueue(action::Action_ptr&& action) {
+void ThreadedWorkerQueue<action::Action_ptr>::enqueue(action::Action_ptr&& action, bool priority ) {
 	std::lock_guard<std::mutex> lock(mQueue_);
 
-	workerQueue_.push_back( std::move(action) );
+	if( priority ) {
+		workerQueue_.push_front( std::move( action ) );
+	}
+	else {
+		workerQueue_.push_back( std::move(action) );
+	}
+
 	cvQueue_.notify_one();
 }
 

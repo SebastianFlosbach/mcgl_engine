@@ -22,11 +22,7 @@ public:
 	Engine( Engine&& other ) = delete;
 	Engine& operator=( Engine&& other ) = delete;
 
-	~Engine() {
-		workerQueue_.stop();
-		glfwTerminate();
-		info( logger_, " Destroyed engine" );
-	}
+	~Engine();
 
 	inline float getDeltaTime() {
 		return deltaTime_;
@@ -108,4 +104,8 @@ private:
 	float lastFrame_ = 0.0f;
 
 	std::atomic_bool isRunning_ = false;
+
+	std::condition_variable cvDestroy_{};
+	std::mutex mEngine_{};
+	std::atomic_bool isDestroyed_ = false;
 };

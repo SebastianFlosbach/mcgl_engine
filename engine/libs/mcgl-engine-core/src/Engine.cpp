@@ -27,6 +27,15 @@ Engine::Engine( const ILogger& logger ) :
 	workerQueue_.start();
 }
 
+Engine::~Engine() {
+	std::unique_lock<std::mutex> lock( mEngine_ );
+	cvDestroy_.wait( lock, [this]() { return isDestroyed_.load(); } );
+
+	workerQueue_.stop();
+	glfwTerminate();
+	info( logger_, " Destroyed engine" );
+}
+
 void Engine::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh* mesh ) {
 	auto mesh_ptr = std::unique_ptr<mesh::Mesh>( mesh );
 
@@ -174,11 +183,13 @@ void Engine::stop() {
 }
 
 void Engine::destroy() {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::DestroyAction() ) );
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::DestroyAction() ), true );
 }
 
 void Engine::doDestroy() {
 	pAssetManager_.reset();
+	isDestroyed_ = true;
+	cvDestroy_.notify_one();
 }
 
 void Engine::doEngine() {

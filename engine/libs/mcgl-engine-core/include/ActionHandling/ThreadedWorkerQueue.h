@@ -27,7 +27,7 @@ public:
 	void start();
 	void stop();
 
-	void enqueue(T&& action);
+	void enqueue(T&& action, bool priority = false );
 
 	void registerCallback( MCGL_WORKER_QUEUE_CALLBACK callback ) {
 		callback_ = callback;
