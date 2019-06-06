@@ -8,6 +8,7 @@
 #include "Mesh/Mesh.h"
 #include "Rendering/Renderer.h"
 #include "Coordinates/WorldCoordinates.h"
+#include "CubeMap.h"
 
 
 namespace world {
@@ -40,6 +41,15 @@ namespace world {
 		*/
 		void removeMesh( const coordinates::WorldCoordinates& position );
 
+		void setSkybox( 
+			const std::string& right,
+			const std::string& left,
+			const std::string& top,
+			const std::string& bottom,
+			const std::string& front,
+			const std::string& back
+		);
+
 		/**
 			Draw all meshes at their positions.
 			\param renderer Renderer to draw with
@@ -50,6 +60,7 @@ namespace world {
 		const ILogger& logger_;
 
 		std::unordered_map<coordinates::WorldCoordinates, mesh::Mesh_ptr> meshes_;
+		CubeMap_ptr pSkybox_;
 		
 	};
 

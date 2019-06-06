@@ -29,6 +29,24 @@ void World::removeMesh( const coordinates::WorldCoordinates& position ) {
 	meshes_.erase( position );
 }
 
+void World::setSkybox(
+	const std::string& right,
+	const std::string& left,
+	const std::string& top,
+	const std::string& bottom,
+	const std::string& front,
+	const std::string& back
+) {
+	pSkybox_ = std::unique_ptr<CubeMap>( new CubeMap( {
+		right,
+		left,
+		top,
+		bottom,
+		front,
+		back
+	} ) );
+}
+
 void World::draw( Renderer& renderer ) {
 	auto size = meshes_.size();
 	for ( auto& meshData : meshes_ ) {
@@ -38,6 +56,10 @@ void World::draw( Renderer& renderer ) {
 		renderer.setModelMatrix( model );
 
 		meshData.second->draw( renderer );
+	}
+
+	if( pSkybox_ ) {
+		pSkybox_->draw( renderer );
 	}
 }
 

@@ -44,6 +44,14 @@ public:
 	void registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
 
 	void setTextures( const std::string& texturePath, NUM32 size, NUM32 textureCount );
+	void setSkyboxTexture( 
+		const std::string& right,
+		const std::string& left,
+		const std::string& top,
+		const std::string& bottom,
+		const std::string& front,
+		const std::string& back						   
+	);
 	void setShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
 
 	UNUM32 createCamera( double x, double y, double z, double pitch, double yaw, double roll = 0.0 );
@@ -72,6 +80,7 @@ private:
 	void doRemoveChunk( action::RemoveChunkAction* data );
 		 
 	void doSetTextures( action::SetTexturesAction* data );
+	void doSetSkyboxTexture( action::SetSkyboxTextureAction* data );
 	void doSetShader( action::SetShaderAction* data );
 
 	void doCreateCamera( action::CreateCameraAction* data );

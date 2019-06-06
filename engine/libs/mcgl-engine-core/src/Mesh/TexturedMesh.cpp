@@ -1,20 +1,18 @@
-#include "Mesh/Mesh.h"
-
-#include "Helper/OpenGLDebug.h"
+#include "Mesh/TexturedMesh.h"
 
 
 namespace mesh {
 
 
-Mesh::Mesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) :
+TexturedMesh::TexturedMesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) :
 	vertices_( vertices ), indices_( indices ) {
 }
 
-Mesh::Mesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices ) :
+TexturedMesh::TexturedMesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices ) :
 	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ) {
 }
 
-Mesh::Mesh( Mesh&& other ) noexcept {
+TexturedMesh::TexturedMesh( TexturedMesh&& other ) noexcept {
 	if( this == &other ) {
 		return;
 	}
@@ -35,17 +33,17 @@ Mesh::Mesh( Mesh&& other ) noexcept {
 	isValid_ = false;
 }
 
-Mesh& Mesh::operator=( Mesh&& other ) noexcept {
+TexturedMesh& TexturedMesh::operator=( TexturedMesh&& other ) noexcept {
 	return std::move( other );
 }
 
-Mesh::~Mesh() {
+TexturedMesh::~TexturedMesh() {
 	glDeleteBuffers( 1, &hVertexBuffer_ );
 	glDeleteBuffers( 1, &hElementBuffer_ );
 	glDeleteVertexArrays( 1, &hVertexArray_ );
 }
 
-void Mesh::generateGLData() {
+void TexturedMesh::generateGLData() {
 
 	if( !isBufferGenerated_ ) {
 		glGenBuffers( 1, &hVertexBuffer_ );
@@ -78,9 +76,7 @@ void Mesh::generateGLData() {
 	isValid_ = true;
 }
 
-void Mesh::draw( Renderer& renderer ) {
-	renderer.use();
-
+void TexturedMesh::draw() {
 	std::lock_guard<std::mutex> lock( mMesh_ );
 
 	if( !isValid_ ) {
@@ -90,7 +86,9 @@ void Mesh::draw( Renderer& renderer ) {
 	glBindVertexArray( hVertexArray_ );
 	glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
+
 	glDrawElements( GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0 );
+
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
 	glBindVertexArray( 0 );

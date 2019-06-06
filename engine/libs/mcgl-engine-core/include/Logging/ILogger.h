@@ -3,6 +3,10 @@
 #include <string>
 #include <spdlog/spdlog.h>
 
+
+namespace logging {
+
+
 class ILogger {
 public:
 	ILogger() = default;
@@ -19,3 +23,6 @@ void error( const ILogger& logger, const std::string& message );
 void critical( const ILogger& logger, const std::string& message );
 
 char* to_string( spdlog::level::level_enum level );
+
+
+}

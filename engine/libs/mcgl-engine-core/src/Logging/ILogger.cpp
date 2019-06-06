@@ -1,5 +1,10 @@
 #include "Logging/ILogger.h"
 
+
+namespace logging {
+
+
+
 void trace( const ILogger& logger, const std::string& message ) {
 	logger.log( spdlog::level::level_enum::trace, message );
 }
@@ -44,4 +49,6 @@ char* to_string( spdlog::level::level_enum level ) {
 		default:
 			return "<undefined>";
 	}
+}
+
 }

@@ -1,8 +1,9 @@
-#ifdef NOT
 #pragma once
 #include "glad/glad.h"
 
 #include <vector>
+
+#include "Rendering/Renderer.h"
 
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
@@ -20,10 +21,10 @@ public:
 	}
 
 private:
-	unsigned int hCubeMap_;
+	UNUM32 hCubeMap_;
 
-	unsigned int loadCubemap( const std::vector<std::string>& faces ) {
-		unsigned int textureID;
+	UNUM32 loadCubemap( const std::vector<std::string>& faces ) {
+		UNUM32 textureID;
 		glGenTextures( 1, &textureID );
 		glBindTexture( GL_TEXTURE_CUBE_MAP, textureID );
 
@@ -48,4 +49,5 @@ private:
 		return textureID;
 	}
 };
-#endif
+
+typedef std::unique_ptr<CubeMap> CubeMap_ptr;

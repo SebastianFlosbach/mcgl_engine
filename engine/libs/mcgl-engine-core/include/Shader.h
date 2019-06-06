@@ -6,17 +6,37 @@
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Definition/mcgl_engine_def.h"
 
 
+enum class ShaderType {
+	Chunk,
+	Skybox
+};
+
+namespace std {
+	std::string to_string( ShaderType type ) {
+		switch( type )
+		{
+		case ShaderType::Chunk:
+			return "Chunk";
+		case ShaderType::Skybox:
+			return "Skybox";
+		default:
+			return "<invalid>";
+		}
+	}
+}
+
 class Shader {
 public:
 	// Default constructor
 	Shader();
+
+	~Shader();
 
 	// Copy constructor
 	Shader( const Shader& other ) = delete;
@@ -26,7 +46,6 @@ public:
 	Shader( Shader&& other ) noexcept;
 	Shader& operator=( Shader&& other ) noexcept;
 
-	~Shader();
 
 	unsigned int id() const {
 		return hShaderProgramm_;

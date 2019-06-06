@@ -8,10 +8,10 @@
 namespace chunk {
 namespace builder {
 
-ChunkMeshBuilder::ChunkMeshBuilder( const ILogger& logger ) : logger_( logger ) {
+ChunkMeshBuilder::ChunkMeshBuilder( const logging::ILogger& logger ) : logger_( logger ) {
 }
 
-ChunkMeshBuilder::ChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas ) :
+ChunkMeshBuilder::ChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas ) :
 	logger_( logger ), pBlockLibrary_( blockLibrary ), pTextureAtlas_( textureAtlas ) {
 }
 

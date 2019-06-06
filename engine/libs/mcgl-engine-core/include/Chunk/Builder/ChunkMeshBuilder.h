@@ -23,14 +23,14 @@ namespace builder {
 */
 class ChunkMeshBuilder : public IChunkMeshBuilder {
 public:
-	ChunkMeshBuilder( const ILogger& logger );
+	ChunkMeshBuilder( const logging::ILogger& logger );
 
 	/**
 		Create a ChunkMeshBuilder that uses a specific block library and texture atlas
 		\param blockLibrary BlockLibrary for interpreting chunk data
 		\param textureAtlas TextureAtlas to use for the mesh
 	*/
-	ChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
+	ChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
 
 	/**
 
@@ -54,7 +54,7 @@ public:
 	virtual void deregisterCallback() override;
 
 protected:
-	const ILogger& logger_;
+	const logging::ILogger& logger_;
 
 private:
 	const block::BlockLibrary* pBlockLibrary_;
