@@ -37,12 +37,14 @@ private:
 	UNUM32 hVertexArray_{ 0 };
 	UNUM32 hElementBuffer_{ 0 };
 
-	std::vector<Vertex> vertices_;
+	std::vector<VertexT> vertices_;
 	std::vector<UNUM32> indices_;
 
 	void generateGLData();
 
 };
+
+typedef std::unique_ptr<TexturedMesh> TexturedMesh_ptr;
 
 
 }

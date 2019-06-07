@@ -4,11 +4,8 @@
 #include <vector>
 
 #include "Rendering/Renderer.h"
+#include "Texture/StbImageWrapper.h"
 
-#ifndef STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-#endif
 
 struct CubeMap {
 public:
@@ -30,7 +27,7 @@ private:
 
 		int width, height, nrChannels;
 		for ( unsigned int i = 0; i < faces.size(); i++ ) {
-			unsigned char *data = stbi_load( faces[i].c_str(), &width, &height, &nrChannels, 0 );
+			unsigned char *data = texture::createImageData( faces[i].c_str(), width, height, false );
 			if ( data ) {
 				glTexImage2D( GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
 							  0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
@@ -38,7 +35,7 @@ private:
 			} else {
 				std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
 			}
-			stbi_image_free( data );
+			texture::destroyImageData( data );
 		}
 		glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 		glTexParameteri( GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR );

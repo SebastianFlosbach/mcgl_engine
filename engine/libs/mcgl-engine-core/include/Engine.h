@@ -14,7 +14,7 @@
 
 class Engine {
 public:
-	Engine( const ILogger& logger );
+	Engine( const logging::ILogger& logger );
 
 	Engine( const Engine& other ) = delete;
 	Engine& operator=( const Engine& other ) = delete;
@@ -64,7 +64,7 @@ public:
 	void destroy();
 
 private:
-	void addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh* mesh );
+	void addMesh( const coordinates::WorldCoordinates& position, mesh::TexturedMesh* mesh );
 	void doAddMesh( action::AddMeshAction* data );
 
 	void doAction( action::Action* action );
@@ -92,7 +92,7 @@ private:
 
 	void doDestroy();
 
-	const ILogger& logger_;
+	const logging::ILogger& logger_;
 
 	ThreadedWorkerQueue<action::Action_ptr> workerQueue_{};
 

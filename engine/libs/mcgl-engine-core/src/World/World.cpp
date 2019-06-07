@@ -5,7 +5,7 @@
 namespace world {
 
 
-void World::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh_ptr&& mesh ) {
+void World::addMesh( const coordinates::WorldCoordinates& position, mesh::TexturedMesh_ptr&& mesh ) {
 	auto it = meshes_.find( position );
 	
 	if( it != meshes_.end() ) {
@@ -37,7 +37,7 @@ void World::setSkybox(
 	const std::string& front,
 	const std::string& back
 ) {
-	pSkybox_ = std::unique_ptr<CubeMap>( new CubeMap( {
+	pSkybox_ = std::unique_ptr<Skybox>( new Skybox( {
 		right,
 		left,
 		top,
@@ -55,7 +55,7 @@ void World::draw( Renderer& renderer ) {
 
 		renderer.setModelMatrix( model );
 
-		meshData.second->draw( renderer );
+		meshData.second->draw();
 	}
 
 	if( pSkybox_ ) {

@@ -17,6 +17,14 @@ MCGL_ENGINE_EXTERN void MCGLCreateWindow( NUM32 width, NUM32 height, const std::
 MCGL_ENGINE_EXTERN void MCGLCloseWindow();
 MCGL_ENGINE_EXTERN void MCGLRegisterBlockType( const chunk::block::Block& block );
 MCGL_ENGINE_EXTERN void MCGLSetTextures( const std::string& path, UNUM32 textureSize, UNUM32 textureCount );
+MCGL_ENGINE_EXTERN void MCGLSetSkyboxTextures( 
+	const std::string& right,
+	const std::string& left,
+	const std::string& top,
+	const std::string& bottom,
+	const std::string& front,
+	const std::string& back 
+);
 MCGL_ENGINE_EXTERN void MCGLSetShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
 
 MCGL_ENGINE_EXTERN void MCGLAddChunk( const chunk::Chunk& chunk );

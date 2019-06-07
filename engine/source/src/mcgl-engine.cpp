@@ -10,12 +10,12 @@
 const std::string loggerName { "mcgl_file_logger" };
 const std::string loggerPath { "logs/mcgllog.log" };
 
-std::unique_ptr<SpdFileLogger> logger;
+std::unique_ptr<logging::SpdFileLogger> logger;
 std::unique_ptr<Engine> engine;
 
 
 void MCGLCreateEngine() {
-	logger = std::make_unique<SpdFileLogger>( loggerName, loggerPath );
+	logger = std::make_unique<logging::SpdFileLogger>( loggerName, loggerPath );
 	info( *logger, "[MCGL-ENGINE] CreateEngine" );
 
 	engine = std::make_unique<Engine>( *logger );
@@ -92,6 +92,31 @@ void MCGLSetTextures( const std::string& path, UNUM32 textureSize, UNUM32 textur
 	info(*logger, "[MCGL-ENGINE] SetTextures");
 
 	engine->setTextures( path, textureSize, textureCount );
+}
+
+void MCGLSetSkyboxTextures(
+	const std::string& right,
+	const std::string& left,
+	const std::string& top,
+	const std::string& bottom,
+	const std::string& front,
+	const std::string& back
+) {
+	if( !engine ) {
+		error( *logger, "[MCGL-ENGINE] SetSkyboxTextures: Engine not created!" );
+		return;
+	}
+
+	info( *logger, "[MCGL-ENGINE] SetSkyboxTextures" );
+
+	engine->setSkyboxTexture(
+		right,
+		left,
+		top,
+		bottom,
+		front,
+		back
+	);
 }
 
 void MCGLSetShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {

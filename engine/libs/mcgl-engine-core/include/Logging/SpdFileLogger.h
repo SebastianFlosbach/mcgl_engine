@@ -6,6 +6,10 @@
 #include <fstream>
 #include <stdlib.h>
 
+
+namespace logging {
+
+
 class SpdFileLogger : public ILogger {
 public:
 	SpdFileLogger( const std::string& name, const std::string& path ) {
@@ -34,3 +38,6 @@ public:
 private:
 	std::shared_ptr<spdlog::logger> logger_;
 };
+
+
+}

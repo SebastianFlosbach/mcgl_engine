@@ -4,6 +4,10 @@
 
 #include <iostream>
 
+
+namespace logging {
+
+
 class ConsoleLogger : public ILogger {
 public:
 	ConsoleLogger() = default;
@@ -20,3 +24,6 @@ private:
 	spdlog::level::level_enum logLevel_{ spdlog::level::level_enum::debug };
 
 };
+
+
+}

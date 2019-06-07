@@ -3,7 +3,6 @@
 #include <future>
 #include <ctpl_stl.h>
 
-#include "Mesh/Mesh.h"
 #include "Chunk/Builder/ChunkMeshBuilder.h"
 #include "Chunk/ChunkCollection.h"
 #include "Coordinates/ChunkCoordinates.h"
@@ -20,7 +19,7 @@ namespace builder {
 class ThreadedChunkMeshBuilder : public ChunkMeshBuilder {
 public:
 
-	ThreadedChunkMeshBuilder( const ILogger& logger, UNUM32 threadCount );
+	ThreadedChunkMeshBuilder( const logging::ILogger& logger, UNUM32 threadCount );
 
 	/**
 		Create ThreadedChunkMeshBuilder.
@@ -28,7 +27,7 @@ public:
 		\param textureAtlas TextureAtlas to use for the mesh
 		\param threadCount Number of threads the builder is allowed to use
 	*/
-	ThreadedChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount );
+	ThreadedChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount );
 
 	/**
 		

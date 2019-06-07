@@ -7,7 +7,7 @@
 #include "Texture/TextureAtlas.h"
 #include "Coordinates/ChunkCoordinates.h"
 #include "Chunk/ChunkCollection.h"
-#include "Mesh/Mesh.h"
+#include "Mesh/TexturedMesh.h"
 
 
 namespace chunk {
@@ -18,7 +18,7 @@ namespace builder {
 	\param position Position of the chunk the mesh was build from
 	\param mesh Pointer to the generated mesh
 */
-typedef std::function<void( const coordinates::ChunkCoordinates& position, mesh::Mesh* mesh )> CHUNK_MESH_BUILDER_CALLBACK;
+typedef std::function<void( const coordinates::ChunkCoordinates& position, mesh::TexturedMesh* mesh )> CHUNK_MESH_BUILDER_CALLBACK;
 
 class IChunkMeshBuilder {
 public:

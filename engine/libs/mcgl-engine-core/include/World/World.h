@@ -5,10 +5,10 @@
 #include <vector>
 
 #include "Logging/ILogger.h"
-#include "Mesh/Mesh.h"
+#include "Mesh/TexturedMesh.h"
 #include "Rendering/Renderer.h"
 #include "Coordinates/WorldCoordinates.h"
-#include "CubeMap.h"
+#include "Skybox.h"
 
 
 namespace world {
@@ -18,7 +18,7 @@ namespace world {
 	*/
 	class World {
 	public:
-		World( const ILogger& logger ) : logger_( logger ) {}
+		World( const logging::ILogger& logger ) : logger_( logger ) {}
 
 		~World() = default;
 
@@ -33,7 +33,7 @@ namespace world {
 			\param position Position of the mesh inside the world
 			\param mesh Mesh to add to the world
 		*/
-		void addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh_ptr&& mesh );
+		void addMesh( const coordinates::WorldCoordinates& position, mesh::TexturedMesh_ptr&& mesh );
 
 		/**
 			Remove a mesh from the world.
@@ -57,10 +57,10 @@ namespace world {
 		void draw( Renderer& renderer );
 		
 	private:
-		const ILogger& logger_;
+		const logging::ILogger& logger_;
 
-		std::unordered_map<coordinates::WorldCoordinates, mesh::Mesh_ptr> meshes_;
-		CubeMap_ptr pSkybox_;
+		std::unordered_map<coordinates::WorldCoordinates, mesh::TexturedMesh_ptr> meshes_;
+		Skybox_ptr pSkybox_;
 		
 	};
 

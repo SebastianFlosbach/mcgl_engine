@@ -34,7 +34,7 @@ void ChunkMeshBuilder::addIndices( std::vector<UNUM32>& indices, UNUM32& indexBa
 	indexBase += 4;
 }
 
-void ChunkMeshBuilder::left		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<Vertex>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::left		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	// Check neighbouring chunk
@@ -52,16 +52,16 @@ void ChunkMeshBuilder::left		( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).leftTextureId_ );
 
 		vertices.reserve( 4 );
-		vertices.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { texCoords[0], texCoords[1] } } );
-		vertices.push_back( { { x + 0.0f, y + 0.0f, z + 0.0f }, { texCoords[2], texCoords[3] } } );
-		vertices.push_back( { { x + 0.0f, y + 1.0f, z + 0.0f }, { texCoords[4], texCoords[5] } } );
-		vertices.push_back( { { x + 0.0f, y + 1.0f, z + 1.0f }, { texCoords[6], texCoords[7] } } );
+		vertices.push_back( { x + 0.0f, y + 0.0f, z + 1.0f, texCoords[0], texCoords[1] } );
+		vertices.push_back( { x + 0.0f, y + 0.0f, z + 0.0f, texCoords[2], texCoords[3] } );
+		vertices.push_back( { x + 0.0f, y + 1.0f, z + 0.0f, texCoords[4], texCoords[5] } );
+		vertices.push_back( { x + 0.0f, y + 1.0f, z + 1.0f, texCoords[6], texCoords[7] } );
 
 		addIndices( indices, indexBase );
 	}
 }
-								  		   																																	  					  										  
-void ChunkMeshBuilder::right	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<Vertex>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+								  		   																																	  					 									  
+void ChunkMeshBuilder::right	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	if( x == CHUNK_WIDTH - 1 ) {
@@ -78,16 +78,16 @@ void ChunkMeshBuilder::right	( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).rightTextureId_ );
 
 		vertices.reserve( 4 );
-		vertices.push_back( { { x + 1.0f, y + 0.0f, z + 0.0f }, { texCoords[0], texCoords[1] } } );
-		vertices.push_back( { { x + 1.0f, y + 0.0f, z + 1.0f }, { texCoords[2], texCoords[3] } } );
-		vertices.push_back( { { x + 1.0f, y + 1.0f, z + 1.0f }, { texCoords[4], texCoords[5] } } );
-		vertices.push_back( { { x + 1.0f, y + 1.0f, z + 0.0f }, { texCoords[6], texCoords[7] } } );
+		vertices.push_back( { x + 1.0f, y + 0.0f, z + 0.0f, texCoords[0], texCoords[1] } );
+		vertices.push_back( { x + 1.0f, y + 0.0f, z + 1.0f, texCoords[2], texCoords[3] } );
+		vertices.push_back( { x + 1.0f, y + 1.0f, z + 1.0f, texCoords[4], texCoords[5] } );
+		vertices.push_back( { x + 1.0f, y + 1.0f, z + 0.0f, texCoords[6], texCoords[7] } );
 
 		addIndices( indices, indexBase );
 	}
 }
 								  		   																																	  					  										  
-void ChunkMeshBuilder::top		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<Vertex>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::top		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	neighbourId = chunk.getBlockId( x, y + 1, z );
@@ -95,16 +95,16 @@ void ChunkMeshBuilder::top		( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chun
 		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).topTextureId_ );
 
 		vertices.reserve( 4 );
-		vertices.push_back( { { x + 0.0f, y + 1.0f, z + 0.0f }, { texCoords[0], texCoords[1] } } );
-		vertices.push_back( { { x + 1.0f, y + 1.0f, z + 0.0f }, { texCoords[2], texCoords[3] } } );
-		vertices.push_back( { { x + 1.0f, y + 1.0f, z + 1.0f }, { texCoords[4], texCoords[5] } } );
-		vertices.push_back( { { x + 0.0f, y + 1.0f, z + 1.0f }, { texCoords[6], texCoords[7] } } );
+		vertices.push_back( { x + 0.0f, y + 1.0f, z + 0.0f, texCoords[0], texCoords[1] } );
+		vertices.push_back( { x + 1.0f, y + 1.0f, z + 0.0f, texCoords[2], texCoords[3] } );
+		vertices.push_back( { x + 1.0f, y + 1.0f, z + 1.0f, texCoords[4], texCoords[5] } );
+		vertices.push_back( { x + 0.0f, y + 1.0f, z + 1.0f, texCoords[6], texCoords[7] } );
 
 		addIndices( indices, indexBase );
 	}
 }
 								  		   																																	 					 										  
-void ChunkMeshBuilder::bottom	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<Vertex>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::bottom	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	neighbourId = chunk.getBlockId( x, y - 1, z );
@@ -112,16 +112,16 @@ void ChunkMeshBuilder::bottom	( NUM32 x, NUM32 y, NUM32 z, const coordinates::Ch
 		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).bottomTextureId_ );
 
 		vertices.reserve( 4 );
-		vertices.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { texCoords[0], texCoords[1] } } );
-		vertices.push_back( { { x + 1.0f, y + 0.0f, z + 1.0f }, { texCoords[2], texCoords[3] } } );
-		vertices.push_back( { { x + 1.0f, y + 0.0f, z + 0.0f }, { texCoords[4], texCoords[5] } } );
-		vertices.push_back( { { x + 0.0f, y + 0.0f, z + 0.0f }, { texCoords[6], texCoords[7] } } );
+		vertices.push_back( { x + 0.0f, y + 0.0f, z + 1.0f, texCoords[0], texCoords[1] } );
+		vertices.push_back( { x + 1.0f, y + 0.0f, z + 1.0f, texCoords[2], texCoords[3] } );
+		vertices.push_back( { x + 1.0f, y + 0.0f, z + 0.0f, texCoords[4], texCoords[5] } );
+		vertices.push_back( { x + 0.0f, y + 0.0f, z + 0.0f, texCoords[6], texCoords[7] } );
 
 		addIndices( indices, indexBase );
 	}
 }
 								  		   																																	 					  										  
-void ChunkMeshBuilder::front	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<Vertex>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::front	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	if( z == 0 ) {
@@ -138,16 +138,16 @@ void ChunkMeshBuilder::front	( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).frontTextureId_ );
 
 		vertices.reserve( 4 );
-		vertices.push_back( { { x + 0.0f, y + 0.0f, z + 0.0f }, { texCoords[0], texCoords[1] } } );
-		vertices.push_back( { { x + 1.0f, y + 0.0f, z + 0.0f }, { texCoords[2], texCoords[3] } } );
-		vertices.push_back( { { x + 1.0f, y + 1.0f, z + 0.0f }, { texCoords[4], texCoords[5] } } );
-		vertices.push_back( { { x + 0.0f, y + 1.0f, z + 0.0f }, { texCoords[6], texCoords[7] } } );
+		vertices.push_back( { x + 0.0f, y + 0.0f, z + 0.0f, texCoords[0], texCoords[1] } );
+		vertices.push_back( { x + 1.0f, y + 0.0f, z + 0.0f, texCoords[2], texCoords[3] } );
+		vertices.push_back( { x + 1.0f, y + 1.0f, z + 0.0f, texCoords[4], texCoords[5] } );
+		vertices.push_back( { x + 0.0f, y + 1.0f, z + 0.0f, texCoords[6], texCoords[7] } );
 
 		addIndices( indices, indexBase );
 	}
 }
 								  		   																																	 					  										  
-void ChunkMeshBuilder::back		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<Vertex>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::back		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	if( z == CHUNK_LENGTH - 1 ) {
@@ -164,10 +164,10 @@ void ChunkMeshBuilder::back		( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 		auto texCoords = pTextureAtlas_->getTextureCoords( pBlockLibrary_->getBlock( blockId ).backTextureId_ );
 
 		vertices.reserve( 4 );
-		vertices.push_back( { { x + 1.0f, y + 0.0f, z + 1.0f }, { texCoords[0], texCoords[1] } } );
-		vertices.push_back( { { x + 0.0f, y + 0.0f, z + 1.0f }, { texCoords[2], texCoords[3] } } );
-		vertices.push_back( { { x + 0.0f, y + 1.0f, z + 1.0f }, { texCoords[4], texCoords[5] } } );
-		vertices.push_back( { { x + 1.0f, y + 1.0f, z + 1.0f }, { texCoords[6], texCoords[7] } } );
+		vertices.push_back( { x + 1.0f, y + 0.0f, z + 1.0f, texCoords[0], texCoords[1] } );
+		vertices.push_back( { x + 0.0f, y + 0.0f, z + 1.0f, texCoords[2], texCoords[3] } );
+		vertices.push_back( { x + 0.0f, y + 1.0f, z + 1.0f, texCoords[4], texCoords[5] } );
+		vertices.push_back( { x + 1.0f, y + 1.0f, z + 1.0f, texCoords[6], texCoords[7] } );
 
 		addIndices( indices, indexBase );
 	}
@@ -184,7 +184,7 @@ void ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, con
 		return;
 	}
 
-	std::vector<Vertex> vertices;
+	std::vector<VertexT> vertices;
 	std::vector<UNUM32> indices;
 	UNUM32 indexBase = 0;
 
@@ -218,7 +218,7 @@ void ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, con
 	}
 
 	if( callback_ ) {
-		callback_( position, new mesh::Mesh( std::move( vertices ), std::move( indices ) ) );
+		callback_( position, new mesh::TexturedMesh( std::move( vertices ), std::move( indices ) ) );
 	}
 }
 
@@ -229,6 +229,7 @@ void ChunkMeshBuilder::registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback )
 void ChunkMeshBuilder::deregisterCallback() {
 	callback_ = NULL;
 }
+
 
 }
 }

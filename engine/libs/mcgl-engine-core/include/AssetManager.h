@@ -10,11 +10,11 @@
 
 class AssetManager {
 public:
-	AssetManager( const ILogger& logger ) {
+	AssetManager( const logging::ILogger& logger ) {
 		pBlockLibrary_ = std::make_unique<chunk::block::BlockLibrary>();
 		pChunkCollection_ = std::make_unique<chunk::ChunkCollection>();
 		pWorld_ = std::make_unique<world::World>( logger );
-		pRenderer_ = std::make_unique<Renderer>();
+		pRenderer_ = std::make_unique<Renderer>( logger );
 	}
 
 	~AssetManager() = default;

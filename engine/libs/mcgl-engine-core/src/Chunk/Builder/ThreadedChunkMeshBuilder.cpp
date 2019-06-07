@@ -10,10 +10,10 @@ namespace chunk {
 namespace builder{
 
 
-ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const ILogger& logger, UNUM32 threadCount ) : ChunkMeshBuilder( logger ), threadPool_( threadCount ) {
+ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const logging::ILogger& logger, UNUM32 threadCount ) : ChunkMeshBuilder( logger ), threadPool_( threadCount ) {
 }
 
-ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount ) :
+ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount ) :
 	ChunkMeshBuilder( logger, blockLibrary, textureAtlas ),
 	threadPool_( threadCount ) {
 }

@@ -1,14 +1,17 @@
 #include "Mesh/TexturedMesh.h"
 
+#include <glad/glad.h>
+#include <glfw/glfw3.h>
+
 
 namespace mesh {
 
 
-TexturedMesh::TexturedMesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) :
+TexturedMesh::TexturedMesh( const std::vector<VertexT>& vertices, const std::vector<UNUM32>& indices ) :
 	vertices_( vertices ), indices_( indices ) {
 }
 
-TexturedMesh::TexturedMesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices ) :
+TexturedMesh::TexturedMesh( std::vector<VertexT>&& vertices, std::vector<UNUM32>&& indices ) :
 	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ) {
 }
 
@@ -67,7 +70,7 @@ void TexturedMesh::generateGLData() {
 
 	// vertex texture coords
 	glEnableVertexAttribArray( 1 );
-	glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*)offsetof( Vertex, texCoords_ ) );
+	glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*)offsetof( VertexT, texCoords_ ) );
 
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );

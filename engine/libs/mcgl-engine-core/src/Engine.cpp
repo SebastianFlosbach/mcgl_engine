@@ -16,7 +16,7 @@
 #include "Coordinates/WorldCoordinates.h"
 
 
-Engine::Engine( const ILogger& logger ) :
+Engine::Engine( const logging::ILogger& logger ) :
 	logger_( logger ),
 	pWindow_( Window::create() ) {
 
@@ -36,8 +36,8 @@ Engine::~Engine() {
 	info( logger_, " Destroyed engine" );
 }
 
-void Engine::addMesh( const coordinates::WorldCoordinates& position, mesh::Mesh* mesh ) {
-	auto mesh_ptr = std::unique_ptr<mesh::Mesh>( mesh );
+void Engine::addMesh( const coordinates::WorldCoordinates& position, mesh::TexturedMesh* mesh ) {
+	auto mesh_ptr = std::unique_ptr<mesh::TexturedMesh>( mesh );
 
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddMeshAction( position, std::move( mesh_ptr ) ) ) );
 }
@@ -240,7 +240,7 @@ void Engine::doEngine() {
 	}
 
 	pAssetManager_->getChunkMeshBuilder()->setBlockLibrary( pAssetManager_->getBlockLibrary() );
-	pAssetManager_->getChunkMeshBuilder()->registerCallback( chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const coordinates::ChunkCoordinates& position, mesh::Mesh* mesh ) {
+	pAssetManager_->getChunkMeshBuilder()->registerCallback( chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const coordinates::ChunkCoordinates& position, mesh::TexturedMesh* mesh ) {
 		addMesh( position.toWorldCoordinates(), mesh );
 	} ) );
 
@@ -327,7 +327,7 @@ void Engine::doSetShader( action::SetShaderAction* data ) {
 	shader.addFragmentShader( data->fragmentShaderPath_ );
 	shader.compile();
 
-	pAssetManager_->getRenderer()->setShader( std::move( shader ) );
+	pAssetManager_->getRenderer()->setShader( std::move( shader ), ShaderType::Chunk );
 }
 
 void Engine::doCreateCamera( action::CreateCameraAction* data ) {
