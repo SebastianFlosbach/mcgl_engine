@@ -13,6 +13,20 @@ const char* to_string( const GLenum type ) {
 	}
 }
 
+namespace std {
+	std::string to_string( ShaderType type ) {
+		switch( type )
+		{
+		case ShaderType::Chunk:
+			return "Chunk";
+		case ShaderType::Skybox:
+			return "Skybox";
+		default:
+			return "<invalid>";
+		}
+	}
+}
+
 Shader::Shader() {
 	hShaderProgramm_ = glCreateProgram();
 }

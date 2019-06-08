@@ -4,6 +4,7 @@ project( "mcgl-engine" )
 
 file( GLOB "SOURCES"	"include/*.h" "include/*.cpp"
 						"src/*.h" "src/*.cpp"
+						"res/*.rc"
 )
 
 add_definitions( -DMCGL_ENGINE_EXPORTS )

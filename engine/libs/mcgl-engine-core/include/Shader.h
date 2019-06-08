@@ -18,17 +18,7 @@ enum class ShaderType {
 };
 
 namespace std {
-	std::string to_string( ShaderType type ) {
-		switch( type )
-		{
-		case ShaderType::Chunk:
-			return "Chunk";
-		case ShaderType::Skybox:
-			return "Skybox";
-		default:
-			return "<invalid>";
-		}
-	}
+	std::string to_string( ShaderType type );
 }
 
 class Shader {
