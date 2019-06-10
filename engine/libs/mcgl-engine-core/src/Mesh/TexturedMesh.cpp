@@ -59,18 +59,18 @@ void TexturedMesh::generateGLData() {
 	glBindVertexArray( hVertexArray_ );
 	glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
 
-	glBufferData( GL_ARRAY_BUFFER, vertices_.size() * sizeof( Vertex ), &vertices_[0], GL_DYNAMIC_DRAW );
+	glBufferData( GL_ARRAY_BUFFER, vertices_.size() * sizeof( VertexT ), &vertices_[0], GL_DYNAMIC_DRAW );
 
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof( unsigned int ), &indices_[0], GL_DYNAMIC_DRAW );
 
 	// vertex positions
 	glEnableVertexAttribArray( 0 );
-	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*)0 );
+	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof( VertexT ), (void*)0 );
 
 	// vertex texture coords
 	glEnableVertexAttribArray( 1 );
-	glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*)offsetof( VertexT, texCoords_ ) );
+	glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, sizeof( VertexT ), (void*)offsetof( VertexT, texCoords_ ) );
 
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );

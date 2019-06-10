@@ -1,7 +1,7 @@
 #include "mcgl-engine.h"
 
 #include <Engine.h>
-#include <Logging/SpdFileLogger.h>
+#include <Logging/ConsoleLogger.h>
 #include <ActionHandling/ThreadedWorkerQueue.h>
 #include <ActionHandling/actions.h>
 #include <future>
@@ -10,12 +10,12 @@
 const std::string loggerName { "mcgl_file_logger" };
 const std::string loggerPath { "logs/mcgllog.log" };
 
-std::unique_ptr<logging::SpdFileLogger> logger;
+std::unique_ptr<logging::ConsoleLogger> logger;
 std::unique_ptr<Engine> engine;
 
 
 void MCGLCreateEngine() {
-	logger = std::make_unique<logging::SpdFileLogger>( loggerName, loggerPath );
+	logger = std::make_unique<logging::ConsoleLogger>( /*loggerName, loggerPath*/ );
 	info( *logger, "[MCGL-ENGINE] CreateEngine" );
 
 	engine = std::make_unique<Engine>( *logger );
@@ -128,6 +128,17 @@ void MCGLSetShader( const std::string& vertexShaderPath, const std::string& frag
 	info(*logger, "[MCGL-ENGINE] SetShader");
 
 	engine->setShader( vertexShaderPath, fragmentShaderPath );
+}
+
+void MCGLSetSkyboxShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
+	if( !engine ) {
+		error( *logger, "[MCGL-ENGINE] SetShader: Engine not created!" );
+		return;
+	}
+
+	info( *logger, "[MCGL-ENGINE] SetSkyboxShader" );
+
+	engine->setSkyboxShader( vertexShaderPath, fragmentShaderPath );
 }
 
 void MCGLAddChunk( const chunk::Chunk& chunk ) {

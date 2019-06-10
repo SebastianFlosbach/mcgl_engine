@@ -6,6 +6,8 @@
 #include "Rendering/Renderer.h"
 #include "Texture/StbImageWrapper.h"
 
+#include "Helper/OpenGLDebug.h"
+
 
 struct CubeMap {
 public:

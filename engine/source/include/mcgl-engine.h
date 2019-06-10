@@ -26,6 +26,7 @@ MCGL_ENGINE_EXTERN void MCGLSetSkyboxTextures(
 	const std::string& back 
 );
 MCGL_ENGINE_EXTERN void MCGLSetShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
+MCGL_ENGINE_EXTERN void MCGLSetSkyboxShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
 
 MCGL_ENGINE_EXTERN void MCGLAddChunk( const chunk::Chunk& chunk );
 MCGL_ENGINE_EXTERN void MCGLRemoveChunk( NUM32 x, NUM32 z );

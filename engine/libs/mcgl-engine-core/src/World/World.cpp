@@ -48,17 +48,18 @@ void World::setSkybox(
 }
 
 void World::draw( Renderer& renderer ) {
-	auto size = meshes_.size();
 	for ( auto& meshData : meshes_ ) {
 		glm::mat4 model = glm::mat4( 1.0f );
 		model = glm::translate( model, meshData.first.toVec3() );
 
 		renderer.setModelMatrix( model );
 
+		renderer.use( ShaderType::Chunk );
 		meshData.second->draw();
 	}
 
 	if( pSkybox_ ) {
+		renderer.use( ShaderType::Skybox );
 		pSkybox_->draw( renderer );
 	}
 }

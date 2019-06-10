@@ -151,6 +151,15 @@ int main() {
 
 	MCGLSetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
 	MCGLSetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
+	MCGLSetSkyboxTextures(
+		"../resources/textures/skybox/right.jpg",
+		"../resources/textures/skybox/left.jpg",
+		"../resources/textures/skybox/top.jpg",
+		"../resources/textures/skybox/bottom.jpg",
+		"../resources/textures/skybox/front.jpg",
+		"../resources/textures/skybox/left.jpg"
+	);
+	MCGLSetSkyboxShader( "../resources/shaders/skyboxVertexShader", "../resources/shaders/skyboxFragmentShader" );
 
 	MCGLRegisterBlockType( { 0, true } );
 	MCGLRegisterBlockType( { 1, false, 2, 2, 2, 2, 0, 1 } );

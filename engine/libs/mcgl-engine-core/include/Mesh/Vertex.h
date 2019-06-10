@@ -4,15 +4,14 @@
 
 
 struct Vertex {
-	Vertex( float x, float y, float z ) : position_( x, y, z ) {}
-	virtual ~Vertex() = default;
+	Vertex( float x, float y, float z ) : position_( x, y, z ){}
 
 	glm::vec3 position_;
 };
 
-struct VertexT : public Vertex {
-	VertexT( float x, float y, float z, float t, float u ) : Vertex( x, y, z ), texCoords_( t, u ) {}
-	virtual ~VertexT() = default;
+struct VertexT {
+	VertexT( float x, float y, float z, float t, float r ) : position_( x, y, z ), texCoords_( t, r ){}
 
+	glm::vec3 position_;
 	glm::vec2 texCoords_;
 };

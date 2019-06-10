@@ -1,6 +1,11 @@
-#include "Shader.h"
+#include "Rendering/Shader/Shader.h"
 
 #include <iostream>
+
+
+namespace rendering {
+namespace shader {
+
 
 const char* to_string( const GLenum type ) {
 	switch ( type ) {
@@ -11,51 +16,6 @@ const char* to_string( const GLenum type ) {
 		default:
 			return "<UNKNOWN>";
 	}
-}
-
-namespace std {
-	std::string to_string( ShaderType type ) {
-		switch( type )
-		{
-		case ShaderType::Chunk:
-			return "Chunk";
-		case ShaderType::Skybox:
-			return "Skybox";
-		default:
-			return "<invalid>";
-		}
-	}
-}
-
-Shader::Shader() {
-	hShaderProgramm_ = glCreateProgram();
-}
-
-// Move constructor
-Shader::Shader( Shader&& other ) noexcept {
-	*this = std::move( other );
-}
-
-Shader& Shader::operator=( Shader&& other ) noexcept {
-	hShaderProgramm_ = other.hShaderProgramm_;
-	other.hShaderProgramm_ = 0;
-
-	return *this;
-}
-
-// Destructor
-Shader::~Shader() {
-	if ( hShaderProgramm_ != 0 ) {
-		glDeleteProgram( hShaderProgramm_ );
-	}
-}
-
-void Shader::addVertexShader( const std::string& path ) {
-	addShader( path, GL_VERTEX_SHADER );
-}
-
-void Shader::addFragmentShader( const std::string& path ) {
-	addShader( path, GL_FRAGMENT_SHADER );
 }
 
 void Shader::addShader( const std::string& path, GLenum type ) {
@@ -95,4 +55,8 @@ void Shader::compile() {
 		std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
 		return;
 	}
+}
+
+
+}
 }

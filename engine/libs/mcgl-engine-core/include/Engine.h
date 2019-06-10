@@ -53,6 +53,7 @@ public:
 		const std::string& back						   
 	);
 	void setShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
+	void setSkyboxShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
 
 	UNUM32 createCamera( double x, double y, double z, double pitch, double yaw, double roll = 0.0 );
 	void moveCamera( double dx, double dy, double dz );
@@ -82,6 +83,7 @@ private:
 	void doSetTextures( action::SetTexturesAction* data );
 	void doSetSkyboxTexture( action::SetSkyboxTextureAction* data );
 	void doSetShader( action::SetShaderAction* data );
+	void doSetSkyboxShader( action::SetSkyboxShaderAction* data );
 
 	void doCreateCamera( action::CreateCameraAction* data );
 	void doMoveCamera( action::MoveCameraAction* data );

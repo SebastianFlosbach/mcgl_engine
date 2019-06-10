@@ -24,4 +24,5 @@
 #include "Action/SetShaderAction.h"
 #include "Action/SetSkyboxTextureAction.h"
 #include "Action/SetTexturesAction.h"
+#include "Action/SetSkyboxShaderAction.h"
 #include "Action/StopAction.h"

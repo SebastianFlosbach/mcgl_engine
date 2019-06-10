@@ -99,8 +99,14 @@ void Engine::doAction( action::Action* action ) {
 	case action::ActionType::SetShaderAction:
 		doSetShader( static_cast<action::SetShaderAction*>( action ) );
 		break;
+	case action::ActionType::SetSkyboxShaderAction:
+		doSetSkyboxShader( static_cast<action::SetSkyboxShaderAction*>(action) );
+		break;
 	case action::ActionType::SetTexturesAction:
 		doSetTextures( static_cast<action::SetTexturesAction*>( action ) );
+		break;
+	case action::ActionType::SetSkyboxTexturesAction:
+		doSetSkyboxTexture( static_cast<action::SetSkyboxTextureAction*>(action) );
 		break;
 	case action::ActionType::StopAction:
 		doStop();
@@ -177,6 +183,19 @@ void Engine::doSetSkyboxTexture( action::SetSkyboxTextureAction* data ) {
 
 void Engine::setShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetShaderAction( vertexShaderPath, fragmentShaderPath ) ) );
+}
+
+void Engine::setSkyboxShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetSkyboxShaderAction( vertexShaderPath, fragmentShaderPath ) ) );
+}
+
+void Engine::doSetSkyboxShader( action::SetSkyboxShaderAction* data ) {
+	Shader shader = Shader();
+	shader.addVertexShader( data->vertexShaderPath_ );
+	shader.addFragmentShader( data->fragmentShaderPath_ );
+	shader.compile();
+
+	pAssetManager_->getRenderer()->setShader( std::move( shader ), ShaderType::Skybox );
 }
 
 UNUM32 Engine::createCamera( double x, double y, double z, double pitch, double yaw, double roll ) {
