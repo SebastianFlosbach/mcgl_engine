@@ -54,7 +54,7 @@ namespace world {
 			Draw all meshes at their positions.
 			\param renderer Renderer to draw with
 		*/
-		void draw( Renderer& renderer );
+		void draw( rendering::Renderer& renderer );
 		
 	private:
 		const logging::ILogger& logger_;

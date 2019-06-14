@@ -6,8 +6,17 @@
 
 #include <Logging/ILogger.h>
 #include "Texture/TextureAtlas.h"
-#include "Shader.h"
+#include "Rendering/Shader/IShader.h"
 #include "Window.h"
+
+
+namespace rendering {
+
+
+enum class ShaderType {
+	Chunk,
+	Skybox
+};
 
 
 class Renderer {
@@ -23,14 +32,14 @@ public:
 
 	~Renderer() = default;
 
-	void setShader( Shader&& shader, ShaderType type ) {
+	void setShader( shader::IShader_ptr&& shader, ShaderType type ) {
 		switch( type )
 		{
 		case ShaderType::Chunk:
-			pChunkShader_ = std::make_unique<Shader>( std::move( shader ) );
+			pChunkShader_ = std::move( shader );
 			break;
 		case ShaderType::Skybox:
-			pSkyboxShader_ = std::make_unique<Shader>( std::move( shader ) );
+			pSkyboxShader_ =  std::move( shader );
 			break;
 		default:
 			break;
@@ -38,7 +47,7 @@ public:
 		
 	}
 
-	const Shader& getShader( ShaderType type ) const {
+	shader::IShader& getShader( ShaderType type ) const {
 		switch( type )
 		{
 		case ShaderType::Chunk:
@@ -61,32 +70,56 @@ public:
 		return pTextureAtlas_;
 	}
 
-	void setModelMatrix( const glm::mat4& model ) {
-		model_ = model;
+	void setModelMatrix( const glm::mat4& model, ShaderType type ) {
+		switch( type ) {
+		case ShaderType::Chunk:
+			pChunkShader_->setUniformMat4f( "model", model );
+			break;
+		case ShaderType::Skybox:
+			pSkyboxShader_->setUniformMat4f( "model", model );
+			break;
+		default:
+			break;
+		}
 	}
 
-	void setViewMatrix( const glm::mat4& view ) {
-		view_ = view;
+	void setViewMatrix( const glm::mat4& view, ShaderType type ) {
+		useShader( type );
+		switch( type ) {
+		case ShaderType::Chunk:
+			pChunkShader_->setUniformMat4f( "view", view );
+			break;
+		case ShaderType::Skybox:
+			pSkyboxShader_->setUniformMat4f( "view", view );
+			break;
+		default:
+			break;
+		}
 	}
 
-	void setProjectionMatrix( const glm::mat4& projection ) {
-		projection_ = projection;
+	void setProjectionMatrix( const glm::mat4& projection, ShaderType type ) {
+		useShader( type );
+		switch( type ) {
+		case ShaderType::Chunk:
+			pChunkShader_->setUniformMat4f( "projection", projection );
+			break;
+		case ShaderType::Skybox:
+			pSkyboxShader_->setUniformMat4f( "projection", projection );
+			break;
+		default:
+			break;
+		}
 	}
 
-	void use( ShaderType type ) {
+	void useShader( ShaderType type ) {
 		switch( type )
 		{
 		case ShaderType::Chunk:
 			pChunkShader_->use();
-			pChunkShader_->setUniformMat4f( "model", model_ );
-			pChunkShader_->setUniformMat4f( "view", view_ );
-			pChunkShader_->setUniformMat4f( "projection", projection_ );
 			pTextureAtlas_->bind();
 			break;
 		case ShaderType::Skybox:
 			pSkyboxShader_->use();
-			pSkyboxShader_->setUniformMat4f( "view", view_ );
-			pSkyboxShader_->setUniformMat4f( "projection", projection_ );
 			break;
 		default:
 			std::stringstream errorMsg;
@@ -102,12 +135,12 @@ private:
 
 	texture::TextureAtlas_sptr pTextureAtlas_;
 
-	Shader_ptr pChunkShader_;
-	Shader_ptr pSkyboxShader_;
+	shader::IShader_ptr pChunkShader_;
+	shader::IShader_ptr pSkyboxShader_;
 
-	glm::mat4 model_ = glm::mat4( 1.0f );
-	glm::mat4 view_ = glm::mat4( 1.0f );
-	glm::mat4 projection_ = glm::perspective( glm::radians( 45.0f ), 800.f / 600.f, 0.1f, 500.0f );
 };
 
 typedef std::unique_ptr<Renderer> Renderer_ptr;
+
+
+}

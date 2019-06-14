@@ -14,7 +14,7 @@ public:
 		pBlockLibrary_ = std::make_unique<chunk::block::BlockLibrary>();
 		pChunkCollection_ = std::make_unique<chunk::ChunkCollection>();
 		pWorld_ = std::make_unique<world::World>( logger );
-		pRenderer_ = std::make_unique<Renderer>( logger );
+		pRenderer_ = std::make_unique<rendering::Renderer>( logger );
 	}
 
 	~AssetManager() = default;
@@ -39,12 +39,12 @@ public:
 		return pChunkMeshBuilder_.get();
 	}
 
-	Renderer* getRenderer() {
+	rendering::Renderer* getRenderer() {
 		return pRenderer_.get();
 	}
 
 private:
-	Renderer_ptr							pRenderer_;
+	rendering::Renderer_ptr					pRenderer_;
 	chunk::block::BlockLibrary_ptr			pBlockLibrary_;
 	chunk::ChunkCollection_ptr				pChunkCollection_;
 	world::World_ptr						pWorld_;

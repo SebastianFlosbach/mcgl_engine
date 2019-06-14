@@ -2,18 +2,17 @@
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
 #include <future>
 
 #include "Helper/OpenGLDebug.h"
 #include "Eventing/KeyEventHandler.h"
 #include "Eventing/MouseEventHandler.h"
-
 #include "Coordinates/ChunkCoordinates.h"
 #include "Coordinates/WorldCoordinates.h"
+#include "Rendering/Shader/SkyboxShader.h"
+#include "Rendering/Shader/ChunkShader.h"
 
 
 Engine::Engine( const logging::ILogger& logger ) :
@@ -190,12 +189,12 @@ void Engine::setSkyboxShader( const std::string& vertexShaderPath, const std::st
 }
 
 void Engine::doSetSkyboxShader( action::SetSkyboxShaderAction* data ) {
-	Shader shader = Shader();
-	shader.addVertexShader( data->vertexShaderPath_ );
-	shader.addFragmentShader( data->fragmentShaderPath_ );
-	shader.compile();
+	auto* shader = new rendering::shader::SkyboxShader();
+	shader->addShader( data->vertexShaderPath_, rendering::shader::ShaderType::Vertex );
+	shader->addShader( data->fragmentShaderPath_, rendering::shader::ShaderType::Fragment );
+	shader->compile();
 
-	pAssetManager_->getRenderer()->setShader( std::move( shader ), ShaderType::Skybox );
+	pAssetManager_->getRenderer()->setShader( std::unique_ptr<rendering::shader::IShader>( (rendering::shader::IShader*)shader ), rendering::ShaderType::Skybox );
 }
 
 UNUM32 Engine::createCamera( double x, double y, double z, double pitch, double yaw, double roll ) {
@@ -284,7 +283,7 @@ void Engine::doCreateWindow( action::CreateWindowAction* data ) {
 
 	pWindow_->open( data->width_, data->height_, data->title_ );
 	pWindow_->registerResizeCallback( MCGL_WINDOW_RESIZE_CALLBACK( [this]( NUM32 width, NUM32 height ) {
-		pAssetManager_->getRenderer()->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)width / (float)height, 0.1f, 500.0f ) );
+		pAssetManager_->getRenderer()->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)width / (float)height, 0.1f, 500.0f ), rendering::ShaderType::Chunk );
 	} ) );
 
 	if ( !gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress ) ) {
@@ -341,12 +340,12 @@ void Engine::doSetTextures( action::SetTexturesAction* data ) {
 }
 
 void Engine::doSetShader( action::SetShaderAction* data ) {
-	Shader shader = Shader();
-	shader.addVertexShader( data->vertexShaderPath_ );
-	shader.addFragmentShader( data->fragmentShaderPath_ );
-	shader.compile();
+	auto shader = std::unique_ptr<rendering::shader::IShader>( (rendering::shader::IShader*)new rendering::shader::ChunkShader() );
+	shader->addShader( data->vertexShaderPath_, rendering::shader::ShaderType::Vertex );
+	shader->addShader( data->fragmentShaderPath_, rendering::shader::ShaderType::Fragment );
+	shader->compile();
 
-	pAssetManager_->getRenderer()->setShader( std::move( shader ), ShaderType::Chunk );
+	pAssetManager_->getRenderer()->setShader( std::move( shader ), rendering::ShaderType::Chunk );
 }
 
 void Engine::doCreateCamera( action::CreateCameraAction* data ) {
@@ -372,8 +371,10 @@ void Engine::doDraw() {
 	glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-
-	pAssetManager_->getRenderer()->setViewMatrix( camera_.getView() );
+	pAssetManager_->getRenderer()->setViewMatrix( camera_.getView(), rendering::ShaderType::Chunk );
+	pAssetManager_->getRenderer()->setViewMatrix( camera_.getView(), rendering::ShaderType::Skybox );
+	pAssetManager_->getRenderer()->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)pWindow_->width() / (float)pWindow_->height(), 0.1f, 500.0f ), rendering::ShaderType::Chunk );
+	pAssetManager_->getRenderer()->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)pWindow_->width() / (float)pWindow_->height(), 0.1f, 500.0f ), rendering::ShaderType::Skybox );
 
 	pAssetManager_->getWorld()->draw( *pAssetManager_->getRenderer() );
 

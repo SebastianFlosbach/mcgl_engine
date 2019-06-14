@@ -50,6 +50,8 @@ void SkyboxMesh::draw() {
 	glDepthFunc( GL_LEQUAL );
 
 	glBindVertexArray( hVertexArray_ );
+	glActiveTexture( GL_TEXTURE0 );
+
 	glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
 
 	glDrawArrays( GL_TRIANGLES, vertices_.size(), GL_UNSIGNED_INT );

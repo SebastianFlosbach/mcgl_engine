@@ -27,7 +27,7 @@ private:
 		glGenTextures( 1, &textureID );
 		glBindTexture( GL_TEXTURE_CUBE_MAP, textureID );
 
-		int width, height, nrChannels;
+		int width, height;
 		for ( unsigned int i = 0; i < faces.size(); i++ ) {
 			unsigned char *data = texture::createImageData( faces[i].c_str(), width, height, false );
 			if ( data ) {

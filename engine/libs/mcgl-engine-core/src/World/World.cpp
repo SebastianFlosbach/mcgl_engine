@@ -1,6 +1,9 @@
 #include "World/World.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <sstream>
+
 
 namespace world {
 
@@ -47,19 +50,19 @@ void World::setSkybox(
 	} ) );
 }
 
-void World::draw( Renderer& renderer ) {
-	for ( auto& meshData : meshes_ ) {
-		glm::mat4 model = glm::mat4( 1.0f );
-		model = glm::translate( model, meshData.first.toVec3() );
+void World::draw( rendering::Renderer& renderer ) {
+	//for ( auto& meshData : meshes_ ) {
+	//	glm::mat4 model = glm::mat4( 1.0f );
+	//	model = glm::translate( model, meshData.first.toVec3() );
 
-		renderer.setModelMatrix( model );
+	//	renderer.setModelMatrix( model, rendering::ShaderType::Chunk );
 
-		renderer.use( ShaderType::Chunk );
-		meshData.second->draw();
-	}
+	//	renderer.useShader( rendering::ShaderType::Chunk );
+	//	meshData.second->draw();
+	//}
 
 	if( pSkybox_ ) {
-		renderer.use( ShaderType::Skybox );
+		renderer.useShader( rendering::ShaderType::Skybox );
 		pSkybox_->draw( renderer );
 	}
 }
