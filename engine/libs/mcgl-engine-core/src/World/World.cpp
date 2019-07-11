@@ -51,19 +51,21 @@ void World::setSkybox(
 }
 
 void World::draw( rendering::Renderer& renderer ) {
-	//for ( auto& meshData : meshes_ ) {
-	//	glm::mat4 model = glm::mat4( 1.0f );
-	//	model = glm::translate( model, meshData.first.toVec3() );
+	for ( auto& meshData : meshes_ ) {
+		glm::mat4 model = glm::mat4( 1.0f );
+		model = glm::translate( model, meshData.first.toVec3() );
 
-	//	renderer.setModelMatrix( model, rendering::ShaderType::Chunk );
+		renderer.setModelMatrix( model, rendering::ShaderType::Chunk );
 
-	//	renderer.useShader( rendering::ShaderType::Chunk );
-	//	meshData.second->draw();
-	//}
+		renderer.useShader( rendering::ShaderType::Chunk );
+		meshData.second->draw();
+	}
 
 	if( pSkybox_ ) {
+		glDepthFunc( GL_LEQUAL );
 		renderer.useShader( rendering::ShaderType::Skybox );
 		pSkybox_->draw( renderer );
+		glDepthFunc( GL_LESS );
 	}
 }
 

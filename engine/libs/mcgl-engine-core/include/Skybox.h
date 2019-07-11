@@ -9,24 +9,21 @@ class Skybox {
 public:
 	Skybox( const std::vector<std::string>& faces ) : cubeMap_( faces ) {
 		pCubeMesh_ = std::unique_ptr<mesh::IMesh>(
-			new mesh::SkyboxMesh( vertices_ )
+			new mesh::SkyboxMesh()
 		);
 	}
 
 	void draw( rendering::Renderer& renderer ) {
-		//glDepthMask( GL_FALSE );
-		renderer.useShader( rendering::ShaderType::Skybox );
+		pCubeMesh_->bind();
+		glActiveTexture( GL_TEXTURE0 );
 		cubeMap_.bind();
-		renderer.getShader( rendering::ShaderType::Skybox ).setUniformInt( "skybox", 0 );
-		pCubeMesh_->draw();
-		//glDepthMask( GL_TRUE );
+		glDrawArrays( GL_TRIANGLES, 0, 36 );
+		pCubeMesh_->unbind();
 	}
 
 private:
 	CubeMap cubeMap_;
 	mesh::IMesh_ptr pCubeMesh_;
-
-	static const std::vector<Vertex> vertices_;
 
 };
 

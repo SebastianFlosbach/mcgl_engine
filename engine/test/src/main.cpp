@@ -157,7 +157,7 @@ int main() {
 		"../resources/textures/skybox/top.jpg",
 		"../resources/textures/skybox/bottom.jpg",
 		"../resources/textures/skybox/front.jpg",
-		"../resources/textures/skybox/left.jpg"
+		"../resources/textures/skybox/back.jpg"
 	);
 	MCGLSetSkyboxShader( "../resources/shaders/skyboxVertexShader", "../resources/shaders/skyboxFragmentShader" );
 

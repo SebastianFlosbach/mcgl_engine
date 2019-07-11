@@ -14,8 +14,7 @@ namespace mesh {
 
 class SkyboxMesh : public IMesh {
 public:
-	SkyboxMesh( const std::vector<Vertex>& vertices );
-	SkyboxMesh( std::vector<Vertex>&& vertices );
+	SkyboxMesh() = default;
 
 	virtual ~SkyboxMesh();
 
@@ -26,6 +25,8 @@ public:
 	SkyboxMesh& operator=( SkyboxMesh&& other ) noexcept;
 
 	virtual void draw() override;
+	virtual void bind() override;
+	virtual void unbind() override;
 
 private:
 	std::mutex mMesh_;
@@ -36,7 +37,7 @@ private:
 	UNUM32 hVertexBuffer_{ 0 };
 	UNUM32 hVertexArray_{ 0 };
 
-	std::vector<Vertex> vertices_;
+	static const float vertices_[];
 
 	void generateGLData();
 

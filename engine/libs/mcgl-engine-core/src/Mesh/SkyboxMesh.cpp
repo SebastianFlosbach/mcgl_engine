@@ -7,18 +7,54 @@
 namespace mesh {
 
 
-SkyboxMesh::SkyboxMesh( const std::vector<Vertex>& vertices ) :
-	vertices_( vertices ) {}
+const float SkyboxMesh::vertices_[] = {    
+	-1.0f,  1.0f, -1.0f,
+	-1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
 
-SkyboxMesh::SkyboxMesh( std::vector<Vertex>&& vertices ) :
-	vertices_( std::move( vertices ) ) {}
+	-1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f, -1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+
+	-1.0f, -1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f, -1.0f,  1.0f,
+	-1.0f, -1.0f,  1.0f,
+
+	-1.0f,  1.0f, -1.0f,
+	 1.0f,  1.0f, -1.0f,
+	 1.0f,  1.0f,  1.0f,
+	 1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f,  1.0f,
+	-1.0f,  1.0f, -1.0f,
+
+	-1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	 1.0f, -1.0f, -1.0f,
+	 1.0f, -1.0f, -1.0f,
+	-1.0f, -1.0f,  1.0f,
+	 1.0f, -1.0f,  1.0f
+};
 
 SkyboxMesh::SkyboxMesh( SkyboxMesh&& other ) noexcept {
 	if( this == &other ) {
 		return;
 	}
-
-	vertices_ = std::move( other.vertices_ );
 
 	std::lock_guard<std::mutex> lock( mMesh_ );
 
@@ -46,27 +82,25 @@ void SkyboxMesh::draw() {
 	if( !isValid_ ) {
 		generateGLData();
 	}
+}
 
-	glDepthFunc( GL_LEQUAL );
+void SkyboxMesh::bind() {
+	if( !isValid_ ) {
+		generateGLData();
+	}
 
 	glBindVertexArray( hVertexArray_ );
-	glActiveTexture( GL_TEXTURE0 );
+}
 
-	glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
-
-	glDrawArrays( GL_TRIANGLES, vertices_.size(), GL_UNSIGNED_INT );
-
-	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+void SkyboxMesh::unbind() {
 	glBindVertexArray( 0 );
-
-	glDepthFunc( GL_LESS );
 }
 
 void SkyboxMesh::generateGLData() {
 
 	if( !isBufferGenerated_ ) {
-		glGenBuffers( 1, &hVertexBuffer_ );
 		glGenVertexArrays( 1, &hVertexArray_ );
+		glGenBuffers( 1, &hVertexBuffer_ );
 
 		isBufferGenerated_ = true;
 	}
@@ -74,17 +108,9 @@ void SkyboxMesh::generateGLData() {
 	glBindVertexArray( hVertexArray_ );
 	glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
 
-	glBufferData( GL_ARRAY_BUFFER, vertices_.size() * sizeof( Vertex ), &vertices_[0], GL_STATIC_DRAW );
-
-	// vertex positions
+	glBufferData( GL_ARRAY_BUFFER, sizeof( vertices_ ), &vertices_, GL_STATIC_DRAW );
 	glEnableVertexAttribArray( 0 );
-	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*)0 );
-
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-	glBindBuffer( GL_ARRAY_BUFFER, 0 );
-	glBindVertexArray( 0 );
-
-	isValid_ = true;
+	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof( float ), (void*)0 );
 }
 
 

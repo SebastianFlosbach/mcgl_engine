@@ -26,6 +26,8 @@ public:
 	TexturedMesh& operator=( TexturedMesh&& other ) noexcept;
 
 	virtual void draw() override;
+	virtual void bind() override;
+	virtual void unbind() override;
 
 private:
 	std::mutex mMesh_;

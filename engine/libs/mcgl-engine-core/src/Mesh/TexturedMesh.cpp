@@ -97,5 +97,13 @@ void TexturedMesh::draw() {
 	glBindVertexArray( 0 );
 }
 
+void TexturedMesh::bind() {
+	glBindVertexArray( hVertexArray_ );
+}
+
+void TexturedMesh::unbind() {
+	glBindVertexArray( 0 );
+}
+
 
 }
