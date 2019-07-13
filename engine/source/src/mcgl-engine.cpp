@@ -83,7 +83,7 @@ void MCGLRegisterBlockType( const chunk::block::Block& block ) {
 	engine->registerBlockType( block );
 }
 
-void MCGLSetTextures( const std::string& path, UNUM32 textureSize, UNUM32 textureCount ) {
+void MCGLSetTexture( MCGLTextureType type, const std::string& path ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] SetTextures: Engine not created!" );
 		return;
@@ -94,32 +94,7 @@ void MCGLSetTextures( const std::string& path, UNUM32 textureSize, UNUM32 textur
 	engine->setTextures( path, textureSize, textureCount );
 }
 
-void MCGLSetSkyboxTextures(
-	const std::string& right,
-	const std::string& left,
-	const std::string& top,
-	const std::string& bottom,
-	const std::string& front,
-	const std::string& back
-) {
-	if( !engine ) {
-		error( *logger, "[MCGL-ENGINE] SetSkyboxTextures: Engine not created!" );
-		return;
-	}
-
-	info( *logger, "[MCGL-ENGINE] SetSkyboxTextures" );
-
-	engine->setSkyboxTexture(
-		right,
-		left,
-		top,
-		bottom,
-		front,
-		back
-	);
-}
-
-void MCGLSetShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
+void  MCGLSetShader( MCGLShaderType type, const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] SetShader: Engine not created!" );
 		return;
@@ -128,17 +103,6 @@ void MCGLSetShader( const std::string& vertexShaderPath, const std::string& frag
 	info(*logger, "[MCGL-ENGINE] SetShader");
 
 	engine->setShader( vertexShaderPath, fragmentShaderPath );
-}
-
-void MCGLSetSkyboxShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
-	if( !engine ) {
-		error( *logger, "[MCGL-ENGINE] SetShader: Engine not created!" );
-		return;
-	}
-
-	info( *logger, "[MCGL-ENGINE] SetSkyboxShader" );
-
-	engine->setSkyboxShader( vertexShaderPath, fragmentShaderPath );
 }
 
 void MCGLAddChunk( const chunk::Chunk& chunk ) {
@@ -159,6 +123,10 @@ void MCGLRemoveChunk( NUM32 x, NUM32 z) {
 
 	trace(*logger, "[MCGL-ENGINE] RemoveChunk");
 	engine->removeChunk( x, z );
+}
+
+void MCGLUpdateChunk( NUM32 x, NUM32 z, const chunk::block::Block& block ) {
+
 }
 
 void MCGLCreateCamera( float x, float y, float z, float pitch, float yaw, float roll ) {
@@ -230,4 +198,8 @@ coordinates::WorldCoordinates MCGLGetCameraPosition() {
 
 	trace( *logger, "[MCGL-ENGINE] GetCameraPosition" );
 	return engine->getCameraPosition();
+}
+
+void MCGLSet( MCGLSetType type, void* data ) {
+
 }

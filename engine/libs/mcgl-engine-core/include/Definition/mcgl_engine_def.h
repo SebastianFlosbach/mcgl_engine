@@ -17,7 +17,7 @@ constexpr UNUM32 CHUNK_WIDTH = 16; /** Chunk width in blocks in x direction */
 constexpr UNUM32 CHUNK_LENGTH = 16; /** Chunk length in blocks in z direction */
 constexpr UNUM32 CHUNK_HEIGHT = 128; /** Chunk height in blocks in y direction */
 
-constexpr float BLOCK_SIZE = 1.0f;
+constexpr float BLOCK_SIZE = 1.0f; /** Block rendering is scaled with this factor */
 constexpr NUM32 BLOCK_DEFAULT_ID = 0;
 
 typedef void( *MCGL_KEY_EVENT_CALLBACK )(const eventing::KeyEvent&); 
@@ -30,4 +30,28 @@ enum class MCGL_CONFIG {
 	CHUNK_HEIGHT,
 	CHUNK_LENGTH,
 	FRAMERATE,
+};
+
+enum class MCGLTextureType {
+	CUBE,
+	SKYBOX_LEFT,
+	SKYBOX_RIGHT,
+	SKYBOX_FRONT,
+	SKYBOX_BACK,
+	SKYBOX_TOP,
+	SKYBOX_BOTTOM,
+};
+
+enum class MCGLShaderType {
+	CUBE,
+	SKYBOX
+};
+
+enum class MCGLSetType {
+	CUBE_TEXTURE_SIZE,
+	CHUNK_WIDTH,
+	CHUNK_LENGTH,
+	CHUNK_HEIGHT,
+	BLOCK_SIZE,
+	BLOCK_DEFAULT_ID
 };
