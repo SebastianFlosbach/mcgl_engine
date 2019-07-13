@@ -2,6 +2,9 @@
 
 #include <memory>
 
+#include "Camera.h"
+#include "Rendering/Shader/IShader.h"
+
 
 namespace mesh {
 
@@ -10,7 +13,7 @@ class IMesh {
 public:
 	virtual ~IMesh() = default;
 
-	virtual void draw() = 0;
+	virtual void draw( rendering::shader::IShader& shader, const Camera& camera ) const = 0;
 	virtual void bind() = 0;
 	virtual void unbind() = 0;
 };

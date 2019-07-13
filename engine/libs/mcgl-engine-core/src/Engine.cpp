@@ -373,11 +373,6 @@ void Engine::doDraw() {
 
 	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-	pAssetManager_->getRenderer()->setViewMatrix( camera_.getView(), rendering::ShaderType::Chunk );
-	pAssetManager_->getRenderer()->setViewMatrix( glm::mat4( glm::mat3 ( camera_.getView() ) ), rendering::ShaderType::Skybox );
-	pAssetManager_->getRenderer()->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)pWindow_->width() / (float)pWindow_->height(), 0.1f, 500.0f ), rendering::ShaderType::Chunk );
-	pAssetManager_->getRenderer()->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)pWindow_->width() / (float)pWindow_->height(), 0.1f, 500.0f ), rendering::ShaderType::Skybox );
-
 	pAssetManager_->getWorld()->draw( *pAssetManager_->getRenderer() );
 
 	glfwSwapBuffers( pWindow_->get() );

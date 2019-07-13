@@ -5,16 +5,14 @@
 #include <vector>
 
 #include "Logging/ILogger.h"
-#include "Mesh/TexturedMesh.h"
 #include "Rendering/Renderer.h"
-#include "Coordinates/WorldCoordinates.h"
-#include "Skybox.h"
+#include "World/Objects/Model.h"
 
 
 namespace world {
 
 	/**
-		A collection of meshes with their world space coordinates
+		A collection of models
 	*/
 	class World {
 	public:
@@ -29,29 +27,19 @@ namespace world {
 		World& operator=( World&& other ) = delete;
 
 		/**
-			Add a mesh to the world.
-			\param position Position of the mesh inside the world
-			\param mesh Mesh to add to the world
+			Add a model to the world.
+			\param mesh Model to add to the world
 		*/
-		void addMesh( const coordinates::WorldCoordinates& position, mesh::TexturedMesh_ptr&& mesh );
+		void addModel( const world::objects::Model_sptr& model );
 
 		/**
-			Remove a mesh from the world.
-			\param position The mesh at this position will be removed
+			Remove a model from the world.
+			\param position The Model to remove
 		*/
-		void removeMesh( const coordinates::WorldCoordinates& position );
-
-		void setSkybox( 
-			const std::string& right,
-			const std::string& left,
-			const std::string& top,
-			const std::string& bottom,
-			const std::string& front,
-			const std::string& back
-		);
+		void removeModel( const world::objects::Model_sptr& model );
 
 		/**
-			Draw all meshes at their positions.
+			Draw all models
 			\param renderer Renderer to draw with
 		*/
 		void draw( rendering::Renderer& renderer );
@@ -59,8 +47,7 @@ namespace world {
 	private:
 		const logging::ILogger& logger_;
 
-		std::unordered_map<coordinates::WorldCoordinates, mesh::TexturedMesh_ptr> meshes_;
-		Skybox_ptr pSkybox_;
+		std::unordered_map<world::objects::Model*, world::objects::Model_sptr> models_;
 		
 	};
 

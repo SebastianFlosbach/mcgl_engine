@@ -8,65 +8,33 @@
 namespace world {
 
 
-void World::addMesh( const coordinates::WorldCoordinates& position, mesh::TexturedMesh_ptr&& mesh ) {
-	auto it = meshes_.find( position );
+void World::addModel( const world::objects::Model_sptr& model ) {
+	auto it = models_.find( model.get() );
 	
-	if( it != meshes_.end() ) {
-		std::stringstream newPointerString;
-		newPointerString << static_cast<const void*>(mesh.get());
-		std::stringstream oldPointerString;
-		oldPointerString << static_cast<const void*>(it->second.get());
-		debug( logger_, std::string( __FUNCTION__ ) + std::string( ": Updating existing mesh " ) + oldPointerString.str() + std::string( " with new mesh " ) + newPointerString.str() + std::string( " at position " ) + position.to_string() );
-		it->second = std::move( mesh );
+	if( it != models_.end() ) {
+		std::stringstream msg;
+		msg << __FUNCTION__ << ": Tried adding existing model [" << static_cast<const void*>(model.get()) << "]";
+		warn( logger_, msg.str() );
+		return;
 	}
 	else {
-		std::stringstream ss;
-		ss << static_cast<const void*>(mesh.get());
-		debug( logger_, std::string( __FUNCTION__ ) + std::string( ": Adding new mesh " ) + ss.str() + std::string( " at position " ) + position.to_string() );
-		meshes_.insert( { position, std::move( mesh ) } );
+		std::stringstream msg;
+		msg << __FUNCTION__ << ": Adding new model [" << static_cast<const void*>(model.get()) << "]";
+		debug( logger_, msg.str() );
+		models_.insert( { model.get(), model } );
 	}
 
 }
 
-void World::removeMesh( const coordinates::WorldCoordinates& position ) {
-	meshes_.erase( position );
-}
-
-void World::setSkybox(
-	const std::string& right,
-	const std::string& left,
-	const std::string& top,
-	const std::string& bottom,
-	const std::string& front,
-	const std::string& back
-) {
-	pSkybox_ = std::unique_ptr<Skybox>( new Skybox( {
-		right,
-		left,
-		top,
-		bottom,
-		front,
-		back
-	} ) );
+void World::removeModel( const world::objects::Model_sptr& model ) {
+	std::stringstream msg;
+	msg << __FUNCTION__ << ": Removing model [" << static_cast<const void*>(model.get()) << "]";
+	debug( logger_, msg.str() );
+	models_.erase( model.get() );
 }
 
 void World::draw( rendering::Renderer& renderer ) {
-	for ( auto& meshData : meshes_ ) {
-		glm::mat4 model = glm::mat4( 1.0f );
-		model = glm::translate( model, meshData.first.toVec3() );
 
-		renderer.setModelMatrix( model, rendering::ShaderType::Chunk );
-
-		renderer.useShader( rendering::ShaderType::Chunk );
-		meshData.second->draw();
-	}
-
-	if( pSkybox_ ) {
-		glDepthFunc( GL_LEQUAL );
-		renderer.useShader( rendering::ShaderType::Skybox );
-		pSkybox_->draw( renderer );
-		glDepthFunc( GL_LESS );
-	}
 }
 
 
