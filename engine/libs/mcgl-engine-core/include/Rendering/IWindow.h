@@ -29,4 +29,5 @@ public:
 
 };
 
+typedef std::unique_ptr<IWindow> IWindow_ptr;
 typedef std::shared_ptr<IWindow> IWindow_sptr;

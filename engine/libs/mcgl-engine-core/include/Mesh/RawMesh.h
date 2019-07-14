@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IMesh.h"
+#include "BaseMesh.h"
 
 #include <mutex>
 #include <vector>
@@ -12,7 +12,7 @@
 namespace mesh {
 
 
-class RawMesh : public IMesh {
+class RawMesh : public BaseMesh {
 public:
 	RawMesh( const std::vector<Vertex>& vertices, const std::vector<UNUM32>& indices );
 	RawMesh( std::vector<Vertex>&& vertices, std::vector<UNUM32>&& indices );
@@ -25,22 +25,10 @@ public:
 	RawMesh( RawMesh&& other ) noexcept;
 	RawMesh& operator=( RawMesh&& other ) noexcept;
 
-	virtual void draw() override;
+	virtual void draw( rendering::shader::IShader& shader, const Camera& camera ) const override;
 
 private:
-	std::mutex mMesh_;
-	bool isValid_{ false };
-	bool isDeleted_{ false };
-	bool isBufferGenerated_{ false };
-
-	UNUM32 hVertexBuffer_{ 0 };
-	UNUM32 hVertexArray_{ 0 };
-	UNUM32 hElementBuffer_{ 0 };
-
-	std::vector<Vertex> vertices_;
-	std::vector<UNUM32> indices_;
-
-	void generateGLData();
+	virtual void generateGLData() override;
 
 };
 

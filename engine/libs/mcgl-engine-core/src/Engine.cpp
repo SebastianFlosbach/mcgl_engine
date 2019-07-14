@@ -151,50 +151,8 @@ void Engine::setTextures( const std::string& texturePath, NUM32 size, NUM32 text
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetTexturesAction( texturePath, size, textureCount ) ) );
 }
 
-void Engine::setSkyboxTexture(
-	const std::string& right,
-	const std::string& left,
-	const std::string& top,
-	const std::string& bottom,
-	const std::string& front,
-	const std::string& back
-) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetSkyboxTextureAction( 
-		right,
-		left,
-		top,
-		bottom,
-		front,
-		back
-	) ) );
-}
-
-void Engine::doSetSkyboxTexture( action::SetSkyboxTextureAction* data ) {
-	pAssetManager_->getWorld()->setSkybox(
-		data->right_,
-		data->left_,
-		data->top_,
-		data->bottom_,
-		data->front_,
-		data->back_
-	);
-}
-
 void Engine::setShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetShaderAction( vertexShaderPath, fragmentShaderPath ) ) );
-}
-
-void Engine::setSkyboxShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetSkyboxShaderAction( vertexShaderPath, fragmentShaderPath ) ) );
-}
-
-void Engine::doSetSkyboxShader( action::SetSkyboxShaderAction* data ) {
-	auto* shader = new rendering::shader::SkyboxShader();
-	shader->addShader( data->vertexShaderPath_, rendering::shader::ShaderType::Vertex );
-	shader->addShader( data->fragmentShaderPath_, rendering::shader::ShaderType::Fragment );
-	shader->compile();
-
-	pAssetManager_->getRenderer()->setShader( std::unique_ptr<rendering::shader::IShader>( (rendering::shader::IShader*)shader ), rendering::ShaderType::Skybox );
 }
 
 UNUM32 Engine::createCamera( double x, double y, double z, double pitch, double yaw, double roll ) {

@@ -25,9 +25,7 @@ namespace action {
 		RotateCameraAction,
 		RunAction,
 		SetShaderAction,
-		SetSkyboxShaderAction,
-		SetSkyboxTexturesAction,
-		SetTexturesAction,
+		SetTextureAction,
 		StopAction,
 	};
 

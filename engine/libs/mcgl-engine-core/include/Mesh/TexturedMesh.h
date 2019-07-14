@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IMesh.h"
+#include "BaseMesh.h"
 
 #include <mutex>
 #include <vector>
@@ -12,7 +12,7 @@
 namespace mesh {
 
 
-class TexturedMesh : public IMesh {
+class TexturedMesh : public BaseMesh {
 public:
 	TexturedMesh( const std::vector<VertexT>& vertices, const std::vector<UNUM32>& indices );
 	TexturedMesh( std::vector<VertexT>&& vertices, std::vector<UNUM32>&& indices );
@@ -25,24 +25,10 @@ public:
 	TexturedMesh( TexturedMesh&& other ) noexcept;
 	TexturedMesh& operator=( TexturedMesh&& other ) noexcept;
 
-	virtual void draw() override;
-	virtual void bind() override;
-	virtual void unbind() override;
+	virtual void draw( rendering::shader::IShader& shader, const Camera& camera ) const override;
 
 private:
-	std::mutex mMesh_;
-	bool isValid_{ false };
-	bool isDeleted_{ false };
-	bool isBufferGenerated_{ false };
-
-	UNUM32 hVertexBuffer_{ 0 };
-	UNUM32 hVertexArray_{ 0 };
-	UNUM32 hElementBuffer_{ 0 };
-
-	std::vector<VertexT> vertices_;
-	std::vector<UNUM32> indices_;
-
-	void generateGLData();
+	virtual void generateGLData() override;
 
 };
 

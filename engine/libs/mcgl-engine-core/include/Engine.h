@@ -43,17 +43,8 @@ public:
 	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
 	void registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
 
-	void setTextures( const std::string& texturePath, NUM32 size, NUM32 textureCount );
-	void setSkyboxTexture( 
-		const std::string& right,
-		const std::string& left,
-		const std::string& top,
-		const std::string& bottom,
-		const std::string& front,
-		const std::string& back						   
-	);
-	void setShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
-	void setSkyboxShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
+	void setTexture( MCGLTextureType type, const std::string& path );
+	void setShader( MCGLShaderType type, const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
 
 	UNUM32 createCamera( double x, double y, double z, double pitch, double yaw, double roll = 0.0 );
 	void moveCamera( double dx, double dy, double dz );
@@ -80,10 +71,8 @@ private:
 	void doAddChunk( action::AddChunkAction* data );
 	void doRemoveChunk( action::RemoveChunkAction* data );
 		 
-	void doSetTextures( action::SetTexturesAction* data );
-	void doSetSkyboxTexture( action::SetSkyboxTextureAction* data );
+	void doSetTexture( action::SetTextureAction* data );
 	void doSetShader( action::SetShaderAction* data );
-	void doSetSkyboxShader( action::SetSkyboxShaderAction* data );
 
 	void doCreateCamera( action::CreateCameraAction* data );
 	void doMoveCamera( action::MoveCameraAction* data );
@@ -97,8 +86,6 @@ private:
 	const logging::ILogger& logger_;
 
 	ThreadedWorkerQueue<action::Action_ptr> workerQueue_{};
-
-	IWindow_sptr pWindow_;
 
 	AssetManager_ptr pAssetManager_;
 	

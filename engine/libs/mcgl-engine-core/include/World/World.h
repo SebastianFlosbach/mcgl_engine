@@ -6,7 +6,6 @@
 
 #include "Logging/ILogger.h"
 #include "Rendering/Renderer.h"
-#include "World/Objects/Model.h"
 
 
 namespace world {

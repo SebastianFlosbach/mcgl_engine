@@ -24,7 +24,7 @@ public:
 	SkyboxMesh( SkyboxMesh&& other ) noexcept;
 	SkyboxMesh& operator=( SkyboxMesh&& other ) noexcept;
 
-	virtual void draw() override;
+	virtual void draw( rendering::shader::IShader& shader, const Camera& camera ) const override;
 	virtual void bind() override;
 	virtual void unbind() override;
 
