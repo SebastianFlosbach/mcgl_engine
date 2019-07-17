@@ -10,6 +10,7 @@
 #include "ActionHandling/actions.h"
 #include "Chunk/Builder/ThreadedChunkMeshBuilder.h"
 #include "AssetManager.h"
+#include "World/World.h"
 
 
 class Engine {
@@ -24,13 +25,7 @@ public:
 
 	~Engine();
 
-	inline float getDeltaTime() {
-		return deltaTime_;
-	}
-
-	coordinates::WorldCoordinates getCameraPosition() const {
-		return camera_.getPosition();
-	}
+	const coordinates::WorldCoordinates getCameraPosition() const;
 
 	void createWindow( UNUM32 width, UNUM32 height, const std::string& title );
 	void closeWindow();
@@ -85,11 +80,11 @@ private:
 
 	const logging::ILogger& logger_;
 
-	ThreadedWorkerQueue<action::Action_ptr> workerQueue_{};
-
 	AssetManager_ptr pAssetManager_;
-	
-	Camera camera_;
+	rendering::Renderer_ptr pRenderer_;
+	world::World_ptr pWorld_;
+
+	ThreadedWorkerQueue<action::Action_ptr> workerQueue_{};
 
 	MCGL_STATUS_EVENT_CALLBACK statusCallback_;
 	inline void invokeStatusCallback( const eventing::StatusEvent& statusEvent ) {
@@ -98,12 +93,10 @@ private:
 		}
 	}
 
-	float deltaTime_ = 0.0f;
-	float lastFrame_ = 0.0f;
-
 	std::atomic_bool isRunning_ = false;
 
 	std::condition_variable cvDestroy_{};
 	std::mutex mEngine_{};
 	std::atomic_bool isDestroyed_ = false;
+
 };

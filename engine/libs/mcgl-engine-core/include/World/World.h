@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "Logging/ILogger.h"
+#include "World/Mesh/IMesh.h"
 #include "Rendering/Renderer.h"
 
 
@@ -29,13 +30,13 @@ namespace world {
 			Add a model to the world.
 			\param mesh Model to add to the world
 		*/
-		void addModel( const world::objects::Model_sptr& model );
+		void addModel( world::mesh::IMesh_ptr&& model );
 
 		/**
 			Remove a model from the world.
 			\param position The Model to remove
 		*/
-		void removeModel( const world::objects::Model_sptr& model );
+		void removeModel( world::mesh::IMesh_ptr&& model );
 
 		/**
 			Draw all models
@@ -46,7 +47,7 @@ namespace world {
 	private:
 		const logging::ILogger& logger_;
 
-		std::unordered_map<world::objects::Model*, world::objects::Model_sptr> models_;
+		std::unordered_map<world::mesh::IMesh*, world::mesh::IMesh_ptr> models_;
 		
 	};
 

@@ -16,8 +16,7 @@
 
 
 Engine::Engine( const logging::ILogger& logger ) :
-	logger_( logger ),
-	pWindow_( Window::create() ) {
+	logger_( logger ) {
 
 	workerQueue_.registerCallback( std::bind( &Engine::doAction, this, std::placeholders::_1 ) );
 
@@ -35,32 +34,22 @@ Engine::~Engine() {
 	info( logger_, " Destroyed engine" );
 }
 
-void Engine::addMesh( const coordinates::WorldCoordinates& position, mesh::TexturedMesh* mesh ) {
-	auto mesh_ptr = std::unique_ptr<mesh::TexturedMesh>( mesh );
-
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddMeshAction( position, std::move( mesh_ptr ) ) ) );
-}
-
-void Engine::doAddMesh( action::AddMeshAction* data ) {
-	pAssetManager_->getWorld()->addMesh( data->position_, std::move( data->pMesh_ ) );
-}
-
 void Engine::doAction( action::Action* action ) {
 	switch( action->type() ) {
 	case action::ActionType::AddChunkAction:
-		doAddChunk( static_cast<action::AddChunkAction*>( action ) );
+		doAddChunk( static_cast<action::AddChunkAction*>(action) );
 		break;
 	case action::ActionType::AddMeshAction:
-		doAddMesh( static_cast<action::AddMeshAction*>( action ) );
+		doAddMesh( static_cast<action::AddMeshAction*>(action) );
 		break;
 	case action::ActionType::CloseWindowAction:
 		doCloseWindow();
 		break;
 	case action::ActionType::CreateCameraAction:
-		doCreateCamera( static_cast<action::CreateCameraAction*>( action ) );
+		doCreateCamera( static_cast<action::CreateCameraAction*>(action) );
 		break;
 	case action::ActionType::CreateWindowAction:
-		doCreateWindow( static_cast<action::CreateWindowAction*>( action ) );
+		doCreateWindow( static_cast<action::CreateWindowAction*>(action) );
 		break;
 	case action::ActionType::DestroyAction:
 		doDestroy();
@@ -72,40 +61,34 @@ void Engine::doAction( action::Action* action ) {
 		doEngine();
 		break;
 	case action::ActionType::MoveCameraAction:
-		doMoveCamera( static_cast<action::MoveCameraAction*>( action ) );
+		doMoveCamera( static_cast<action::MoveCameraAction*>(action) );
 		break;
 	case action::ActionType::RegisterBlockTypeAction:
-		doRegisterBlockType( static_cast<action::RegisterBlockTypeAction*>( action ) );
+		doRegisterBlockType( static_cast<action::RegisterBlockTypeAction*>(action) );
 		break;
 	case action::ActionType::RegisterKeyEventCallbackAction:
-		doRegisterKeyEventCallback( static_cast<action::RegisterKeyEventCallbackAction*>( action ) );
+		doRegisterKeyEventCallback( static_cast<action::RegisterKeyEventCallbackAction*>(action) );
 		break;
 	case action::ActionType::RegisterMouseEventCallbackAction:
-		doRegisterMouseEventCallback( static_cast<action::RegisterMouseEventCallbackAction*>( action ) );
+		doRegisterMouseEventCallback( static_cast<action::RegisterMouseEventCallbackAction*>(action) );
 		break;
 	case action::ActionType::RegisterStatusEventCallbackAction:
-		doRegisterStatusEventCallback( static_cast<action::RegisterStatusEventCallbackAction*>( action ) );
+		doRegisterStatusEventCallback( static_cast<action::RegisterStatusEventCallbackAction*>(action) );
 		break;
 	case action::ActionType::RemoveChunkAction:
-		doRemoveChunk( static_cast<action::RemoveChunkAction*>( action ) );
+		doRemoveChunk( static_cast<action::RemoveChunkAction*>(action) );
 		break;
 	case action::ActionType::RotateCameraAction:
-		doRotateCamera( static_cast<action::RotateCameraAction*>( action ) );
+		doRotateCamera( static_cast<action::RotateCameraAction*>(action) );
 		break;
 	case action::ActionType::RunAction:
 		doDraw();
 		break;
 	case action::ActionType::SetShaderAction:
-		doSetShader( static_cast<action::SetShaderAction*>( action ) );
+		doSetShader( static_cast<action::SetShaderAction*>(action) );
 		break;
-	case action::ActionType::SetSkyboxShaderAction:
-		doSetSkyboxShader( static_cast<action::SetSkyboxShaderAction*>(action) );
-		break;
-	case action::ActionType::SetTexturesAction:
-		doSetTextures( static_cast<action::SetTexturesAction*>( action ) );
-		break;
-	case action::ActionType::SetSkyboxTexturesAction:
-		doSetSkyboxTexture( static_cast<action::SetSkyboxTextureAction*>(action) );
+	case action::ActionType::SetTextureAction:
+		doSetTexture( static_cast<action::SetTextureAction*>(action) );
 		break;
 	case action::ActionType::StopAction:
 		doStop();
@@ -115,46 +98,92 @@ void Engine::doAction( action::Action* action ) {
 	}
 }
 
+// AddMesh
+void Engine::addMesh( const coordinates::WorldCoordinates& position, world::mesh::TexturedMesh* mesh ) {
+	auto mesh_ptr = std::unique_ptr<mesh::TexturedMesh>( mesh );
+
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddMeshAction( position, std::move( mesh_ptr ) ) ) );
+}
+
+void Engine::doAddMesh( action::AddMeshAction* data ) {
+	pWorld_->addMesh( data->position_, std::move( data->pMesh_ ) );
+}
+
+// CreateWindow
 void Engine::createWindow( UNUM32 width, UNUM32 height, const std::string& title ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::CreateWindowAction( width, height, title ) ) );
 }
 
+void Engine::doCreateWindow( action::CreateWindowAction* data ) {
+	info( logger_, "createWindow()" );
+
+	IWindow_sptr pWindow = Window::create();
+
+	pWindow->open( data->width_, data->height_, data->title_ );
+	pWindow->registerResizeCallback( MCGL_WINDOW_RESIZE_CALLBACK( [this]( NUM32 width, NUM32 height ) {
+		pRenderer_->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)width / (float)height, 0.1f, 500.0f ), rendering::ShaderType::Chunk );
+	} ) );
+
+	if( !gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress ) ) {
+		std::cout << "Failed to initialize GLAD" << std::endl;
+		return;
+	}
+
+	glfwSetInputMode( pWindow->get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
+
+	glEnable( GL_DEPTH_TEST );
+}
+
+// CloseWindow
 void Engine::closeWindow() {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::CloseWindowAction() ) );
 }
 
+void Engine::doCloseWindow() {
+	pWindow_->close();
+}
+
+// RegisterBlockType
 void Engine::registerBlockType( const chunk::block::Block& block ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RegisterBlockTypeAction( block ) ) );
 }
 
+// RegisterKeyEventCallback
 void Engine::registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RegisterKeyEventCallbackAction( callback ) ) );
 }
 
+// RegisterMouseEventCallback
 void Engine::registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RegisterMouseEventCallbackAction( callback ) ) );
 }
 
+// RegisterStatusEventCallback
 void Engine::registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RegisterStatusEventCallbackAction( callback ) ) );
 }
 
+// AddChunk
 void Engine::addChunk( const chunk::Chunk& chunk ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddChunkAction( std::make_unique<chunk::Chunk>( chunk ) ) ) );
 }
 
+// RemoveChunk
 void Engine::removeChunk( UNUM32 x, UNUM32 z ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RemoveChunkAction( x, z ) ) );
 }
 
-void Engine::setTextures( const std::string& texturePath, NUM32 size, NUM32 textureCount ) {
+// SetTexture
+void Engine::setTexture( MCGLTextureType type, const std::string& path ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetTexturesAction( texturePath, size, textureCount ) ) );
 }
 
-void Engine::setShader( const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
+// SetShader
+void Engine::setShader( MCGLShaderType type, const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetShaderAction( vertexShaderPath, fragmentShaderPath ) ) );
 }
 
+// CreateCamera
 UNUM32 Engine::createCamera( double x, double y, double z, double pitch, double yaw, double roll ) {
 	std::promise<void> promise{};
 	auto future = promise.get_future();
@@ -171,10 +200,12 @@ UNUM32 Engine::createCamera( double x, double y, double z, double pitch, double 
 	return cameraId_;
 }
 
+// MoveCamera
 void Engine::moveCamera( double dx, double dy, double dz ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::MoveCameraAction( dx, dy, dz ) ) );
 }
 
+// RotateCamera
 void Engine::rotateCamera( double pitch, double yaw, double roll ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RotateCameraAction( pitch, yaw, roll ) ) );
 }
@@ -236,28 +267,6 @@ void Engine::doEngine() {
 	);
 }
 
-void Engine::doCreateWindow( action::CreateWindowAction* data ) {
-	info( logger_, "createWindow()" );
-
-	pWindow_->open( data->width_, data->height_, data->title_ );
-	pWindow_->registerResizeCallback( MCGL_WINDOW_RESIZE_CALLBACK( [this]( NUM32 width, NUM32 height ) {
-		pAssetManager_->getRenderer()->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)width / (float)height, 0.1f, 500.0f ), rendering::ShaderType::Chunk );
-	} ) );
-
-	if ( !gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress ) ) {
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return;
-	}
-
-	glfwSetInputMode( pWindow_->get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
-
-	glEnable( GL_DEPTH_TEST );
-}
-
-void Engine::doCloseWindow() {
-	pWindow_->close();
-}
-
 void Engine::doRegisterBlockType( action::RegisterBlockTypeAction* data ) {
 	info( logger_, "addBlockType()" );
 
@@ -290,7 +299,7 @@ void Engine::doRemoveChunk( action::RemoveChunkAction* data ) {
 	pAssetManager_->getChunkCollection()->removeChunk( { data->x_, data->z_ } );
 }
 
-void Engine::doSetTextures( action::SetTexturesAction* data ) {
+void Engine::doSetTexture( action::SetTextureAction* data ) {
 	texture::TextureAtlas textureAtlas( data->texturePath_, data->size_, data->textureCount_ );
 
 	pAssetManager_->getRenderer()->setTextures( std::move( textureAtlas ) );
