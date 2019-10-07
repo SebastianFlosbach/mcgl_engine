@@ -7,6 +7,10 @@
 #include <iostream>
 #include <string>
 
+
+namespace rendering {
+
+
 class Camera {
 public:
 	Camera( glm::vec3 position, glm::vec3 direction ) : pos_( position ), direction_( glm::normalize( direction ) ) {
@@ -78,3 +82,8 @@ private:
 
 	static const glm::vec3 up_;
 };
+
+typedef Camera_ptr std::unique_ptr<Camera>;
+
+
+}

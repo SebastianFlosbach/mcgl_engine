@@ -29,7 +29,15 @@ public:
 		return *pWindow_.get();
 	}
 
-	void draw( const mesh::IMesh& mesh, shader::IShader& shader, const Camera& camera ) {
+	void setCamera( Camera_ptr&& camera ) {
+		pCamera_ = std::move( camera );
+	}
+
+	Camera* getCamera() {
+		return pCamera_.get();
+	}
+
+	void draw( const world::mesh::IMesh& mesh, shader::IShader& shader, const Camera& camera ) {
 		shader.setUniformMat4f( "projection", projection_ );
 		mesh.draw( shader, camera );
 	}
@@ -38,6 +46,7 @@ private:
 	const logging::ILogger& logger_;
 
 	IWindow_ptr pWindow_;
+	Camera_ptr pCamera_;
 	glm::mat4 projection_;
 
 };

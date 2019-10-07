@@ -11,46 +11,47 @@
 
 namespace world {
 
+/**
+	A collection of meshes
+*/
+class World {
+public:
+	World( const logging::ILogger& logger ) : logger_( logger ) {}
+
+	~World() = default;
+
+	World( const World& other ) = delete;
+	World& operator=( const World& other ) = delete;
+
+	World( World&& other ) = delete;
+	World& operator=( World&& other ) = delete;
+
 	/**
-		A collection of models
+		Add a mesh to the world.
+		\param mesh Mesh to add to the world
 	*/
-	class World {
-	public:
-		World( const logging::ILogger& logger ) : logger_( logger ) {}
+	void addMesh( world::mesh::IMesh_ptr&& model );
 
-		~World() = default;
+	/**
+		Remove a mesh from the world.
+		\param position The mesh to remove
+	*/
+	void removeMesh( world::mesh::IMesh_ptr&& model );
 
-		World( const World& other ) = delete;
-		World& operator=( const World& other ) = delete;
+	/**
+		Draw all models
+		\param renderer Renderer to draw with
+	*/
+	void draw( rendering::Renderer& renderer );
 
-		World( World&& other ) = delete;
-		World& operator=( World&& other ) = delete;
+private:
+	const logging::ILogger& logger_;
 
-		/**
-			Add a model to the world.
-			\param mesh Model to add to the world
-		*/
-		void addModel( world::mesh::IMesh_ptr&& model );
+	std::unordered_map<world::mesh::IMesh*, world::mesh::IMesh_ptr> meshes_;
 
-		/**
-			Remove a model from the world.
-			\param position The Model to remove
-		*/
-		void removeModel( world::mesh::IMesh_ptr&& model );
+};
 
-		/**
-			Draw all models
-			\param renderer Renderer to draw with
-		*/
-		void draw( rendering::Renderer& renderer );
-		
-	private:
-		const logging::ILogger& logger_;
+typedef std::unique_ptr<World> World_ptr;
 
-		std::unordered_map<world::mesh::IMesh*, world::mesh::IMesh_ptr> models_;
-		
-	};
-
-	typedef std::unique_ptr<World> World_ptr;
 
 }

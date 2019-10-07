@@ -52,7 +52,7 @@ namespace texture {
 		}
 
 	private:
-		unsigned int hTexture_;
+		UNUM32 hTexture_;
 
 		int width_;
 		int height_;

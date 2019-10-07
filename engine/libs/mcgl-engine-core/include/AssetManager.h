@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Logging/ILogger.h"
-#include "Chunk/Block/BlockLibrary.h"
-#include "Chunk/ChunkCollection.h"
-#include "Chunk/Builder/IChunkMeshBuilder.h"
+#include "World/Mesh/Chunk/Block/BlockLibrary.h"
+#include "World/Mesh/Chunk/ChunkCollection.h"
+#include "World/Mesh/Chunk/Builder/IChunkMeshBuilder.h"
 #include "World/World.h"
 #include "Rendering/Renderer.h"
 
@@ -11,45 +11,18 @@
 class AssetManager {
 public:
 	AssetManager( const logging::ILogger& logger ) {
-		pBlockLibrary_ = std::make_unique<chunk::block::BlockLibrary>();
-		pChunkCollection_ = std::make_unique<chunk::ChunkCollection>();
-		pWorld_ = std::make_unique<world::World>( logger );
-		pRenderer_ = std::make_unique<rendering::Renderer>( logger );
+		pBlockLibrary_ = std::make_unique<world::mesh::chunk::block::BlockLibrary>();
 	}
 
 	~AssetManager() = default;
 
-	chunk::block::BlockLibrary* getBlockLibrary() const {
+	world::mesh::chunk::block::BlockLibrary* getBlockLibrary() const {
 		return pBlockLibrary_.get();
 	}
 
-	chunk::ChunkCollection* getChunkCollection() const {
-		return pChunkCollection_.get();
-	}
-
-	world::World* getWorld() const {
-		return pWorld_.get();
-	}
-
-	void setChunkMeshBuilder( chunk::builder::IChunkMeshBuilder* pChunkMeshBuilder ) {
-		pChunkMeshBuilder_ = std::unique_ptr<chunk::builder::IChunkMeshBuilder>( pChunkMeshBuilder );
-	}
-
-	chunk::builder::IChunkMeshBuilder* getChunkMeshBuilder() const {
-		return pChunkMeshBuilder_.get();
-	}
-
-	rendering::Renderer* getRenderer() {
-		return pRenderer_.get();
-	}
-
 private:
-	rendering::Renderer_ptr					pRenderer_;
-	chunk::block::BlockLibrary_ptr			pBlockLibrary_;
-	chunk::ChunkCollection_ptr				pChunkCollection_;
-	world::World_ptr						pWorld_;
-	chunk::builder::IChunkMeshBuilder_ptr	pChunkMeshBuilder_;
-
+	std::vector<texture::Texture> textures_;
+	world::mesh::chunk::block::BlockLibrary_ptr	pBlockLibrary_;
 
 };
 

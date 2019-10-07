@@ -4,18 +4,18 @@
 
 #include <string>
 
-#include "Chunk/Block/Block.h"
+#include "World/Mesh/Chunk/Block/Block.h"
 
 namespace action {
 
 
 	struct RegisterBlockTypeAction final : public Action {
 	public:
-		RegisterBlockTypeAction( const chunk::block::Block& block ) : block_( block ) {}
+		RegisterBlockTypeAction( const world::mesh::chunk::block::Block& block ) : block_( block ) {}
 
 		ActionType type() const override { return ActionType::RegisterBlockTypeAction; }
 
-		chunk::block::Block block_;
+		world::mesh::chunk::block::Block block_;
 
 	};
 

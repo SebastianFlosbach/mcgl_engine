@@ -3,14 +3,14 @@
 #include "Definition/mcgl_engine_def.h"
 #include "Logging/ILogger.h"
 #include "Rendering/Window.h"
-#include "Chunk/Chunk.h"
 #include "Rendering/Renderer.h"
-#include "Camera.h"
+#include "Rendering/Camera.h"
 #include "ActionHandling/ThreadedWorkerQueue.h"
 #include "ActionHandling/actions.h"
-#include "Chunk/Builder/ThreadedChunkMeshBuilder.h"
 #include "AssetManager.h"
 #include "World/World.h"
+#include "World/Mesh/Chunk/Block/Block.h"
+#include "World/Mesh/Chunk/Chunk.h"
 
 
 class Engine {
@@ -30,8 +30,8 @@ public:
 	void createWindow( UNUM32 width, UNUM32 height, const std::string& title );
 	void closeWindow();
 
-	void registerBlockType( const chunk::block::Block& block );
-	void addChunk( const chunk::Chunk& chunk );
+	void registerBlockType( const world::mesh::chunk::block::Block& block );
+	void addChunk( const world::mesh::chunk::Chunk& chunk );
 	void removeChunk( const UNUM32 x, const UNUM32 z );
 
 	void registerKeyEventCallback( MCGL_KEY_EVENT_CALLBACK callback );
@@ -51,7 +51,7 @@ public:
 	void destroy();
 
 private:
-	void addMesh( const coordinates::WorldCoordinates& position, mesh::TexturedMesh* mesh );
+	void addMesh( const coordinates::WorldCoordinates& position, world::mesh::IMesh* mesh );
 	void doAddMesh( action::AddMeshAction* data );
 
 	void doAction( action::Action* action );

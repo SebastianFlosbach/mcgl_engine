@@ -2,7 +2,7 @@
 
 #include "Action.h"
 
-#include "Mesh/TexturedMesh.h"
+#include "World/Mesh/IMesh.h"
 #include "Coordinates/WorldCoordinates.h"
 
 
@@ -11,12 +11,11 @@ namespace action {
 
 struct AddMeshAction : public Action {
 public:
-	AddMeshAction( const coordinates::WorldCoordinates& position, mesh::TexturedMesh_ptr&& mesh ) : position_( position ), pMesh_( std::move( mesh ) ) {}
+	AddMeshAction( world::mesh::IMesh_ptr&& mesh ) : pMesh_( std::move( mesh ) ) {}
 
 	ActionType type() const override { return ActionType::AddMeshAction; }
 
-	coordinates::WorldCoordinates position_;
-	mesh::TexturedMesh_ptr pMesh_;
+	world::mesh::IMesh_ptr pMesh_;
 
 };
 

@@ -13,6 +13,7 @@
 #include "Coordinates/WorldCoordinates.h"
 #include "Rendering/Shader/SkyboxShader.h"
 #include "Rendering/Shader/ChunkShader.h"
+#include "World/Mesh/IMesh.h"
 
 
 Engine::Engine( const logging::ILogger& logger ) :
@@ -99,14 +100,14 @@ void Engine::doAction( action::Action* action ) {
 }
 
 // AddMesh
-void Engine::addMesh( const coordinates::WorldCoordinates& position, world::mesh::TexturedMesh* mesh ) {
-	auto mesh_ptr = std::unique_ptr<mesh::TexturedMesh>( mesh );
+void Engine::addMesh( const coordinates::WorldCoordinates& position, world::mesh::IMesh* mesh ) {
+	auto mesh_ptr = std::unique_ptr<world::mesh::IMesh>( mesh );
 
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddMeshAction( position, std::move( mesh_ptr ) ) ) );
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddMeshAction( std::move( mesh_ptr ) ) ) );
 }
 
 void Engine::doAddMesh( action::AddMeshAction* data ) {
-	pWorld_->addMesh( data->position_, std::move( data->pMesh_ ) );
+	pWorld_->addMesh( std::move( data->pMesh_ ) );
 }
 
 // CreateWindow
@@ -121,7 +122,7 @@ void Engine::doCreateWindow( action::CreateWindowAction* data ) {
 
 	pWindow->open( data->width_, data->height_, data->title_ );
 	pWindow->registerResizeCallback( MCGL_WINDOW_RESIZE_CALLBACK( [this]( NUM32 width, NUM32 height ) {
-		pRenderer_->setProjectionMatrix( glm::perspective( glm::radians( 45.0f ), (float)width / (float)height, 0.1f, 500.0f ), rendering::ShaderType::Chunk );
+		pRenderer_->setProjection( glm::perspective( glm::radians( 45.0f ), (float)width / (float)height, 0.1f, 500.0f ) );
 	} ) );
 
 	if( !gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress ) ) {
@@ -140,11 +141,11 @@ void Engine::closeWindow() {
 }
 
 void Engine::doCloseWindow() {
-	pWindow_->close();
+
 }
 
 // RegisterBlockType
-void Engine::registerBlockType( const chunk::block::Block& block ) {
+void Engine::registerBlockType( const world::mesh::chunk::block::Block& block ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::RegisterBlockTypeAction( block ) ) );
 }
 
@@ -164,7 +165,7 @@ void Engine::registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) 
 }
 
 // AddChunk
-void Engine::addChunk( const chunk::Chunk& chunk ) {
+void Engine::addChunk( const world::mesh::chunk::Chunk& chunk ) {
 	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddChunkAction( std::make_unique<chunk::Chunk>( chunk ) ) ) );
 }
 
@@ -175,7 +176,7 @@ void Engine::removeChunk( UNUM32 x, UNUM32 z ) {
 
 // SetTexture
 void Engine::setTexture( MCGLTextureType type, const std::string& path ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetTexturesAction( texturePath, size, textureCount ) ) );
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetTextureAction( type, path ) ) );
 }
 
 // SetShader
@@ -240,7 +241,7 @@ void Engine::doEngine() {
 
 	pAssetManager_ = std::make_unique<AssetManager>( logger_ );
 
-	pAssetManager_->setChunkMeshBuilder( new chunk::builder::ThreadedChunkMeshBuilder( logger_, 4 ) );
+	pAssetManager_->setChunkMeshBuilder( new world::mesh::chunk::builder::ThreadedChunkMeshBuilder( logger_, 4 ) );
 
 	if( isRunning_.exchange( true ) ) {
 		return;
@@ -340,9 +341,9 @@ void Engine::doDraw() {
 
 	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
-	pAssetManager_->getWorld()->draw( *pAssetManager_->getRenderer() );
+	pWorld_->draw( *pRenderer_ );
 
-	glfwSwapBuffers( pWindow_->get() );
+	glfwSwapBuffers( pRenderer_->getWindow().get() );
 	glfwPollEvents();
 	eventing::KeyEventHandler::pollEvents();
 
