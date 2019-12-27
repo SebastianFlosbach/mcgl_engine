@@ -73,7 +73,7 @@ void MCGLStop() {
 	engine->stop();
 }
 
-void MCGLRegisterBlockType( const chunk::block::Block& block ) {
+void MCGLRegisterBlockType( const world::mesh::chunk::block::Block& block ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] RegisterBlockType: Engine not created!" );
 		return;
@@ -105,7 +105,7 @@ void  MCGLSetShader( MCGLShaderType type, const std::string& vertexShaderPath, c
 	engine->setShader( vertexShaderPath, fragmentShaderPath );
 }
 
-void MCGLAddChunk( const chunk::Chunk& chunk ) {
+void MCGLAddChunk( const world::mesh::chunk::Chunk& chunk ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] AddChunk: Engine not created!" );
 		return;
@@ -125,7 +125,7 @@ void MCGLRemoveChunk( NUM32 x, NUM32 z) {
 	engine->removeChunk( x, z );
 }
 
-void MCGLUpdateChunk( NUM32 x, NUM32 z, const chunk::block::Block& block ) {
+void MCGLUpdateChunk( NUM32 x, NUM32 z, const world::mesh::chunk::block::Block& block ) {
 
 }
 

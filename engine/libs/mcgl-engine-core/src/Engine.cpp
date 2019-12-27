@@ -166,7 +166,7 @@ void Engine::registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback ) 
 
 // AddChunk
 void Engine::addChunk( const world::mesh::chunk::Chunk& chunk ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddChunkAction( std::make_unique<chunk::Chunk>( chunk ) ) ) );
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::AddChunkAction( std::make_unique<world::mesh::chunk::Chunk>( chunk ) ) ) );
 }
 
 // RemoveChunk
