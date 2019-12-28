@@ -4,7 +4,6 @@
 namespace logging {
 
 
-
 void trace( const ILogger& logger, const std::string& message ) {
 	logger.log( spdlog::level::level_enum::trace, message );
 }
@@ -28,7 +27,6 @@ void error( const ILogger& logger, const std::string& message ) {
 void critical( const ILogger& logger, const std::string& message ) {
 	logger.log( spdlog::level::level_enum::critical, message );
 }
-
 
 char* to_string( spdlog::level::level_enum level ) {
 	switch ( level ) {

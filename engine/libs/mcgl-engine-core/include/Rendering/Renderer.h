@@ -1,14 +1,13 @@
 #pragma once
 
 #include <sstream>
-
 #include <glm/glm.hpp>
-
 #include <Logging/ILogger.h>
+
 #include "Rendering/Shader/IShader.h"
 #include "Camera.h"
 #include "Window.h"
-
+#include "World/Mesh/IMesh.h"
 
 namespace rendering {
 

@@ -15,8 +15,8 @@ namespace mesh {
 
 class TexturedMesh : public BaseMesh {
 public:
-	TexturedMesh( const std::vector<VertexT>& vertices, const std::vector<UNUM32>& indices );
-	TexturedMesh( std::vector<VertexT>&& vertices, std::vector<UNUM32>&& indices );
+	TexturedMesh( const std::vector<VertexCT>& vertices, const std::vector<UNUM32>& indices );
+	TexturedMesh( std::vector<VertexCT>&& vertices, std::vector<UNUM32>&& indices );
 
 	virtual ~TexturedMesh();
 
@@ -26,7 +26,7 @@ public:
 	TexturedMesh( TexturedMesh&& other ) noexcept;
 	TexturedMesh& operator=( TexturedMesh&& other ) noexcept;
 
-	virtual void draw( rendering::shader::IShader& shader, const Camera& camera ) const override;
+	virtual void draw( rendering::shader::IShader& shader, const rendering::Camera& camera ) const override;
 
 private:
 	virtual void generateGLData() override;

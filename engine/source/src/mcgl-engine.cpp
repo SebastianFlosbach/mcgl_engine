@@ -91,7 +91,7 @@ void MCGLSetTexture( MCGLTextureType type, const std::string& path ) {
 
 	info(*logger, "[MCGL-ENGINE] SetTextures");
 
-	engine->setTextures( path, textureSize, textureCount );
+	engine->setTexture( type, path );
 }
 
 void  MCGLSetShader( MCGLShaderType type, const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
@@ -102,7 +102,7 @@ void  MCGLSetShader( MCGLShaderType type, const std::string& vertexShaderPath, c
 
 	info(*logger, "[MCGL-ENGINE] SetShader");
 
-	engine->setShader( vertexShaderPath, fragmentShaderPath );
+	engine->setShader( type, vertexShaderPath, fragmentShaderPath );
 }
 
 void MCGLAddChunk( const world::mesh::chunk::Chunk& chunk ) {

@@ -83,7 +83,7 @@ private:
 	static const glm::vec3 up_;
 };
 
-typedef Camera_ptr std::unique_ptr<Camera>;
+typedef std::unique_ptr<Camera> Camera_ptr;
 
 
 }

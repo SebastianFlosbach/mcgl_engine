@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Definition/mcgl_engine_def.h"
+#include "Vertex.h"
 
 namespace world {
 namespace mesh {
@@ -22,7 +23,7 @@ public:
 
 	virtual const glm::mat4& getModelMatrix() const override;
 
-private:
+protected:
 	std::mutex mMesh_;
 	bool isValid_{ false };
 	bool isDeleted_{ false };
@@ -34,7 +35,7 @@ private:
 	UNUM32 hVertexArray_{ 0 };
 	UNUM32 hElementBuffer_{ 0 };
 
-	std::vector<Vertex> vertices_;
+	std::vector<VertexC> vertices_;
 	std::vector<UNUM32> indices_;
 
 	virtual void generateGLData() = 0;

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Chunk/Builder/IChunkMeshBuilder.h"
+#include "World/Mesh/Chunk/Builder/IChunkMeshBuilder.h"
 
 #include <vector>
 #include <memory>
 
-#include "Chunk/Chunk.h"
+#include "World/Mesh/Chunk/Chunk.h"
 #include "Logging/ILogger.h"
 
 
@@ -63,12 +63,12 @@ private:
 
 	inline void addIndices( std::vector<UNUM32>& indices, UNUM32& indexBase );
 
-	inline void left( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
-	inline void right( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
-	inline void top( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
-	inline void bottom( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
-	inline void front( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
-	inline void back( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
+	inline void left( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
+	inline void right( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
+	inline void top( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
+	inline void bottom( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
+	inline void front( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
+	inline void back( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase );
 
 };
 

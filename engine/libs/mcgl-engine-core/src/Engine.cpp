@@ -14,6 +14,7 @@
 #include "Rendering/Shader/SkyboxShader.h"
 #include "Rendering/Shader/ChunkShader.h"
 #include "World/Mesh/IMesh.h"
+#include "World/Mesh/Chunk/Builder/ThreadedChunkMeshBuilder.h"
 
 
 Engine::Engine( const logging::ILogger& logger ) :
@@ -181,7 +182,7 @@ void Engine::setTexture( MCGLTextureType type, const std::string& path ) {
 
 // SetShader
 void Engine::setShader( MCGLShaderType type, const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetShaderAction( vertexShaderPath, fragmentShaderPath ) ) );
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetShaderAction( type, vertexShaderPath, fragmentShaderPath ) ) );
 }
 
 // CreateCamera
@@ -241,25 +242,25 @@ void Engine::doEngine() {
 
 	pAssetManager_ = std::make_unique<AssetManager>( logger_ );
 
-	pAssetManager_->setChunkMeshBuilder( new world::mesh::chunk::builder::ThreadedChunkMeshBuilder( logger_, 4 ) );
+	pAssetManager_->setChunkMeshBuilder( (world::mesh::chunk::builder::IChunkMeshBuilder*)new world::mesh::chunk::builder::ThreadedChunkMeshBuilder( logger_, 4 ) );
 
 	if( isRunning_.exchange( true ) ) {
 		return;
 	}
 
 	pAssetManager_->getChunkMeshBuilder()->setBlockLibrary( pAssetManager_->getBlockLibrary() );
-	pAssetManager_->getChunkMeshBuilder()->registerCallback( chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const coordinates::ChunkCoordinates& position, mesh::TexturedMesh* mesh ) {
+	pAssetManager_->getChunkMeshBuilder()->registerCallback( world::mesh::chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const coordinates::ChunkCoordinates& position, world::mesh::TexturedMesh* mesh ) {
 		addMesh( position.toWorldCoordinates(), mesh );
 	} ) );
 
-	pAssetManager_->getChunkCollection()->registerCollectionChangedCallback( chunk::CHUNK_COLLECTION_CHANGED_CALLBACK(
-		[this]( const chunk::ChunkCollectionChangedEventType& type, const coordinates::ChunkCoordinates& position ) {
+	pAssetManager_->getChunkCollection()->registerCollectionChangedCallback( world::mesh::chunk::CHUNK_COLLECTION_CHANGED_CALLBACK(
+		[this]( const world::mesh::chunk::ChunkCollectionChangedEventType& type, const coordinates::ChunkCoordinates& position ) {
 			switch( type ) {
-			case chunk::ChunkCollectionChangedEventType::ChunkAdded:
+			case world::mesh::chunk::ChunkCollectionChangedEventType::ChunkAdded:
 				pAssetManager_->getChunkMeshBuilder()->build( position, *pAssetManager_->getChunkCollection() );
 				break;
-			case chunk::ChunkCollectionChangedEventType::ChunkRemoved:
-				pAssetManager_->getWorld()->removeMesh( position.toWorldCoordinates() );
+			case world::mesh::chunk::ChunkCollectionChangedEventType::ChunkRemoved:
+				pWorld_->removeMesh( position.toWorldCoordinates() );
 				break;
 			default:
 				break;
@@ -277,13 +278,13 @@ void Engine::doRegisterBlockType( action::RegisterBlockTypeAction* data ) {
 void Engine::doRegisterKeyEventCallback( action::RegisterKeyEventCallbackAction* data ) {
 	info( logger_, "registerKeyEventCallback" );
 
-	eventing::KeyEventHandler::registerCallback( pWindow_->get(), data->callback_ );
+	eventing::KeyEventHandler::registerCallback( pRenderer_->getWindow().get(), data->callback_ );
 }
 
 void Engine::doRegisterMouseEventCallback( action::RegisterMouseEventCallbackAction* data ) {
 	info( logger_, "registerMouseEventCallback" );
 
-	eventing::MouseEventHandler::registerCallback( pWindow_->get(), data->callback_ );
+	eventing::MouseEventHandler::registerCallback( pRenderer_->getWindow().get(), data->callback_ );
 }
 
 void Engine::doRegisterStatusEventCallback( action::RegisterStatusEventCallbackAction* data ) {
@@ -301,9 +302,8 @@ void Engine::doRemoveChunk( action::RemoveChunkAction* data ) {
 }
 
 void Engine::doSetTexture( action::SetTextureAction* data ) {
-	texture::TextureAtlas textureAtlas( data->texturePath_, data->size_, data->textureCount_ );
+	texture::TextureAtlas textureAtlas( data->path_, data->, data->textureCount_ );
 
-	pAssetManager_->getRenderer()->setTextures( std::move( textureAtlas ) );
 	pAssetManager_->getChunkMeshBuilder()->setTextureAtlas( pAssetManager_->getRenderer()->getTextureAtlas() );
 }
 
@@ -313,7 +313,7 @@ void Engine::doSetShader( action::SetShaderAction* data ) {
 	shader->addShader( data->fragmentShaderPath_, rendering::shader::ShaderType::Fragment );
 	shader->compile();
 
-	pAssetManager_->getRenderer()->setShader( std::move( shader ), rendering::ShaderType::Chunk );
+	pRenderer_->setShader( std::move( shader ), rendering::ShaderType::Chunk );
 }
 
 void Engine::doCreateCamera( action::CreateCameraAction* data ) {

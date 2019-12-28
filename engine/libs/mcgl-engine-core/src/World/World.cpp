@@ -8,29 +8,49 @@
 namespace world {
 
 
-void World::addModel( const world::objects::Model_sptr& model ) {
-	auto it = models_.find( model.get() );
+void World::addMesh( world::mesh::IMesh_ptr&& mesh ) {
+	auto it = meshes_.find( mesh.get() );
 	
-	if( it != models_.end() ) {
+	if( it != meshes_.end() ) {
 		std::stringstream msg;
-		msg << __FUNCTION__ << ": Tried adding existing model [" << static_cast<const void*>(model.get()) << "]";
+		msg << __FUNCTION__ << ": Tried adding existing model [" << static_cast<const void*>(mesh.get()) << "]";
 		warn( logger_, msg.str() );
 		return;
 	}
 	else {
 		std::stringstream msg;
-		msg << __FUNCTION__ << ": Adding new model [" << static_cast<const void*>(model.get()) << "]";
+		msg << __FUNCTION__ << ": Adding new model [" << static_cast<const void*>(mesh.get()) << "]";
 		debug( logger_, msg.str() );
-		models_.insert( { model.get(), model } );
+		meshes_.insert( { mesh.get(), std::move( mesh ) } );
 	}
 
 }
 
-void World::removeModel( const world::objects::Model_sptr& model ) {
+void World::removeMesh( world::mesh::IMesh_ptr&& mesh ) {
 	std::stringstream msg;
-	msg << __FUNCTION__ << ": Removing model [" << static_cast<const void*>(model.get()) << "]";
+	msg << __FUNCTION__ << ": Removing model [" << static_cast<const void*>(mesh.get()) << "]";
 	debug( logger_, msg.str() );
-	models_.erase( model.get() );
+	meshes_.erase( mesh.get() );
+}
+
+void World::removeMesh( const coordinates::WorldCoordinates& coordinates ) {
+	for( auto it = meshes_.begin(); it != meshes_.end(); it++ ) {
+		float x = it->second->getModelMatrix()[0][3];
+		float y = it->second->getModelMatrix()[1][3];
+		float z = it->second->getModelMatrix()[2][3];
+
+		if( coordinates.x_ == x &&
+			coordinates.y_ == y &&
+			coordinates.z_ == z ) {
+
+			std::stringstream msg;
+			msg << __FUNCTION__ << ": Removing model [" << static_cast<const void*>(&it->second) << "]";
+			debug( logger_, msg.str() );
+
+			meshes_.erase( it );
+			break;
+		}
+	}
 }
 
 void World::draw( rendering::Renderer& renderer ) {

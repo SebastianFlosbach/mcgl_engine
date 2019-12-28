@@ -7,6 +7,7 @@
 #include "Logging/ILogger.h"
 #include "World/Mesh/IMesh.h"
 #include "Rendering/Renderer.h"
+#include "Coordinates/WorldCoordinates.h"
 
 
 namespace world {
@@ -30,13 +31,15 @@ public:
 		Add a mesh to the world.
 		\param mesh Mesh to add to the world
 	*/
-	void addMesh( world::mesh::IMesh_ptr&& model );
+	void addMesh( world::mesh::IMesh_ptr&& mesh );
 
 	/**
 		Remove a mesh from the world.
 		\param position The mesh to remove
 	*/
-	void removeMesh( world::mesh::IMesh_ptr&& model );
+	void removeMesh( world::mesh::IMesh_ptr&& mesh );
+
+	void removeMesh( const coordinates::WorldCoordinates& coordinates );
 
 	/**
 		Draw all models

@@ -3,8 +3,8 @@
 #include <future>
 #include <ctpl_stl.h>
 
-#include "Chunk/Builder/ChunkMeshBuilder.h"
-#include "Chunk/ChunkCollection.h"
+#include "World/Mesh/Chunk/Builder/ChunkMeshBuilder.h"
+#include "World/Mesh/Chunk/ChunkCollection.h"
 #include "Coordinates/ChunkCoordinates.h"
 #include "Logging/ILogger.h"
 

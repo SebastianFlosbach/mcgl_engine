@@ -37,8 +37,8 @@ const char* to_string( const ActionType type ) {
 		return "RunAction";
 	case ActionType::SetShaderAction:
 		return "SetShaderAction";
-	case ActionType::SetTexturesAction:
-		return "SetTexturesAction";
+	//case ActionType::SetTexturesAction:
+	//	return "SetTexturesAction";
 	case ActionType::StopAction:
 		return "StopAction";
 	default:
