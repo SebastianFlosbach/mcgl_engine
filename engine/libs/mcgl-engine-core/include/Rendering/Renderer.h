@@ -3,6 +3,7 @@
 #include <sstream>
 #include <glm/glm.hpp>
 #include <Logging/ILogger.h>
+#include <map>
 
 #include "Rendering/Shader/IShader.h"
 #include "Camera.h"
@@ -36,17 +37,42 @@ public:
 		return pCamera_.get();
 	}
 
-	void draw( const world::mesh::IMesh& mesh, shader::IShader& shader, const Camera& camera ) {
-		shader.setUniformMat4f( "projection", projection_ );
-		mesh.draw( shader, camera );
+	void addShader( shader::IShader* shader, const std::string& name ){
+		auto it = shaders_.find(name);
+
+		if( it != shaders_.end() ) {
+			error( logger_, "Failed to add shader to renderer. Shader already exists!" );
+			return;
+		}
+
+		shaders_.insert( { name, shader::IShader_ptr( shader ) } );
+	}
+
+	void setShader( const std::string& name ) {
+		auto it = shaders_.find( name );
+
+		if( it == shaders_.end() ) {
+			error( logger_, "Failed to set shader. Shader does not exist!" );
+			return;
+		}
+
+		currentShader_ = name;
+	}
+
+	void draw( const world::mesh::IMesh& mesh ) {
+		shaders_[currentShader_]->setUniformMat4f( "projection", projection_ );
+		mesh.draw( *shaders_[currentShader_], *pCamera_ );
 	}
 
 private:
 	const logging::ILogger& logger_;
 
+	std::map<std::string, shader::IShader_ptr> shaders_;
 	IWindow_ptr pWindow_;
 	Camera_ptr pCamera_;
 	glm::mat4 projection_;
+
+	std::string currentShader_;
 
 };
 

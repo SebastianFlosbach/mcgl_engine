@@ -317,23 +317,23 @@ void Engine::doSetShader( action::SetShaderAction* data ) {
 }
 
 void Engine::doCreateCamera( action::CreateCameraAction* data ) {
-	camera_ = Camera( data->x_, data->y_, data->z_, data->pitch_, data->yaw_, data->roll_ );
+	pRenderer_->setCamera( std::make_unique<rendering::Camera>( data->x_, data->y_, data->z_, data->pitch_, data->yaw_, data->roll_ ) );
 	data->returnCallback_( 1 );
 }
 
 void Engine::doMoveCamera( action::MoveCameraAction* data ) {
-	camera_.move( data->dx_, data->dy_, data->dz_ );
+	pRenderer_->getCamera()->move( data->dx_, data->dy_, data->dz_ );
 }
 
 void Engine::doRotateCamera( action::RotateCameraAction* data ) {
-	camera_.rotate( data->pitch_, data->yaw_, data->roll_ );
+	pRenderer_->getCamera()->rotate( data->pitch_, data->yaw_, data->roll_ );
 }
 
 void Engine::doDraw() {
 	// Generate delta time
-	float currentFrame = glfwGetTime();
-	deltaTime_ = currentFrame - lastFrame_;
-	lastFrame_ = currentFrame;
+	//float currentFrame = glfwGetTime();
+	//deltaTime_ = currentFrame - lastFrame_;
+	//lastFrame_ = currentFrame;
 
 	// Clear current frame
 	glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );

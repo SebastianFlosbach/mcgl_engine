@@ -54,7 +54,9 @@ void World::removeMesh( const coordinates::WorldCoordinates& coordinates ) {
 }
 
 void World::draw( rendering::Renderer& renderer ) {
-
+	for( auto it = meshes_.begin(); it != meshes_.end(); it++ ) {
+		renderer.draw(*it->second );
+	}
 }
 
 
