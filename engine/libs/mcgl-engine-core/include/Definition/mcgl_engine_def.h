@@ -33,18 +33,13 @@ enum class MCGL_CONFIG {
 };
 
 enum class MCGLTextureType {
-	CUBE,
-	SKYBOX_LEFT,
-	SKYBOX_RIGHT,
-	SKYBOX_FRONT,
-	SKYBOX_BACK,
-	SKYBOX_TOP,
-	SKYBOX_BOTTOM,
+	SINGLE,
+	ATLAS
 };
 
 enum class MCGLShaderType {
-	CUBE,
-	SKYBOX
+	VERTEX,
+	FRAGMENT
 };
 
 enum class MCGLSetType {

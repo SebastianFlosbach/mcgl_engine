@@ -38,7 +38,7 @@ public:
 	void registerMouseEventCallback( MCGL_MOUSE_EVENT_CALLBACK callback );
 	void registerStatusEventCallback( MCGL_STATUS_EVENT_CALLBACK callback );
 
-	void setTexture( MCGLTextureType type, const std::string& path );
+	void setTexture( MCGLTextureType type, const std::string& name, const std::string& path, UNUM32 textureSize, UNUM32 textureCount );
 	void setShader( MCGLShaderType type, const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
 
 	UNUM32 createCamera( double x, double y, double z, double pitch, double yaw, double roll = 0.0 );

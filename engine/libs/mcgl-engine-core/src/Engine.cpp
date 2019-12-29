@@ -176,8 +176,8 @@ void Engine::removeChunk( UNUM32 x, UNUM32 z ) {
 }
 
 // SetTexture
-void Engine::setTexture( MCGLTextureType type, const std::string& path ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetTextureAction( type, path ) ) );
+void Engine::setTexture( MCGLTextureType type, const std::string& name, const std::string& path, UNUM32 textureSize, UNUM32 textureCount ) {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetTextureAction( type, name, path, textureSize, textureCount ) ) );
 }
 
 // SetShader
@@ -302,9 +302,20 @@ void Engine::doRemoveChunk( action::RemoveChunkAction* data ) {
 }
 
 void Engine::doSetTexture( action::SetTextureAction* data ) {
-	texture::TextureAtlas textureAtlas( data->path_, data->, data->textureCount_ );
-
-	pAssetManager_->getChunkMeshBuilder()->setTextureAtlas( pAssetManager_->getRenderer()->getTextureAtlas() );
+	switch( data->type_ ) {
+		case MCGLTextureType::SINGLE:
+		{
+			texture::Texture texture( data->path_ );
+		}
+			break;
+		case MCGLTextureType::ATLAS:
+		{
+			texture::TextureAtlas textureAtlas( data->path_, data->textureSize_, data->textureCount_ );
+		}
+			break;
+		default:
+			return;
+	}
 }
 
 void Engine::doSetShader( action::SetShaderAction* data ) {

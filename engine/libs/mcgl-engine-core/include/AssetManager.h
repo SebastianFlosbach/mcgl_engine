@@ -6,6 +6,7 @@
 #include "World/Mesh/Chunk/Builder/IChunkMeshBuilder.h"
 #include "World/World.h"
 #include "Rendering/Renderer.h"
+#include "Texture/TextureLibrary.h"
 
 
 class AssetManager {
@@ -33,11 +34,16 @@ public:
 		return pChunkCollection_.get();
 	}
 
+	texture::TextureLibrary* getTextureLibrary() const {
+		return &textureLibrary_;
+	}
+
 private:
 	std::vector<texture::Texture> textures_;
 	world::mesh::chunk::block::BlockLibrary_ptr	pBlockLibrary_;
 	world::mesh::chunk::builder::IChunkMeshBuilder_ptr pChunkMeshBuilder_;
 	world::mesh::chunk::ChunkCollection_ptr pChunkCollection_;
+	texture::TextureLibrary textureLibrary_ {};
 
 };
 
