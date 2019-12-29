@@ -18,7 +18,7 @@ MCGL_ENGINE_EXTERN void MCGLCloseWindow();
 MCGL_ENGINE_EXTERN void MCGLRegisterBlockType( const world::mesh::chunk::block::Block& block );
 
 MCGL_ENGINE_EXTERN void MCGLSetTexture( MCGLTextureType type, const std::string& name, const std::string& path, UNUM32 textureSize = 0, UNUM32 textureCount = 0 );
-MCGL_ENGINE_EXTERN void MCGLSetShader( MCGLShaderType type, const std::string& path );
+MCGL_ENGINE_EXTERN void MCGLSetShader( MCGLShaderType type, const std::string& vertexShaderPath, const std::string& fragmentShaderPath );
 
 MCGL_ENGINE_EXTERN void MCGLAddChunk( const world::mesh::chunk::Chunk& chunk );
 MCGL_ENGINE_EXTERN void MCGLRemoveChunk( NUM32 x, NUM32 z );

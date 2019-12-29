@@ -94,7 +94,7 @@ void MCGLSetTexture( MCGLTextureType type, const std::string& name, const std::s
 	engine->setTexture( type, name, path, textureSize, textureCount );
 }
 
-void  MCGLSetShader( MCGLShaderType type, const std::string& path ) {
+void  MCGLSetShader( MCGLShaderType type, const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] SetShader: Engine not created!" );
 		return;
@@ -102,7 +102,7 @@ void  MCGLSetShader( MCGLShaderType type, const std::string& path ) {
 
 	info(*logger, "[MCGL-ENGINE] SetShader");
 
-	engine->setShader( type, path );
+	engine->setShader( type, vertexShaderPath, fragmentShaderPath );
 }
 
 void MCGLAddChunk( const world::mesh::chunk::Chunk& chunk ) {

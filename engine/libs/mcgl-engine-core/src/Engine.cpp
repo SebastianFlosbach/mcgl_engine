@@ -181,8 +181,8 @@ void Engine::setTexture( MCGLTextureType type, const std::string& name, const st
 }
 
 // SetShader
-void Engine::setShader( MCGLShaderType type, const std::string& path ) {
-	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetShaderAction( type, path ) ) );
+void Engine::setShader( MCGLShaderType type, const std::string& vertexShaderPath, const std::string& fragmentShaderPath ) {
+	workerQueue_.enqueue( std::unique_ptr<action::Action>( new action::SetShaderAction( type, vertexShaderPath, fragmentShaderPath ) ) );
 }
 
 // CreateCamera
@@ -306,13 +306,11 @@ void Engine::doSetTexture( action::SetTextureAction* data ) {
 		case MCGLTextureType::SINGLE:
 		{
 			texture::Texture texture( data->path_ );
-			pAssetManager_->getTextureLibrary()->addTexture( data->name_, std::move( texture ) );
 		}
 			break;
 		case MCGLTextureType::ATLAS:
 		{
 			texture::TextureAtlas textureAtlas( data->path_, data->textureSize_, data->textureCount_ );
-			pAssetManager_->getTextureLibrary()->addTextureAtlas( data->name_, std::move( textureAtlas ) );
 		}
 			break;
 		default:
