@@ -1,4 +1,4 @@
-#include "Chunk/Chunk.h"
+#include "World/Mesh/Chunk/Chunk.h"
 
 #include "Definition/mcgl_engine_def.h"
 

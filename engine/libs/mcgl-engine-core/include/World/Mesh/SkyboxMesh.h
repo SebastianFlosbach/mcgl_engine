@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "Definition/mcgl_engine_def.h"
-#include "Mesh/Vertex.h"
+#include "World/Mesh/Vertex.h"
 
 
 namespace world {
@@ -25,9 +25,11 @@ public:
 	SkyboxMesh( SkyboxMesh&& other ) noexcept;
 	SkyboxMesh& operator=( SkyboxMesh&& other ) noexcept;
 
-	virtual void draw( rendering::shader::IShader& shader, const Camera& camera ) const override;
+	virtual void draw( rendering::shader::IShader& shader, const rendering::Camera& camera ) const override;
 	virtual void bind() override;
 	virtual void unbind() override;
+
+	virtual const glm::mat4& getModelMatrix() const override;
 
 private:
 	std::mutex mMesh_;

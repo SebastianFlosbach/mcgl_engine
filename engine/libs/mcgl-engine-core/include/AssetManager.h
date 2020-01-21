@@ -34,7 +34,7 @@ public:
 		return pChunkCollection_.get();
 	}
 
-	texture::TextureLibrary* getTextureLibrary() const {
+	texture::TextureLibrary* getTextureLibrary() {
 		return &textureLibrary_;
 	}
 
@@ -43,7 +43,7 @@ private:
 	world::mesh::chunk::block::BlockLibrary_ptr	pBlockLibrary_;
 	world::mesh::chunk::builder::IChunkMeshBuilder_ptr pChunkMeshBuilder_;
 	world::mesh::chunk::ChunkCollection_ptr pChunkCollection_;
-	texture::TextureLibrary textureLibrary_ {};
+	texture::TextureLibrary textureLibrary_;
 
 };
 

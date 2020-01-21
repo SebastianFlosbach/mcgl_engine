@@ -24,6 +24,9 @@ public:
 	virtual const glm::mat4& getModelMatrix() const override;
 
 protected:
+	BaseMesh( const std::vector<VertexCT>& vertices, const std::vector<UNUM32>& indices ); 
+	BaseMesh( std::vector<VertexCT>&& vertices, std::vector<UNUM32>&& indices );
+
 	std::mutex mMesh_;
 	bool isValid_{ false };
 	bool isDeleted_{ false };
@@ -35,7 +38,7 @@ protected:
 	UNUM32 hVertexArray_{ 0 };
 	UNUM32 hElementBuffer_{ 0 };
 
-	std::vector<VertexC> vertices_;
+	std::vector<VertexCT> vertices_;
 	std::vector<UNUM32> indices_;
 
 	virtual void generateGLData() = 0;

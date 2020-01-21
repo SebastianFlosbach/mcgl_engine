@@ -1,4 +1,4 @@
-#include "Mesh/SkyboxMesh.h"
+#include "World/Mesh/SkyboxMesh.h"
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
@@ -94,6 +94,10 @@ void SkyboxMesh::bind() {
 
 void SkyboxMesh::unbind() {
 	glBindVertexArray( 0 );
+}
+
+const glm::mat4& SkyboxMesh::getModelMatrix() const {
+
 }
 
 void SkyboxMesh::generateGLData() {

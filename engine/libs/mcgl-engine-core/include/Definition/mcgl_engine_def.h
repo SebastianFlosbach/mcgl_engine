@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 #include "../Eventing/KeyEvent.h"
 #include "../Eventing/MouseEvent.h"
@@ -38,9 +39,20 @@ enum class MCGLTextureType {
 };
 
 enum class MCGLShaderType {
-	VERTEX,
-	FRAGMENT
+	CUBE,
+	SKYBOX
 };
+
+std::string to_string( MCGLShaderType type ) {
+	switch( type ) {
+		case MCGLShaderType::CUBE:
+			return "CUBE";
+		case MCGLShaderType::SKYBOX:
+			return "SKYBOX";
+		default:
+			return "<UNKNOWN>";
+	}
+}
 
 enum class MCGLSetType {
 	CUBE_TEXTURE_SIZE,

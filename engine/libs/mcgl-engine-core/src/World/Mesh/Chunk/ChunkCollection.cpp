@@ -1,4 +1,4 @@
-#include "Chunk/ChunkCollection.h"
+#include "World/Mesh/Chunk/ChunkCollection.h"
 
 #include "Coordinates/ChunkCoordinates.h"
 

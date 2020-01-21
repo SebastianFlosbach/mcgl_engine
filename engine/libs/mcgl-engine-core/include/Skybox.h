@@ -1,15 +1,15 @@
 #pragma once
 
 #include "CubeMap.h"
-#include "Mesh/SkyboxMesh.h"
+#include "World/Mesh/SkyboxMesh.h"
 #include "Rendering/Renderer.h"
 
 
 class Skybox {
 public:
 	Skybox( const std::vector<std::string>& faces ) : cubeMap_( faces ) {
-		pCubeMesh_ = std::unique_ptr<mesh::IMesh>(
-			new mesh::SkyboxMesh()
+		pCubeMesh_ = std::unique_ptr<world::mesh::IMesh>(
+			new world::mesh::SkyboxMesh()
 		);
 	}
 
@@ -23,7 +23,7 @@ public:
 
 private:
 	CubeMap cubeMap_;
-	mesh::IMesh_ptr pCubeMesh_;
+	world::mesh::IMesh_ptr pCubeMesh_;
 
 };
 

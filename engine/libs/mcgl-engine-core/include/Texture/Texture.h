@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <Definition/mcgl_engine_def.h>
 
 namespace texture {
 

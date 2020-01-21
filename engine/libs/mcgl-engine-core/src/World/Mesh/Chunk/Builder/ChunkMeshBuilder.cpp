@@ -36,7 +36,7 @@ void ChunkMeshBuilder::addIndices( std::vector<UNUM32>& indices, UNUM32& indexBa
 	indexBase += 4;
 }
 
-void ChunkMeshBuilder::left		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::left		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	// Check neighbouring chunk
@@ -63,7 +63,7 @@ void ChunkMeshBuilder::left		( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 	}
 }
 								  		   																																	  					 									  
-void ChunkMeshBuilder::right	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::right	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	if( x == CHUNK_WIDTH - 1 ) {
@@ -89,7 +89,7 @@ void ChunkMeshBuilder::right	( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 	}
 }
 								  		   																																	  					  										  
-void ChunkMeshBuilder::top		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::top		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	neighbourId = chunk.getBlockId( x, y + 1, z );
@@ -106,7 +106,7 @@ void ChunkMeshBuilder::top		( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chun
 	}
 }
 								  		   																																	 					 										  
-void ChunkMeshBuilder::bottom	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::bottom	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	neighbourId = chunk.getBlockId( x, y - 1, z );
@@ -123,7 +123,7 @@ void ChunkMeshBuilder::bottom	( NUM32 x, NUM32 y, NUM32 z, const coordinates::Ch
 	}
 }
 								  		   																																	 					  										  
-void ChunkMeshBuilder::front	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::front	( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	if( z == 0 ) {
@@ -149,7 +149,7 @@ void ChunkMeshBuilder::front	( NUM32 x, NUM32 y, NUM32 z, const coordinates::Chu
 	}
 }
 								  		   																																	 					  										  
-void ChunkMeshBuilder::back		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
+void ChunkMeshBuilder::back		( NUM32 x, NUM32 y, NUM32 z, const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks, const Chunk& chunk, UNUM32 blockId, std::vector<VertexCT>& vertices, std::vector<UNUM32>& indices, UNUM32& indexBase ) {
 	UNUM32 neighbourId = BLOCK_DEFAULT_ID;
 	
 	if( z == CHUNK_LENGTH - 1 ) {
@@ -186,7 +186,7 @@ void ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, con
 		return;
 	}
 
-	std::vector<VertexT> vertices;
+	std::vector<VertexCT> vertices;
 	std::vector<UNUM32> indices;
 	UNUM32 indexBase = 0;
 

@@ -1,9 +1,9 @@
-#include "Chunk/Builder/ThreadedChunkMeshBuilder.h"
+#include "World/Mesh/Chunk/Builder/ThreadedChunkMeshBuilder.h"
 
-#include "Chunk/Block/BlockLibrary.h"
+#include "World/Mesh/Chunk/Block/BlockLibrary.h"
 #include "Texture/TextureAtlas.h"
 #include "World/World.h"
-#include "Chunk/Builder/ChunkMeshBuilder.h"
+#include "World/Mesh/Chunk/Builder/ChunkMeshBuilder.h"
 
 namespace world {
 	namespace mesh {

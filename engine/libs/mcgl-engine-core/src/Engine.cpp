@@ -319,12 +319,24 @@ void Engine::doSetTexture( action::SetTextureAction* data ) {
 }
 
 void Engine::doSetShader( action::SetShaderAction* data ) {
-	auto shader = std::unique_ptr<rendering::shader::IShader>( (rendering::shader::IShader*)new rendering::shader::ChunkShader() );
+	rendering::shader::IShader* shader = nullptr;
+
+	switch( data->type_ ) {
+		case MCGLShaderType::CUBE:
+			shader = (rendering::shader::IShader*)new rendering::shader::ChunkShader();
+			break;
+		case MCGLShaderType::SKYBOX:
+			shader = (rendering::shader::IShader*)new rendering::shader::SkyboxShader();
+			break;
+		default:
+			return;
+	}
+
 	shader->addShader( data->vertexShaderPath_, rendering::shader::ShaderType::Vertex );
 	shader->addShader( data->fragmentShaderPath_, rendering::shader::ShaderType::Fragment );
 	shader->compile();
 
-	pRenderer_->setShader( std::move( shader ), rendering::ShaderType::Chunk );
+	pRenderer_->addShader( shader, to_string( data->type_ ) );
 }
 
 void Engine::doCreateCamera( action::CreateCameraAction* data ) {

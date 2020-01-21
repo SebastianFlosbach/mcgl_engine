@@ -7,7 +7,7 @@ namespace world {
 namespace mesh {
 
 
-TexturedMesh::TexturedMesh( const std::vector<VertexCT>& vertices, const std::vector<UNUM32>& indices ) :
+TexturedMesh::TexturedMesh( const std::vector<VertexCT>& vertices, const std::vector<UNUM32>& indices ) : 
 	vertices_( vertices ), indices_( indices ) {
 }
 

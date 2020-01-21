@@ -1,4 +1,4 @@
-#include "Chunk/Block/Block.h"
+#include "World/Mesh/Chunk/Block/Block.h"
 
 namespace world {
 namespace mesh {

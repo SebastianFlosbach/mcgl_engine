@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <memory>
+#include <array>
 
 #include "World/Mesh/Chunk/Block/Block.h"
 #include "Coordinates/ChunkCoordinates.h"

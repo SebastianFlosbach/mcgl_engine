@@ -1,4 +1,4 @@
-#include "Mesh/RawMesh.h"
+#include "World/Mesh/RawMesh.h"
 
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
@@ -7,11 +7,9 @@ namespace world {
 namespace mesh {
 
 
-RawMesh::RawMesh( const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices ) :
-	vertices_( vertices ), indices_( indices ) {}
+RawMesh::RawMesh( const std::vector<VertexC>& vertices, const std::vector<unsigned int>& indices ) : BaseMesh(vertices, indices) {}
 
-RawMesh::RawMesh( std::vector<Vertex>&& vertices, std::vector<unsigned int>&& indices ) :
-	vertices_( std::move( vertices ) ), indices_( std::move( indices ) ) {}
+RawMesh::RawMesh( std::vector<VertexC>&& vertices, std::vector<unsigned int>&& indices ) : BaseMesh(std::move(vertices), std::move(indices)) {}
 
 RawMesh::RawMesh( RawMesh&& other ) noexcept {
 	if( this == &other ) {
@@ -44,7 +42,7 @@ RawMesh::~RawMesh() {
 	glDeleteVertexArrays( 1, &hVertexArray_ );
 }
 
-void RawMesh::draw() {
+void RawMesh::draw( rendering::shader::IShader& shader, const rendering::Camera& camera ) {
 	std::lock_guard<std::mutex> lock( mMesh_ );
 
 	if( !isValid_ ) {
@@ -75,14 +73,14 @@ void RawMesh::generateGLData() {
 	glBindVertexArray( hVertexArray_ );
 	glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
 
-	glBufferData( GL_ARRAY_BUFFER, vertices_.size() * sizeof( Vertex ), &vertices_[0], GL_STATIC_DRAW );
+	glBufferData( GL_ARRAY_BUFFER, vertices_.size() * sizeof( VertexCT ), &vertices_[0], GL_STATIC_DRAW );
 
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof( unsigned int ), &indices_[0], GL_STATIC_DRAW );
 
 	// vertex positions
 	glEnableVertexAttribArray( 0 );
-	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof( Vertex ), (void*)0 );
+	glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, sizeof( VertexCT ), (void*)0 );
 
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
