@@ -15,7 +15,7 @@ namespace rendering {
 
 class Renderer {
 public:
-	Renderer( const logging::ILogger& logger, IWindow_ptr&& pWindow ) : logger_( logger ), pWindow_( std::move( pWindow ) ) {
+	Renderer( const logging::ILogger& logger, IWindow_sptr& pWindow ) : logger_( logger ), pWindow_( pWindow ) {
 		projection_ = glm::perspective( glm::radians( 45.0f ), (float)pWindow_->width() / (float)pWindow_->height(), 0.1f, 500.0f );
 	}
 
@@ -68,7 +68,7 @@ private:
 	const logging::ILogger& logger_;
 
 	std::map<std::string, shader::IShader_ptr> shaders_;
-	IWindow_ptr pWindow_;
+	IWindow_sptr pWindow_;
 	Camera_ptr pCamera_;
 	glm::mat4 projection_;
 

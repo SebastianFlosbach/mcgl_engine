@@ -139,6 +139,8 @@ void Engine::doCreateWindow( action::CreateWindowAction* data ) {
 	glfwSetInputMode( pWindow->get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
 
 	glEnable( GL_DEPTH_TEST );
+
+	pRenderer_ = std::make_unique<rendering::Renderer>( logger_ , std::move( pWindow ));
 }
 
 // CloseWindow
