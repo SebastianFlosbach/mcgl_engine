@@ -7,9 +7,9 @@ namespace world {
 namespace mesh {
 
 
-RawMesh::RawMesh( const std::vector<VertexC>& vertices, const std::vector<unsigned int>& indices ) : BaseMesh(vertices, indices) {}
+RawMesh::RawMesh( const std::vector<VertexC>& vertices, const std::vector<unsigned int>& indices ) {}
 
-RawMesh::RawMesh( std::vector<VertexC>&& vertices, std::vector<unsigned int>&& indices ) : BaseMesh(std::move(vertices), std::move(indices)) {}
+RawMesh::RawMesh( std::vector<VertexC>&& vertices, std::vector<unsigned int>&& indices ) : vertices_( std::move(vertices) ), indices_(std::move(indices)) {}
 
 RawMesh::RawMesh( RawMesh&& other ) noexcept {
 	if( this == &other ) {
@@ -40,6 +40,14 @@ RawMesh::~RawMesh() {
 	glDeleteBuffers( 1, &hVertexBuffer_ );
 	glDeleteBuffers( 1, &hElementBuffer_ );
 	glDeleteVertexArrays( 1, &hVertexArray_ );
+}
+
+void RawMesh::bind() {
+	glBindVertexArray( hVertexArray_ );
+}
+
+void RawMesh::unbind() {
+	glBindVertexArray( 0 );
 }
 
 void RawMesh::draw( rendering::shader::IShader& shader, const rendering::Camera& camera ) {
@@ -89,6 +97,9 @@ void RawMesh::generateGLData() {
 	isValid_ = true;
 }
 
+const glm::mat4& RawMesh::getModelMatrix() const {
+	return model_;
+}
 
 }
 }

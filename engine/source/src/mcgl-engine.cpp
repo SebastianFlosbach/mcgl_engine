@@ -83,7 +83,7 @@ void MCGLRegisterBlockType( const world::mesh::chunk::block::Block& block ) {
 	engine->registerBlockType( block );
 }
 
-void MCGLSetTexture( MCGLTextureType type, const std::string& name, const std::string& path, UNUM32 textureSize = 0, UNUM32 textureCount = 0 ) {
+void MCGLSetTexture( MCGLTextureType type, const std::string& name, const std::string& path, UNUM32 textureSize, UNUM32 textureCount ) {
 	if( !engine ) {
 		error( *logger, "[MCGL-ENGINE] SetTextures: Engine not created!" );
 		return;

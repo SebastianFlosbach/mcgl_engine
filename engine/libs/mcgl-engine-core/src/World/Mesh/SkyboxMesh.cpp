@@ -76,7 +76,7 @@ SkyboxMesh::~SkyboxMesh() {
 	glDeleteVertexArrays( 1, &hVertexArray_ );
 }
 
-void SkyboxMesh::draw() {
+void SkyboxMesh::draw( rendering::shader::IShader& shader, const rendering::Camera& camera ) {
 	std::lock_guard<std::mutex> lock( mMesh_ );
 
 	if( !isValid_ ) {
@@ -97,7 +97,7 @@ void SkyboxMesh::unbind() {
 }
 
 const glm::mat4& SkyboxMesh::getModelMatrix() const {
-
+	throw "Not Implemented Exception";
 }
 
 void SkyboxMesh::generateGLData() {

@@ -46,6 +46,36 @@ TexturedMesh::~TexturedMesh() {
 	glDeleteVertexArrays( 1, &hVertexArray_ );
 }
 
+void TexturedMesh::bind() {
+	glBindVertexArray( hVertexArray_ );
+}
+
+void TexturedMesh::unbind() {
+	glBindVertexArray( 0 );
+}
+
+void TexturedMesh::draw( rendering::shader::IShader& shader, const rendering::Camera& camera ) {
+	std::lock_guard<std::mutex> lock( mMesh_ );
+
+	if( !isValid_ ) {
+		generateGLData();
+	}
+
+	glBindVertexArray( hVertexArray_ );
+	glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
+
+	glDrawElements( GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0 );
+
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+	glBindBuffer( GL_ARRAY_BUFFER, 0 );
+	glBindVertexArray( 0 );
+}
+
+const glm::mat4& TexturedMesh::getModelMatrix() const {
+	return model_;
+}
+
 void TexturedMesh::generateGLData() {
 
 	if( !isBufferGenerated_ ) {
@@ -78,33 +108,6 @@ void TexturedMesh::generateGLData() {
 
 	isValid_ = true;
 }
-
-void TexturedMesh::draw() {
-	std::lock_guard<std::mutex> lock( mMesh_ );
-
-	if( !isValid_ ) {
-		generateGLData();
-	}
-
-	glBindVertexArray( hVertexArray_ );
-	glBindBuffer( GL_ARRAY_BUFFER, hVertexBuffer_ );
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, hElementBuffer_ );
-
-	glDrawElements( GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0 );
-
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-	glBindBuffer( GL_ARRAY_BUFFER, 0 );
-	glBindVertexArray( 0 );
-}
-
-void TexturedMesh::bind() {
-	glBindVertexArray( hVertexArray_ );
-}
-
-void TexturedMesh::unbind() {
-	glBindVertexArray( 0 );
-}
-
 
 }
 }

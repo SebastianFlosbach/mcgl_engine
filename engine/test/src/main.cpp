@@ -12,7 +12,7 @@
 
 static double movementSpeed = 15.0;
 
-chunk::Chunk myChunk;
+world::mesh::chunk::Chunk myChunk;
 
 static bool isRunning = true;
 static double deltaTime = 1.0;
@@ -149,22 +149,22 @@ int main() {
 	MCGLRegisterMouseEventCallback( mouseEventCallback );
 	MCGLRegisterStatusEventCallback( statusEventCallback );
 
-	MCGLSetTextures( "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
-	MCGLSetShader( "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
-	MCGLSetSkyboxTextures(
-		"../resources/textures/skybox/right.jpg",
-		"../resources/textures/skybox/left.jpg",
-		"../resources/textures/skybox/top.jpg",
-		"../resources/textures/skybox/bottom.jpg",
-		"../resources/textures/skybox/front.jpg",
-		"../resources/textures/skybox/back.jpg"
-	);
-	MCGLSetSkyboxShader( "../resources/shaders/skyboxVertexShader", "../resources/shaders/skyboxFragmentShader" );
+	MCGLSetTexture( MCGLTextureType::ATLAS, "BlockTextures", "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
+	MCGLSetShader( MCGLShaderType::SKYBOX, "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
+
+	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxRight", "../resources/textures/skybox/right.jpg" );
+	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxLeft", "../resources/textures/skybox/left.jpg" );
+	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxTop", "../resources/textures/skybox/top.jpg" );
+	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxBottom", "../resources/textures/skybox/bottom.jpg" );
+	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxFront", "../resources/textures/skybox/front.jpg" );
+	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxBack", "../resources/textures/skybox/back.jpg" );
+
+	MCGLSetShader( MCGLShaderType::SKYBOX, "../resources/shaders/skyboxVertexShader", "../resources/shaders/skyboxFragmentShader" );
 
 	MCGLRegisterBlockType( { 0, true } );
 	MCGLRegisterBlockType( { 1, false, 2, 2, 2, 2, 0, 1 } );
 
-	myChunk = chunk::Chunk();
+	myChunk = world::mesh::chunk::Chunk();
 	for ( int x = 0; x < CHUNK_WIDTH; x++ ) {
 		for ( int z = 0; z < CHUNK_LENGTH; z++ ) {
 			for ( int y = 0; y < 5; y++ ) {

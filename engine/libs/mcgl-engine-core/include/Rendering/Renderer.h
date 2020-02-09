@@ -59,7 +59,7 @@ public:
 		currentShader_ = name;
 	}
 
-	void draw( const world::mesh::IMesh& mesh ) {
+	void draw( world::mesh::IMesh& mesh ) {
 		shaders_[currentShader_]->setUniformMat4f( "projection", projection_ );
 		mesh.draw( *shaders_[currentShader_], *pCamera_ );
 	}

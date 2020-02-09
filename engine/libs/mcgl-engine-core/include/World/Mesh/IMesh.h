@@ -14,7 +14,7 @@ class IMesh {
 public:
 	virtual ~IMesh() = default;
 
-	virtual void draw( rendering::shader::IShader& shader, const rendering::Camera& camera ) const = 0;
+	virtual void draw( rendering::shader::IShader& shader, const rendering::Camera& camera ) = 0;
 	virtual void bind() = 0;
 	virtual void unbind() = 0;
 
