@@ -100,6 +100,11 @@ void Engine::doAction( action::Action* action ) {
 	}
 }
 
+const coordinates::WorldCoordinates Engine::getCameraPosition() const {
+	// TODO Implement
+	return coordinates::WorldCoordinates(0, 0, 0);
+}
+
 // AddMesh
 void Engine::addMesh( const coordinates::WorldCoordinates& position, world::mesh::IMesh* mesh ) {
 	auto mesh_ptr = std::unique_ptr<world::mesh::IMesh>( mesh );

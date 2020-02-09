@@ -43,16 +43,7 @@ enum class MCGLShaderType {
 	SKYBOX
 };
 
-std::string to_string( MCGLShaderType type ) {
-	switch( type ) {
-		case MCGLShaderType::CUBE:
-			return "CUBE";
-		case MCGLShaderType::SKYBOX:
-			return "SKYBOX";
-		default:
-			return "<UNKNOWN>";
-	}
-}
+std::string to_string( MCGLShaderType type );
 
 enum class MCGLSetType {
 	CUBE_TEXTURE_SIZE,
