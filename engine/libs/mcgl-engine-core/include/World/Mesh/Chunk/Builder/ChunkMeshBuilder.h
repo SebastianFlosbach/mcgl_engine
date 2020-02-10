@@ -7,6 +7,7 @@
 
 #include "World/Mesh/Chunk/Chunk.h"
 #include "Logging/ILogger.h"
+#include "Texture/TextureLibrary.h"
 
 
 namespace world {
@@ -29,7 +30,7 @@ public:
 		\param blockLibrary BlockLibrary for interpreting chunk data
 		\param textureAtlas TextureAtlas to use for the mesh
 	*/
-	ChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas );
+	ChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, texture::TextureLibrary* textureLibrary );
 
 	/**
 
@@ -39,7 +40,7 @@ public:
 	/**
 
 	*/
-	virtual void setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas ) override;
+	virtual void setTextureLibrary( texture::TextureLibrary* textureLibrary ) override;
 
 	/**
 		Create the mesh for chunk at a position in the world
@@ -57,7 +58,9 @@ protected:
 
 private:
 	const block::BlockLibrary* pBlockLibrary_;
-	texture::TextureAtlas_sptr pTextureAtlas_;
+	texture::TextureLibrary* pTextureLibrary_;
+
+	texture::TextureAtlas* pTextureAtlas_;
 
 	CHUNK_MESH_BUILDER_CALLBACK callback_;
 

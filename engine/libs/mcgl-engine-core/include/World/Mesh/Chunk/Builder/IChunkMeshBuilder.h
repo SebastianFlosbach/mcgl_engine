@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "World/Mesh/Chunk/Block/BlockLibrary.h"
-#include "Texture/TextureAtlas.h"
+#include "Texture/TextureLibrary.h"
 #include "Coordinates/ChunkCoordinates.h"
 #include "World/Mesh/Chunk/ChunkCollection.h"
 #include "World/Mesh/TexturedMesh.h"
@@ -28,7 +28,7 @@ public:
 	virtual ~IChunkMeshBuilder() = default;
 
 	virtual void setBlockLibrary( const block::BlockLibrary* blockLibrary ) = 0;
-	virtual void setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas ) = 0;
+	virtual void setTextureLibrary( texture::TextureLibrary* textureLibrary ) = 0;
 
 	virtual void build( const coordinates::ChunkCoordinates& position, const ChunkCollection& chunks ) = 0;
 

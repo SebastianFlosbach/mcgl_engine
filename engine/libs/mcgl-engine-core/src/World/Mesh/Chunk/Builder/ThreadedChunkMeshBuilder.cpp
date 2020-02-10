@@ -14,8 +14,8 @@ namespace builder{
 ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const logging::ILogger& logger, UNUM32 threadCount ) : ChunkMeshBuilder( logger ), threadPool_( threadCount ) {
 }
 
-ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount ) :
-	ChunkMeshBuilder( logger, blockLibrary, textureAtlas ),
+ThreadedChunkMeshBuilder::ThreadedChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, texture::TextureLibrary* textureLibrary, UNUM32 threadCount ) :
+	ChunkMeshBuilder( logger, blockLibrary, textureLibrary ),
 	threadPool_( threadCount ) {
 }
 
@@ -54,8 +54,8 @@ void ThreadedChunkMeshBuilder::setBlockLibrary( const block::BlockLibrary* block
 	ChunkMeshBuilder::setBlockLibrary( blockLibrary );
 }
 
-void ThreadedChunkMeshBuilder::setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas ) {
-	ChunkMeshBuilder::setTextureAtlas( textureAtlas );
+void ThreadedChunkMeshBuilder::setTextureLibrary( texture::TextureLibrary* textureLibrary ) {
+	ChunkMeshBuilder::setTextureLibrary( textureLibrary );
 }
 
 void ThreadedChunkMeshBuilder::registerCallback( CHUNK_MESH_BUILDER_CALLBACK& callback ) {

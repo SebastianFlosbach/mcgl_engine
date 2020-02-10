@@ -16,6 +16,9 @@ namespace texture {
 		void addTexture( const std::string& name, Texture&& texture );
 		void addTextureAtlas( const std::string& name, TextureAtlas&& textureAtlas );
 
+		texture::Texture* getTexture( const std::string& name );
+		texture::TextureAtlas* getTextureAtlas( const std::string& name );
+
 		void bindTexture( const std::string& name );
 
 	private:

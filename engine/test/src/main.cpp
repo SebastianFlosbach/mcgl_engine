@@ -150,7 +150,7 @@ int main() {
 	MCGLRegisterStatusEventCallback( statusEventCallback );
 
 	MCGLSetTexture( MCGLTextureType::ATLAS, "BlockTextures", "../resources/textures/mcgl-texture-atlas.png", 16, 4 );
-	MCGLSetShader( MCGLShaderType::SKYBOX, "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
+	MCGLSetShader( MCGLShaderType::CUBE, "../resources/shaders/vertexShader", "../resources/shaders/fragmentShader" );
 
 	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxRight", "../resources/textures/skybox/right.jpg" );
 	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxLeft", "../resources/textures/skybox/left.jpg" );
@@ -158,7 +158,6 @@ int main() {
 	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxBottom", "../resources/textures/skybox/bottom.jpg" );
 	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxFront", "../resources/textures/skybox/front.jpg" );
 	MCGLSetTexture( MCGLTextureType::SINGLE, "SkyboxBack", "../resources/textures/skybox/back.jpg" );
-
 	MCGLSetShader( MCGLShaderType::SKYBOX, "../resources/shaders/skyboxVertexShader", "../resources/shaders/skyboxFragmentShader" );
 
 	MCGLRegisterBlockType( { 0, true } );

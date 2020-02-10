@@ -24,6 +24,26 @@ namespace texture {
 		textureAtlases_.insert( { name, std::move( textureAtlas ) } );
 	}
 
+	texture::Texture* TextureLibrary::getTexture( const std::string& name ) {
+		auto textureIterator = textures_.find( name );
+
+		if( textureIterator != textures_.end() ) {
+			return &textureIterator->second;
+		} else {
+			return nullptr;
+		}
+	}
+
+	texture::TextureAtlas* TextureLibrary::getTextureAtlas( const std::string& name ) {
+		auto textureIterator = textureAtlases_.find( name );
+
+		if( textureIterator != textureAtlases_.end() ) {
+			return &textureIterator->second;
+		} else {
+			return nullptr;
+		}
+	}
+
 	void TextureLibrary::bindTexture( const std::string& name ) {
 		auto textureIterator = textures_.find( name );
 

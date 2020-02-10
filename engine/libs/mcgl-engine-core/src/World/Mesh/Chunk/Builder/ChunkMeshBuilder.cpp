@@ -3,7 +3,7 @@
 #include "World/World.h"
 #include "World/Mesh/Chunk/Block/BlockLibrary.h"
 #include "World/Mesh/Chunk/Chunk.h"
-#include "Texture/TextureAtlas.h"
+
 
 namespace world {
 namespace mesh {
@@ -13,16 +13,18 @@ namespace builder {
 ChunkMeshBuilder::ChunkMeshBuilder( const logging::ILogger& logger ) : logger_( logger ) {
 }
 
-ChunkMeshBuilder::ChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas ) :
-	logger_( logger ), pBlockLibrary_( blockLibrary ), pTextureAtlas_( textureAtlas ) {
+ChunkMeshBuilder::ChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, texture::TextureLibrary* textureLibrary ) :
+	logger_( logger ), pBlockLibrary_( blockLibrary ), pTextureLibrary_( textureLibrary ) {
 }
 
 void ChunkMeshBuilder::setBlockLibrary( const block::BlockLibrary* blockLibrary ) {
 	pBlockLibrary_ = blockLibrary;
 }
 
-void ChunkMeshBuilder::setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas ) {
-	pTextureAtlas_ = textureAtlas;
+void ChunkMeshBuilder::setTextureLibrary( texture::TextureLibrary* textureLibrary ) {
+	pTextureLibrary_ = textureLibrary;
+
+	pTextureAtlas_ = pTextureLibrary_->getTextureAtlas( "BlockTextures" );
 }
 
 void ChunkMeshBuilder::addIndices( std::vector<UNUM32>& indices, UNUM32& indexBase ) {
@@ -180,6 +182,8 @@ void ChunkMeshBuilder::build( const coordinates::ChunkCoordinates& position, con
 		error( logger_, std::string( __FUNCTION__ ) + ": Could not create mesh, block library is missing!" );
 		return;
 	}
+
+	pTextureAtlas_ = pTextureLibrary_->getTextureAtlas( "BlockTextures" );
 
 	if( !pTextureAtlas_ ) {
 		error( logger_, std::string( __FUNCTION__ ) + ": Could not create mesh, texture atlas is missing!" );

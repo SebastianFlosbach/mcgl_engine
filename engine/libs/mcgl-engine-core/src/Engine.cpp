@@ -141,6 +141,7 @@ void Engine::doCreateWindow( action::CreateWindowAction* data ) {
 	glEnable( GL_DEPTH_TEST );
 
 	pRenderer_ = std::make_unique<rendering::Renderer>( logger_ , std::move( pWindow ));
+	pWorld_ = std::make_unique<world::World>( logger_ );
 }
 
 // CloseWindow
@@ -256,6 +257,7 @@ void Engine::doEngine() {
 	}
 
 	pAssetManager_->getChunkMeshBuilder()->setBlockLibrary( pAssetManager_->getBlockLibrary() );
+	pAssetManager_->getChunkMeshBuilder()->setTextureLibrary( pAssetManager_->getTextureLibrary() );
 	pAssetManager_->getChunkMeshBuilder()->registerCallback( world::mesh::chunk::builder::CHUNK_MESH_BUILDER_CALLBACK( [this]( const coordinates::ChunkCoordinates& position, world::mesh::TexturedMesh* mesh ) {
 		addMesh( position.toWorldCoordinates(), mesh );
 	} ) );
@@ -312,12 +314,12 @@ void Engine::doSetTexture( action::SetTextureAction* data ) {
 	switch( data->type_ ) {
 		case MCGLTextureType::SINGLE:
 		{
-			texture::Texture texture( data->path_ );
+			pAssetManager_->getTextureLibrary()->addTexture(data->name_, std::move( texture::Texture( data->path_ ) ) );
 		}
 			break;
 		case MCGLTextureType::ATLAS:
 		{
-			texture::TextureAtlas textureAtlas( data->path_, data->textureSize_, data->textureCount_ );
+			pAssetManager_->getTextureLibrary()->addTextureAtlas( data->name_, std::move( texture::TextureAtlas( data->path_, data->textureSize_, data->textureCount_ ) ) );
 		}
 			break;
 		default:

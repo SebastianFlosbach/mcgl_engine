@@ -30,7 +30,7 @@ public:
 		\param textureAtlas TextureAtlas to use for the mesh
 		\param threadCount Number of threads the builder is allowed to use
 	*/
-	ThreadedChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, const texture::TextureAtlas_sptr& textureAtlas, UNUM32 threadCount );
+	ThreadedChunkMeshBuilder( const logging::ILogger& logger, const block::BlockLibrary* blockLibrary, texture::TextureLibrary* textureLibrary, UNUM32 threadCount );
 
 	/**
 
@@ -40,7 +40,7 @@ public:
 	/**
 
 	*/
-	void setTextureAtlas( const texture::TextureAtlas_sptr& textureAtlas );
+	void setTextureLibrary( texture::TextureLibrary* textureLibrary );
 
 
 	/**
