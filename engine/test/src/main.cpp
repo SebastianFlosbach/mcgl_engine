@@ -19,7 +19,7 @@ static double deltaTime = 1.0;
 
 coordinates::ChunkCoordinates lastChunkPosition{ 0, 0 };
 
-constexpr int RENDER_DISTANCE = 5;
+constexpr int RENDER_DISTANCE = 1;
 
 void checkLoadedChunks() {
 	coordinates::WorldCoordinates position = MCGLGetCameraPosition();

@@ -138,7 +138,7 @@ void Engine::doCreateWindow( action::CreateWindowAction* data ) {
 
 	glfwSetInputMode( pWindow->get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED );
 
-	glEnable( GL_DEPTH_TEST );
+	//glEnable( GL_DEPTH_TEST );
 
 	pRenderer_ = std::make_unique<rendering::Renderer>( logger_ , std::move( pWindow ));
 	pWorld_ = std::make_unique<world::World>( logger_ );
@@ -371,7 +371,7 @@ void Engine::doDraw() {
 	glClearColor( 0.2f, 0.3f, 0.3f, 1.0f );
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-	//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+	glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
 	pWorld_->draw( *pRenderer_ );
 

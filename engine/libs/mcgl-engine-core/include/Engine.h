@@ -11,6 +11,7 @@
 #include "World/World.h"
 #include "World/Mesh/Chunk/Block/Block.h"
 #include "World/Mesh/Chunk/Chunk.h"
+#include "Skybox.h"
 
 
 class Engine {
